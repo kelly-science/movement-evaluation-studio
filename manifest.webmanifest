@@ -1,0 +1,32 @@
+{
+  "id": "./",
+  "name": "Movement Evaluation Studio",
+  "short_name": "Movement Studio",
+  "description": "Offline-capable anatomy lab workspace to annotate frontal and sagittal exercise movement photos and video frames.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#30353c",
+  "theme_color": "#30353c",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
