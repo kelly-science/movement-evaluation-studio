@@ -7,27 +7,126 @@
 :root{--body:#fff;--device:#30353c;--button:#373d45;--recess:#1b2026;--text:#eef1f4;--muted:#b7c2cd;--lcd:#b0c3a4;--line:#ffffff19;--blue:#65baf1;--green:#80df93;--amber:#ffbf72;--red:#ff8686}
 *{box-sizing:border-box}body{margin:0;background:var(--body);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:clamp(10px,2.7vw,38px)}button,input,select{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}button:disabled{opacity:.42;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #a9d2ff;outline-offset:3px}
 .device{width:min(100%,1580px);margin:auto;background:var(--device);padding:clamp(16px,2.2vw,27px);border-radius:31px;box-shadow:6px 7px 15px #0007,-12px -12px 28px #ffffff15,inset 1px 1px 1px #ffffff1c}
-.header{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:22px}.brand{display:flex;align-items:center;gap:15px}.logo{width:57px;height:57px;border-radius:17px;background:#343a42;box-shadow:7px 9px 18px #07090d88,-4px -4px 10px #ffffff0c,inset 1px 1px 2px #ffffff18;display:grid;place-items:center;font-size:28px;color:var(--lcd);text-shadow:0 0 14px #abc99a8a}.overline{font-size:10px;font-weight:850;letter-spacing:.19em;color:#aab8c5}.brand h1{font-size:clamp(19px,2.2vw,27px);letter-spacing:.035em;line-height:1.1;margin:5px 0}.brand h1 span{font-weight:400;color:#b6c4cd}.brand p{margin:0;color:#afbdc8;letter-spacing:.05em;font-size:10px;font-weight:750}.status{display:flex;gap:9px;align-items:center;color:#b2c6ba;font-size:10px;letter-spacing:.09em;font-weight:800}.led{display:inline-block;flex:none;width:9px;height:9px;border-radius:50%;background:currentColor;opacity:.22;box-shadow:inset 1px 1px 2px #fff4,inset -1px -1px 2px #000b}.led.on{opacity:1;box-shadow:0 0 8px currentColor,0 0 14px currentColor,inset 1px 1px 2px #fff6}.green{color:var(--green)}.blue{color:var(--blue)}.amber{color:var(--amber)}.red{color:var(--red)}
+.header{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:22px}.brand{display:flex;align-items:center;gap:15px}.logo{width:57px;height:57px;border-radius:17px;background:#343a42;box-shadow:7px 9px 18px #07090d88,-4px -4px 10px #ffffff0c,inset 1px 1px 2px #ffffff18;display:grid;place-items:center;font-size:28px;color:var(--lcd);text-shadow:0 0 14px #abc99a8a}.overline{font-size:10px;font-weight:850;letter-spacing:.19em;color:#aab8c5}.brand h1{font-size:clamp(19px,2.2vw,27px);letter-spacing:.035em;line-height:1.1;margin:5px 0}.brand h1 span{font-weight:400;color:#b6c4cd}.brand p{margin:0;color:#afbdc8;letter-spacing:.05em;font-size:10px;font-weight:750}.led{display:inline-block;flex:none;width:9px;height:9px;border-radius:50%;background:currentColor;opacity:.22;box-shadow:inset 1px 1px 2px #fff4,inset -1px -1px 2px #000b}.led.on{opacity:1;box-shadow:0 0 8px currentColor,0 0 14px currentColor,inset 1px 1px 2px #fff6}.green{color:var(--green)}.blue{color:var(--blue)}.amber{color:var(--amber)}.red{color:var(--red)}
 .tactile{border:0;border-radius:999px;min-height:43px;padding:11px 15px;display:inline-flex;align-items:center;justify-content:center;gap:8px;color:#e7ebef;background:var(--button);font-size:11px;font-weight:850;letter-spacing:.045em;box-shadow:7px 9px 16px #0006,-3px -3px 8px #ffffff0c,inset 1px 1px 2px #ffffff24,inset -1px -1px 2px #0005;transition:transform .08s,box-shadow .1s,filter .1s}.tactile:hover:not(:disabled){filter:brightness(1.1)}.tactile:active:not(:disabled),.tactile.active{transform:translateY(2px);background:#20252b;box-shadow:inset 5px 5px 10px #0009,inset -4px -4px 9px #ffffff0a,2px 3px 5px #0005}.tactile.active{color:var(--lcd)}.tactile.primary{color:#c7e6c6}.tactile.danger{color:#ffd0cf}
 .meta-bar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:17px;margin-bottom:23px}.field-name{display:block;font-size:10px;font-weight:850;letter-spacing:.11em;color:#afbccc;margin:0 0 8px}.input-well,.select-well{border:1px solid #ffffff0b;color:#d9e6d5;background:linear-gradient(145deg,#1c2329,#13181d);box-shadow:inset 5px 5px 11px #000b,inset -3px -3px 7px #ffffff0a;border-radius:10px;outline:none;padding:11px 12px;width:100%;min-width:0;font-size:13px}.input-well::placeholder{color:#788796}.select-well option{color:white;background:#212830}
 .workbench{display:grid;grid-template-columns:230px minmax(0,1fr) 248px;gap:clamp(13px,1.6vw,22px);align-items:start}.eyebrow{font-size:10px;letter-spacing:.16em;font-weight:900;color:#aab7c4;text-transform:uppercase;margin:3px 0 15px}.left h2,.right h2{font-size:13px;letter-spacing:.06em;margin:4px 0 10px}.hint{color:#b8c6d1;font-size:11px;line-height:1.55;margin:0 0 14px}.divider{border:0;border-top:1px solid var(--line);margin:19px 0}.two-buttons{display:flex;gap:10px;flex-wrap:wrap}.two-buttons>*{flex:1}.two-buttons .tactile{padding:10px 8px;min-width:0}.plane-tabs{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px}.plane-tabs .tactile{padding:11px 8px;font-size:10px;min-width:0}.fieldgroup{margin:0 0 12px}.upload-row{display:flex;gap:10px;flex-wrap:wrap}.upload-row .tactile{flex:1;padding:10px 7px}.small-note{font-size:10px;color:#a2b2bf;line-height:1.6;margin:11px 0}.tool-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:15px 0}.tool-grid .tactile{border-radius:16px;min-height:56px;padding:9px 6px;flex-direction:column;gap:5px;font-size:10px}.tool-grid .tactile span.icon{font-size:18px;font-weight:450;color:#cee0cf}.control-help{font-size:11px;line-height:1.5;color:#c7d4de;background:#252b31;box-shadow:inset 4px 4px 9px #07090f95,inset -3px -3px 7px #ffffff0b;border-radius:13px;padding:12px;min-height:55px}
 .bezel,.readout-pocket,.timeline-pocket{position:relative;padding:9px;border-radius:19px;background:linear-gradient(145deg,#1a1f25,#292f36 48%,#15191e);box-shadow:inset 8px 8px 16px #000b,inset -4px -4px 10px #ffffff10,1px 1px 1px #ffffff0b,-1px -1px 2px #000a;overflow:hidden}.bezel:after,.readout-pocket:after{content:"";position:absolute;inset:0;pointer-events:none;z-index:6;border-radius:19px;background:linear-gradient(118deg,#ffffff43,#ffffff1d 19%,#ffffff09 33%,transparent 49%);opacity:.58}.oled{background:linear-gradient(145deg,#111823,#030507);border-radius:10px;overflow:hidden;box-shadow:inset 8px 8px 18px #000c,inset -4px -4px 8px #ffffff14,0 2px 5px #0009}.screen-head{display:flex;justify-content:space-between;gap:9px;padding:12px 14px;border-bottom:1px solid #ffffff18;font-size:10px;color:#c9d1d9;font-weight:800;letter-spacing:.05em}.screen-head span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.screen-tag{color:var(--lcd);white-space:nowrap}.stage{background:#030405;min-height:425px;display:flex;align-items:center;justify-content:center;position:relative;padding:11px;overflow:hidden}.stage.dragover{outline:3px dashed #c2d4b9;outline-offset:-9px}.stage.empty-screen{background:radial-gradient(circle at center,#0d161c,#030405 70%)}.empty{text-align:center;max-width:320px;padding:22px}.empty-symbol{font-size:64px;font-weight:600;color:var(--lcd);text-shadow:0 0 28px #aacaa258}.empty h3{margin:16px 0 8px;font-size:17px;letter-spacing:.09em}.empty p{color:#a2b3bf;line-height:1.65;font-size:12px}.picture-frame{width:min(100%,calc(62vh * var(--aspect,1.7778)));max-width:100%;aspect-ratio:var(--aspect,1.7778);position:relative;background:#090b0e}.picture-frame canvas{display:block;width:100%;height:100%;touch-action:none;cursor:crosshair}.screen-overlay{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);padding:8px 12px;background:#0e1922ee;border-radius:99px;color:#daebd8;font-size:11px;white-space:nowrap;pointer-events:none}.screen-bottom{padding:15px 5px 6px}.timeline-pocket{padding:14px}.timeline-row{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px}.timeline-row input{width:100%;accent-color:#aac6a0}.time{font-size:10px;font-variant-numeric:tabular-nums;font-weight:750;color:var(--lcd)}.frame-buttons{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;margin:14px 0}.frame-buttons .tactile{min-height:37px;padding:10px 12px;font-size:10px}.frame-note{color:#9fb1bd;font-size:10px;margin:12px 0 0;line-height:1.5;text-align:center}
-.readout-pocket{margin-bottom:17px;padding:8px}.readout{min-height:138px;background:linear-gradient(145deg,#0d1316,#030506);border-radius:11px;box-shadow:inset 7px 7px 16px #000c,inset -3px -3px 8px #ffffff09;text-align:center;padding:21px 12px}.readout-label{font-size:10px;font-weight:850;color:var(--lcd);letter-spacing:.13em}.readout-big{font-variant-numeric:tabular-nums;font-size:47px;line-height:1.2;font-weight:900;letter-spacing:-.07em;color:var(--lcd);text-shadow:0 0 17px #b9d9aa47;margin:8px 0}.readout-sub{font-size:10px;color:#93a98b;letter-spacing:.05em}.field-tip{font-size:10px;color:#a3b5c2;line-height:1.5;margin:7px 0 0}.palette{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.swatch{width:24px;height:24px;border-radius:50%;border:2px solid #3a424b;background:var(--color);box-shadow:2px 3px 7px #0007,inset 1px 1px 2px #fff6;padding:0}.swatch.selected{outline:2px solid #e4efdb;outline-offset:2px}.selected-list{max-height:176px;overflow:auto;display:grid;gap:6px;padding:4px 2px}.annotation-chip{width:100%;min-height:35px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:7px;color:#d5dfe7;font-size:11px;border:0;background:#282f37;padding:8px 10px;border-radius:9px}.annotation-chip.active{box-shadow:inset 3px 3px 8px #0008;color:var(--lcd);outline:1px solid #a4c09a5c}.annotation-chip .name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.key-list{color:#d5e1df;font-size:11px;line-height:1.8;margin-top:9px}.key-line{display:flex;gap:9px;align-items:center}.key-color{width:12px;height:12px;border-radius:3px;display:inline-block;flex:none}.tool-fields>div{margin-bottom:13px}.tool-fields label{display:block;font-size:10px;letter-spacing:.07em;color:#aebdca;font-weight:850;margin-bottom:6px}.tool-fields input,.tool-fields select{font-size:12px}.save-sticky{display:flex;justify-content:space-between;gap:9px;flex-wrap:wrap;margin:21px 0 0}.save-sticky .tactile{font-size:11px;padding:11px 13px}.tip-line{color:#c8d4de;font-size:11px;line-height:1.5}.checkbar{margin-top:23px;border-top:1px solid #ffffff24;padding-top:20px}.checkbar h2{font-size:13px;letter-spacing:.08em;margin:0 0 13px}.check-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}.check-item{display:flex;gap:9px;align-items:center;font-size:11px;line-height:1.45;color:#ccd7df;background:#252c32;border-radius:13px;padding:12px;box-shadow:inset 3px 3px 8px #0d121a8f,inset -2px -2px 6px #ffffff09}.check-item .led{color:#74828d;opacity:1}.check-item.complete .led{color:var(--green);box-shadow:0 0 12px currentColor}.foot{margin-top:19px;border-top:1px solid #ffffff17;padding-top:17px;display:flex;justify-content:space-between;gap:16px;color:#abb8c5;font-size:10px;line-height:1.5}.hidden{display:none!important}#toast{position:fixed;bottom:23px;left:50%;transform:translateX(-50%);max-width:90vw;background:#d6e5ca;color:#1b2918;font-weight:800;font-size:12px;padding:11px 16px;border-radius:10px;box-shadow:0 9px 25px #0008;z-index:20}.screen-warning{color:#f4c8ad}
+.readout-pocket{margin-bottom:17px;padding:8px}.readout{min-height:138px;background:linear-gradient(145deg,#0d1316,#030506);border-radius:11px;box-shadow:inset 7px 7px 16px #000c,inset -3px -3px 8px #ffffff09;text-align:center;padding:21px 12px}.readout-label{font-size:10px;font-weight:850;color:var(--lcd);letter-spacing:.13em}.readout-big{font-variant-numeric:tabular-nums;font-size:47px;line-height:1.2;font-weight:900;letter-spacing:-.07em;color:var(--lcd);text-shadow:0 0 17px #b9d9aa47;margin:8px 0}.readout-sub{font-size:10px;color:#93a98b;letter-spacing:.05em}.field-tip{font-size:10px;color:#a3b5c2;line-height:1.5;margin:7px 0 0}.palette{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.swatch{width:24px;height:24px;border-radius:50%;border:2px solid #3a424b;background:var(--color);box-shadow:2px 3px 7px #0007,inset 1px 1px 2px #fff6;padding:0}.swatch.selected{outline:2px solid #e4efdb;outline-offset:2px}.selected-list{max-height:176px;overflow:auto;display:grid;gap:6px;padding:4px 2px}.annotation-chip{width:100%;min-height:35px;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:7px;color:#d5dfe7;font-size:11px;border:0;background:#282f37;padding:8px 10px;border-radius:9px}.annotation-chip.active{box-shadow:inset 3px 3px 8px #0008;color:var(--lcd);outline:1px solid #a4c09a5c}.annotation-chip .name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.key-list{color:#d5e1df;font-size:11px;line-height:1.8;margin-top:9px}.key-line{display:flex;gap:9px;align-items:center}.key-color{width:12px;height:12px;border-radius:3px;display:inline-block;flex:none}.tool-fields>div{margin-bottom:13px}.tool-fields label{display:block;font-size:10px;letter-spacing:.07em;color:#aebdca;font-weight:850;margin-bottom:6px}.tool-fields input,.tool-fields select{font-size:12px}.tip-line{color:#c8d4de;font-size:11px;line-height:1.5}.checkbar{margin-top:23px;border-top:1px solid #ffffff24;padding-top:20px}.checkbar h2{font-size:13px;letter-spacing:.08em;margin:0 0 13px}.check-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}.check-item{display:flex;gap:9px;align-items:center;font-size:11px;line-height:1.45;color:#ccd7df;background:#252c32;border-radius:13px;padding:12px;box-shadow:inset 3px 3px 8px #0d121a8f,inset -2px -2px 6px #ffffff09}.check-item .led{color:#74828d;opacity:1}.check-item.complete .led{color:var(--green);box-shadow:0 0 12px currentColor}.hidden{display:none!important}#toast{position:fixed;bottom:23px;left:50%;transform:translateX(-50%);max-width:90vw;background:#d6e5ca;color:#1b2918;font-weight:800;font-size:12px;padding:11px 16px;border-radius:10px;box-shadow:0 9px 25px #0008;z-index:20}.screen-warning{color:#f4c8ad}
 @media(max-width:1250px){.workbench{grid-template-columns:210px minmax(0,1fr)}.right{grid-column:1/-1;display:grid;grid-template-columns:220px 1fr 1fr;gap:0 17px}.right>.eyebrow{grid-column:1/-1}.right>.readout-pocket{grid-row:2/6;grid-column:1;align-self:start}.right>.fieldgroup{grid-column:2}.right>.annotation-area{grid-column:3;grid-row:2/6}.right>.tool-fields{grid-column:2;grid-row:3/6}.right .fieldgroup>label{margin-top:0}.check-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:790px){body{padding:10px}.device{border-radius:23px;padding:16px}.brand{gap:11px}.logo{width:44px;height:44px;border-radius:13px;font-size:24px}.brand h1{font-size:18px}.brand p{font-size:9px}.status{font-size:9px}.workbench{display:flex;flex-direction:column;gap:21px}.left,.center,.right{width:100%}.left{order:1}.center{order:2}.right{order:3;display:block}.plane-tabs{max-width:420px}.left .tool-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.left .tool-grid button{min-height:50px}.stage{min-height:250px;padding:7px}.picture-frame{width:min(100%,calc(52svh * var(--aspect,1.7778)))}.meta-bar{gap:10px}.readout{min-height:110px;padding:15px}.readout-big{font-size:40px}.readout-pocket{margin-bottom:14px}.check-grid{grid-template-columns:1fr 1fr}.save-sticky{gap:11px}.save-sticky .tactile{flex:1;min-width:135px}.foot{flex-direction:column;gap:4px}}
-@media(max-width:450px){.status{display:none}.header{margin-bottom:14px}.meta-bar{grid-template-columns:1fr}.check-grid{grid-template-columns:1fr}.frame-buttons .tactile{font-size:9px;padding:9px}.time{font-size:9px}.tool-grid .tactile{font-size:9px}.save-sticky .tactile{min-width:120px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
-</style>
+@media(max-width:790px){body{padding:10px}.device{border-radius:23px;padding:16px}.brand{gap:11px}.logo{width:44px;height:44px;border-radius:13px;font-size:24px}.brand h1{font-size:18px}.brand p{font-size:9px}.workbench{display:flex;flex-direction:column;gap:21px}.left,.center,.right{width:100%}.left{order:1}.center{order:2}.right{order:3;display:block}.plane-tabs{max-width:420px}.left .tool-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.left .tool-grid button{min-height:50px}.stage{min-height:250px;padding:7px}.picture-frame{width:min(100%,calc(52svh * var(--aspect,1.7778)))}.meta-bar{gap:10px}.readout{min-height:110px;padding:15px}.readout-big{font-size:40px}.readout-pocket{margin-bottom:14px}.check-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:450px){.header{margin-bottom:14px}.meta-bar{grid-template-columns:1fr}.check-grid{grid-template-columns:1fr}.frame-buttons .tactile{font-size:9px;padding:9px}.time{font-size:9px}.tool-grid .tactile{font-size:9px}}@media(prefers-reduced-motion:reduce){*{transition:none!important}}
 
-<link rel="manifest" href="./manifest.webmanifest">
-<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
-<link rel="apple-touch-icon" href="./apple-touch-icon.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Movement Studio">
+/* Full-width workspace: remove only the outer plastic device frame and highlight. */
+body{background:var(--device);padding:0}
+.device{width:min(100%,1580px);max-width:1580px;margin:0 auto;padding:0 clamp(13px,2.2vw,28px) 20px;background:transparent;border:0;border-radius:0;box-shadow:none}
+/* Sticky desktop-style menus stay visible as the student scrolls. */
+.menu-bar{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:56px;margin:0 -2px 22px;padding:7px 8px;background:rgba(43,48,55,.97);border-bottom:1px solid rgba(255,255,255,.13);box-shadow:0 9px 20px rgba(0,0,0,.19);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.menu-group{display:flex;align-items:center;gap:3px;min-width:0}
+.menu-wrap{position:relative}
+.menu-trigger{display:flex;align-items:center;gap:9px;padding:10px 16px;color:#f1f4f6;font-size:13px;font-weight:750;background:transparent;border:0;border-radius:9px;min-height:40px}
+.menu-trigger:hover,.menu-trigger[aria-expanded=true]{background:#414850}
+.menu-chevron{font-size:11px;color:#9fafba}
+
+.menu-dropdown{position:absolute;top:calc(100% + 6px);left:0;min-width:255px;max-width:min(94vw,350px);padding:8px;background:#292f36;border:1px solid #ffffff27;border-radius:13px;box-shadow:0 16px 40px #000a, inset 1px 1px 1px #ffffff12;display:grid;gap:2px;z-index:105;max-height:calc(100dvh - 78px);overflow-y:auto}
+[hidden]{display:none!important}
+.menu-action{width:100%;min-height:39px;padding:9px 11px;color:#ecf0f4;background:transparent;border:0;border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:13px;text-align:left;font-size:12px;font-weight:620;white-space:nowrap}
+.menu-action:hover:not(:disabled),.menu-action:focus-visible{background:#45505c}
+.menu-action:disabled{color:#87939e;opacity:.65}
+.menu-separator{height:1px;background:#ffffff20;margin:6px 4px}
+.menu-shortcut,.menu-indicator,.menu-selected{color:#a6bcaa;font-size:11px}
+.menu-selected:empty{display:none}
+/* Native modal keeps checklist accessible and removes it from page flow. */
+.checklist-dialog{width:min(620px,calc(100vw - 28px));max-height:min(84dvh,760px);overflow:auto;padding:23px;background:#30363d;border:1px solid #ffffff2b;border-radius:20px;color:#eef2f3;box-shadow:0 30px 80px rgba(0,0,0,.65),inset 1px 1px 2px #ffffff18}
+.checklist-dialog::backdrop{background:rgba(5,8,12,.72);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.dialog-header{display:flex;justify-content:space-between;align-items:center;gap:15px}
+.dialog-overline{font-size:10px;letter-spacing:.14em;color:#b1beca;font-weight:850}
+.dialog-header h2{font-size:23px;letter-spacing:.045em;margin:6px 0 0}
+.dialog-close{min-width:41px;min-height:41px;padding:8px 12px;font-size:15px}
+.dialog-description{margin:17px 0 12px;font-size:12px;line-height:1.6;color:#c7d1d9}
+.dialog-progress{font-size:11px;font-weight:850;letter-spacing:.09em;color:var(--lcd);margin:0 0 15px}
+.checklist-dialog .check-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.checklist-dialog .check-item{min-height:63px}
+.dialog-footer{display:flex;justify-content:flex-end;margin-top:19px}
+.dialog-footer .tactile{min-width:125px}
+@media(max-width:790px){body{padding:0}.device{border-radius:0;padding:0 14px 20px}.menu-bar{margin:0 -4px 16px}}
+@media(max-width:450px){.device{padding:0 11px 15px}.menu-bar{margin:0 -3px 14px;padding:6px 0}.menu-trigger{padding:10px 12px;font-size:12px}.checklist-dialog{padding:17px}.checklist-dialog .check-grid{grid-template-columns:1fr}.dialog-header h2{font-size:19px}}
+
+
+/* V4: the right column is a contextual inspector, not a status dashboard. */
+.right{min-width:0}
+.picture-frame{scroll-margin-top:82px}
+.right .eyebrow{margin-bottom:11px}
+.right h2{font-size:14px;margin:0 0 10px;color:#e8f0ed}
+.right .hint{margin-bottom:18px}
+.tool-fields .fieldgroup{margin-bottom:17px}
+.style-row{border-top:1px solid #ffffff17;margin-top:17px;padding-top:15px}
+.style-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.style-heading output{font-size:11px;color:var(--lcd);font-weight:750}
+.style-row input[type=range]{width:100%;accent-color:var(--lcd);margin:6px 0 0}
+#styleFields .palette{margin-bottom:4px}
+#inspectorFootnote{border-top:1px solid #ffffff19;padding-top:14px;margin-top:16px}
+.annotation-dialog .selected-list{max-height:52dvh;margin:15px 0;gap:9px}
+.annotation-dialog .annotation-chip{min-height:44px;font-size:12px;padding:12px}
+@media(max-width:1250px){.right{grid-column:1/-1;display:block;max-width:800px}.right .tool-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}.right .tool-fields #inspectorFootnote{grid-column:1/-1}}
+@media(max-width:790px){.right{display:block;max-width:none}.right .tool-fields{display:block}}
+/* ROM inspector: three markers, recessed readout and measurement mode */
+.rom-point-list{display:grid;gap:10px;margin:9px 0 17px}
+.rom-point{width:100%;justify-content:flex-start;text-align:left;gap:9px;min-height:43px;padding:10px 11px;border-radius:13px;font-size:10px;letter-spacing:.025em}
+.rom-point.selected{transform:translateY(2px);background:#22272e;box-shadow:inset 5px 5px 11px #05070a99,inset -4px -4px 10px #ffffff0c}
+.rom-dot{width:11px;height:11px;border-radius:50%;display:inline-block;flex:none;box-shadow:0 0 7px currentColor;background:currentColor}
+.rom-f{color:#c7e885}.rom-s{color:#65c9ef}.rom-m{color:#ffb56e}
+.rom-tick{margin-left:auto;color:#c7e885;font-weight:900;font-size:14px}
+.rom-reading{background:linear-gradient(145deg,#0d1415,#030506);border-radius:12px;padding:16px 8px;margin:0 0 18px;text-align:center;box-shadow:inset 7px 7px 15px #000c,inset -3px -3px 8px #ffffff0b}
+.rom-reading-title,.rom-reading-sub{font-size:9px;letter-spacing:.12em;color:#9fb796;font-weight:800}
+.rom-reading-value{font-size:41px;letter-spacing:-.065em;font-weight:900;color:var(--lcd);margin:6px 0;text-shadow:0 0 15px #aebca248;font-variant-numeric:tabular-nums}
+.rom-reading-sub{font-size:9px;letter-spacing:.04em}
+.rom-modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 13px}
+.rom-modes button{font-size:9px;min-height:40px;padding:9px 5px}
+.rom-modes button.active{transform:translateY(2px);background:#22272e;color:var(--lcd);box-shadow:inset 4px 4px 10px #05070a99,inset -4px -4px 9px #ffffff0c}
+@media(max-width:1250px){#romFields{max-width:500px}}
+</style>
 </head>
 <body>
 <div class="device">
-<header class="header"><div class="brand"><div class="logo">⌁</div><div><div class="overline">REGULAR ANATOMY · MUSCULAR SYSTEM LAB</div><h1>MOVEMENT <span>EVALUATION STUDIO</span></h1><p>TWO-PLANE EXERCISE ANALYSIS · ANNOTATED EVIDENCE</p></div></div><div class="status"><span class="led green on"></span>PRIVATE · ON DEVICE</div></header>
+  <nav class="menu-bar" aria-label="Studio menu bar">
+    <div class="menu-group">
+      <div class="menu-wrap">
+        <button type="button" class="menu-trigger" id="fileMenuButton" aria-expanded="false" aria-haspopup="true" aria-controls="fileMenu">File <span class="menu-chevron" aria-hidden="true">▾</span></button>
+        <div class="menu-dropdown" id="fileMenu" role="group" aria-label="File actions" hidden>
+          <button type="button" class="menu-action" id="menuNew">New Project</button>
+          <button type="button" class="menu-action" id="menuOpenProject">Open Project…</button>
+          <button type="button" class="menu-action" id="menuSaveProject">Save Editable Project</button>
+          <div class="menu-separator" role="separator"></div>
+          <button type="button" class="menu-action" id="menuExportPoster">Export Submission Picture (PNG)</button>
+          <button type="button" class="menu-action" id="menuExportPlane">Export Current Plane (PNG)</button>
+          <button type="button" class="menu-action" id="menuExportExcalidraw">Export Excalidraw Project</button>
+          <div class="menu-separator" role="separator"></div>
+          <button type="button" class="menu-action menu-checklist" id="menuChecklist">Project Checklist <span class="menu-indicator" aria-hidden="true">↗</span></button>
+        </div>
+      </div>
+      <div class="menu-wrap">
+        <button type="button" class="menu-trigger" id="editMenuButton" aria-expanded="false" aria-haspopup="true" aria-controls="editMenu">Edit <span class="menu-chevron" aria-hidden="true">▾</span></button>
+        <div class="menu-dropdown" id="editMenu" role="group" aria-label="Edit actions" hidden>
+          <button type="button" class="menu-action" data-click="undoBtn" data-mirror="undoBtn">Undo <span class="menu-shortcut">⌘/Ctrl Z</span></button>
+          <button type="button" class="menu-action" data-click="redoBtn" data-mirror="redoBtn">Redo</button>
+          <div class="menu-separator" role="separator"></div>
+          <button type="button" class="menu-action" id="menuAnnotations">Manage Annotations…</button>
+          <button type="button" class="menu-action" data-click="deleteBtn" data-mirror="deleteBtn">Delete Selected</button>
+          <button type="button" class="menu-action" data-click="clearBtn" data-mirror="clearBtn">Clear Current Plane…</button>
+        </div>
+      </div>
+      <div class="menu-wrap">
+        <button type="button" class="menu-trigger" id="viewMenuButton" aria-expanded="false" aria-haspopup="true" aria-controls="viewMenu">View <span class="menu-chevron" aria-hidden="true">▾</span></button>
+        <div class="menu-dropdown" id="viewMenu" role="group" aria-label="View actions" hidden>
+          <button type="button" class="menu-action" data-plane-menu="0">Frontal Plane <span class="menu-selected" aria-hidden="true">✓</span></button>
+          <button type="button" class="menu-action" data-plane-menu="1">Sagittal Plane <span class="menu-selected" aria-hidden="true"></span></button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+<header class="header"><div class="brand"><div class="logo">⌁</div><div><div class="overline">REGULAR ANATOMY · MUSCULAR SYSTEM LAB</div><h1>MOVEMENT <span>EVALUATION STUDIO</span></h1><p>TWO-PLANE EXERCISE ANALYSIS · ANNOTATED EVIDENCE</p></div></div></header>
 <div class="meta-bar"><div><label class="field-name" for="student">STUDENT NAME (OPTIONAL)</label><input class="input-well" id="student" placeholder="Name for the exported project" autocomplete="off"></div><div><label class="field-name" for="exercise">EXERCISE BEING EVALUATED</label><input class="input-well" id="exercise" placeholder="e.g., squat, lunge, push-up"></div></div>
 <div class="workbench">
 <aside class="left">
@@ -46,6 +145,7 @@
   <button class="tactile" data-tool="muscle"><span class="icon">〽</span>TRACE MUSCLE</button>
   <button class="tactile" data-tool="arrow"><span class="icon">➜</span>MOVEMENT</button>
   <button class="tactile" data-tool="text"><span class="icon">T</span>TEXT LABEL</button>
+  <button class="tactile" data-tool="rom"><span class="icon">∠</span>ROM</button>
  </div>
  <div class="control-help" id="toolHint">Select an annotation to move it, edit its label, or delete it.</div>
  <div class="two-buttons" style="margin-top:15px"><button class="tactile" id="undoBtn" disabled>↶ UNDO</button><button class="tactile" id="redoBtn" disabled>↷ REDO</button></div>
@@ -55,36 +155,122 @@
   <div class="bezel"><div class="oled"><div class="screen-head"><span id="screenTitle">FRONTAL PLANE · NO FRAME</span><span class="screen-tag" id="screenTag">STANDBY</span></div><div id="stage" class="stage empty-screen"><div class="empty" id="empty"><div class="empty-symbol">⌁</div><h3>CAPTURE YOUR PEAK MOVEMENT</h3><p>Upload a frontal- or sagittal-plane screenshot, or scrub a slow-motion video and choose the exact peak frame.</p></div><div id="pictureFrame" class="picture-frame hidden"><canvas id="canvas" aria-label="Movement photo and interactive anatomical annotations"></canvas><div id="overlayNotice" class="screen-overlay hidden"></div></div></div></div></div>
   <div class="screen-bottom"><div id="videoControls" class="hidden"><div class="timeline-pocket"><div class="timeline-row"><span id="timeNow" class="time">00:00.00</span><input type="range" id="timeline" min="0" max="1" step=".001" value="0" aria-label="Scrub slow-motion video"><span id="timeEnd" class="time">00:00.00</span></div></div><div class="frame-buttons"><button class="tactile" id="previous">◀ PREV FRAME</button><button class="tactile" id="next">NEXT FRAME ▶</button><span class="frame-note">Approx. ±1/120 s</span></div></div><div class="frame-note" id="canvasHelp">Tap to place labels, drag to draw traces or arrows. Switch planes without losing your annotations.</div></div>
 </section>
-<aside class="right"><div class="eyebrow">03 / DETAILS + KEY</div><div class="readout-pocket"><div class="readout"><div class="readout-label">ACTIVE PLANE</div><div class="readout-big" id="planeReadout">00</div><div class="readout-sub" id="planeState">NO ANNOTATIONS</div></div></div>
- <div class="tool-fields" id="toolFields">
- <div class="fieldgroup" id="nameField"><label for="labelInput">ANNOTATION LABEL</label><input class="input-well" id="labelInput" placeholder="e.g., humerus, deltoid, elbow flexion"></div>
- <div class="fieldgroup hidden" id="jointFields"><label for="jointType">SYNOVIAL JOINT TYPE</label><select class="select-well" id="jointType"><option>Hinge</option><option>Ball-and-socket</option><option>Pivot</option><option>Condyloid</option><option>Saddle</option><option>Plane (gliding)</option></select><div style="height:10px"></div><label for="bodyRegion">BODY REGION</label><select class="select-well" id="bodyRegion"><option value="upper">Upper body</option><option value="lower">Lower body</option></select></div>
- <div class="fieldgroup hidden" id="muscleFields"><label for="muscleSet">CLASS MUSCLE SET</label><select class="select-well" id="muscleSet"><option>Set 1</option><option>Set 2</option></select><label style="margin-top:10px">TRACE COLOR (SAME MUSCLE, SAME COLOR)</label><div class="palette" id="palette"></div></div>
- <div class="fieldgroup hidden" id="arrowFields"><label for="movementType">MOVEMENT TYPE</label><select class="select-well" id="movementType"><option>Flexion</option><option>Extension</option><option>Abduction</option><option>Adduction</option><option>Rotation</option><option>Medial rotation</option><option>Lateral rotation</option><option>Circumduction</option><option>Dorsiflexion</option><option>Plantar flexion</option><option>Elevation</option><option>Depression</option><option>Pronation</option><option>Supination</option><option>Other</option></select><p class="field-tip">Arrow points in the actual direction of movement.</p></div>
- <button class="tactile" id="applyBtn" disabled style="width:100%">UPDATE SELECTED LABEL</button>
- </div>
- <div class="annotation-area"><hr class="divider"><h2>ANNOTATIONS IN THIS PLANE</h2><div class="selected-list" id="annotationList"><p class="hint">No annotations yet.</p></div><hr class="divider"><h2>MUSCLE COLOR KEY · BOTH PLANES</h2><div class="key-list" id="muscleKey"><span style="color:#9faebd">Trace labeled muscles to create the key.</span></div><p class="field-tip">Enter only visible muscles from your class Sets 1 and 2. See INB pages 54–67 for class references.</p></div>
+<aside class="right" aria-label="Advanced annotation settings">
+  <div class="eyebrow">03 / TOOL OPTIONS</div>
+  <h2 id="inspectorTitle">SELECT TOOL</h2>
+  <p class="hint" id="inspectorHelp">Choose a drawing tool or select an existing annotation to edit its properties.</p>
+  <div class="tool-fields" id="toolFields">
+    <div class="fieldgroup hidden" id="nameField"><label for="labelInput">ANNOTATION LABEL</label><input class="input-well" id="labelInput" placeholder="Enter an anatomical label" autocomplete="off"></div>
+    <div class="fieldgroup hidden" id="romFields">
+      <label>GONIOMETER MARKER</label>
+      <div class="rom-point-list" role="group" aria-label="Select range of motion marker">
+        <button type="button" class="tactile rom-point selected" data-rom-point="0" aria-pressed="true"><span class="rom-dot rom-f"></span><span>1 · FULCRUM</span><span class="rom-tick" id="romTick0"></span></button>
+        <button type="button" class="tactile rom-point" data-rom-point="1" aria-pressed="false"><span class="rom-dot rom-s"></span><span>2 · STATIONARY ARM</span><span class="rom-tick" id="romTick1"></span></button>
+        <button type="button" class="tactile rom-point" data-rom-point="2" aria-pressed="false"><span class="rom-dot rom-m"></span><span>3 · MOVING ARM</span><span class="rom-tick" id="romTick2"></span></button>
+      </div>
+      <div class="rom-reading" aria-live="polite"><div class="rom-reading-title" id="romReadingTitle">INCLUDED ANGLE</div><div class="rom-reading-value" id="romReading">—</div><div class="rom-reading-sub" id="romReadingStatus">PLACE THREE MARKERS</div></div>
+      <label>MEASUREMENT CONVENTION</label>
+      <div class="rom-modes" role="group" aria-label="ROM measurement convention">
+        <button type="button" class="tactile active" data-rom-mode="included" aria-pressed="true">INCLUDED</button>
+        <button type="button" class="tactile" data-rom-mode="straight" aria-pressed="false">FROM STRAIGHT</button>
+      </div>
+      <p class="field-tip" id="romGuide">Select the fulcrum, then the stationary and moving arms. Tap the photo; drag markers to refine.</p>
+      <button type="button" class="tactile" id="romNew" style="width:100%;min-height:39px;font-size:10px">＋ NEW ROM MEASUREMENT</button>
+      <p class="field-tip">Included is the angle between the arms (0–180°). From straight is 180° minus the included angle. Use your lab's joint-specific convention.</p>
+    </div>
+    <div class="fieldgroup hidden" id="jointFields"><label for="jointType">SYNOVIAL JOINT TYPE</label><select class="select-well" id="jointType"><option>Hinge</option><option>Ball-and-socket</option><option>Pivot</option><option>Condyloid</option><option>Saddle</option><option>Plane (gliding)</option></select></div>
+    <div class="fieldgroup hidden" id="muscleFields"><p class="field-tip">Use one color consistently for each named muscle. The color key is generated in the submission export.</p></div>
+    <div class="fieldgroup hidden" id="arrowFields"><label for="movementType">MOVEMENT TYPE</label><select class="select-well" id="movementType"><option>Flexion</option><option>Extension</option><option>Abduction</option><option>Adduction</option><option>Rotation</option><option>Medial rotation</option><option>Lateral rotation</option><option>Circumduction</option><option>Dorsiflexion</option><option>Plantar flexion</option><option>Elevation</option><option>Depression</option><option>Pronation</option><option>Supination</option><option>Other</option></select><p class="field-tip">Drag the arrow toward the direction of movement.</p></div>
+    <div class="fieldgroup hidden" id="styleFields">
+      <label id="colorLabel">ANNOTATION COLOR</label><div class="palette" id="palette" role="group" aria-label="Choose annotation color"></div>
+      <div id="strokeField" class="style-row"><div class="style-heading"><label for="strokeWidth">LINE THICKNESS</label><output for="strokeWidth" id="strokeWidthValue">5 px</output></div><input id="strokeWidth" type="range" min="1" max="12" step="0.5" value="5"></div>
+      <div class="style-row"><label for="labelSize">LABEL SIZE</label><select id="labelSize" class="select-well"><option value="0.8">Small</option><option value="1" selected>Normal</option><option value="1.3">Large</option><option value="1.6">Extra large</option></select></div>
+    </div>
+    <p class="field-tip" id="inspectorFootnote">Select a drawing tool to adjust its options.</p>
+  </div>
 </aside>
 </div>
-<div class="checkbar"><h2>PROJECT CHECKLIST <span style="font-size:10px;color:#b9c8d1;font-weight:500"> · Auto-checks annotation presence, not anatomical correctness</span></h2><div class="check-grid" id="checkGrid"></div></div>
-<div class="save-sticky">
- <button class="tactile" id="openProjectBtn">↥ OPEN PROJECT</button>
- <button class="tactile" id="saveProjectBtn">↓ SAVE EDITABLE PROJECT</button>
- <button class="tactile" id="singlePngBtn">↓ CURRENT PLANE PNG</button>
- <button class="tactile primary" id="posterBtn">↓ SUBMISSION PICTURE (PNG)</button>
- <button class="tactile" id="excalidrawBtn">↓ EXCALIDRAW PROJECT</button>
- <input type="file" id="projectInput" accept=".json,.movement.json,application/json" hidden>
-</div>
-<footer class="foot"><span>LOCAL FILES · NO UPLOADS · SAVE THE EDITABLE PROJECT TO CONTINUE LATER</span><span>SCREENSHOTS OR 120 FPS VIDEO · FRONTAL + SAGITTAL · EXPORT FOR SCHOOLOGY</span></footer>
+  <dialog class="checklist-dialog annotation-dialog" id="annotationsDialog" aria-labelledby="annotationsTitle">
+    <div class="dialog-header"><div><div class="dialog-overline">CURRENT PLANE</div><h2 id="annotationsTitle">MANAGE ANNOTATIONS</h2></div><button class="tactile dialog-close" type="button" id="closeAnnotations" aria-label="Close annotations">✕</button></div>
+    <p class="dialog-description">Choose an annotation to edit its appearance or label in Tool Options. Use Edit → Delete Selected to remove it.</p>
+    <div id="annotationList" class="selected-list"><p class="hint">No annotations yet.</p></div>
+    <div class="dialog-footer"><button class="tactile primary" id="doneAnnotations" type="button">DONE</button></div>
+  </dialog>
+  <dialog class="checklist-dialog" id="checklistDialog" aria-labelledby="checklistTitle" aria-describedby="checklistDescription">
+    <div class="dialog-header">
+      <div>
+        <div class="dialog-overline">REGULAR ANATOMY · MUSCULAR SYSTEM LAB</div>
+        <h2 id="checklistTitle">PROJECT CHECKLIST</h2>
+      </div>
+      <button class="tactile dialog-close" type="button" id="closeChecklist" aria-label="Close project checklist">✕</button>
+    </div>
+    <p id="checklistDescription" class="dialog-description">The checklist detects image and annotation types. Upper/lower joint coverage is inferred from joint names and should be checked by the student. It does not verify anatomical accuracy.</p>
+    <div class="dialog-progress" id="checkSummary" aria-live="polite">0 of 8 requirements present</div>
+    <div class="check-grid" id="checkGrid"></div>
+    <div class="dialog-footer"><button class="tactile primary" id="doneChecklist" type="button">DONE</button></div>
+  </dialog>
+
+<input type="file" id="projectInput" accept=".json,.movement.json,application/json" hidden>
 </div><div id="toast" class="hidden" role="status" aria-live="polite"></div>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id), canvas=$('canvas'),ctx=canvas.getContext('2d');
 const colors=['#fc8c86','#fac46d','#93da79','#68c8f0','#c5a0fb','#ee89c2','#86ded0','#f9a86a'];
 const viewNames=['FRONTAL','SAGITTAL'];
-const help={select:'Tap an annotation or its label to select it. Drag to move it; edit its properties on the right.',joint:'Enter a joint name, select its synovial type and upper/lower body, then tap the joint location.',bone:'Enter the bone name. Drag along the general shape/location of the bone, then lift to label the trace.',muscle:'Enter a visible Set 1 or 2 muscle and choose a color. Drag over its visible outline, then lift.',arrow:'Choose a movement type, optionally name the moving joint, then drag an arrow in the direction of movement.',text:'Enter a label, then tap the photo where you want it.'};
+const help={select:'Tap any existing annotation or its label to edit or move it. You can do this with any drawing tool active.',joint:'Enter the joint name and select its synovial type, then tap the joint location.',bone:'Enter the bone name, then draw in empty space. Tap any existing annotation to edit or drag it.',muscle:'Enter a visible Set 1 or 2 muscle, then draw in empty space. Tap an existing trace to edit or move it.',arrow:'Choose a movement type, then drag an arrow on empty space. Tap an existing arrow to edit or move it.',text:'Enter a label, then tap the photo where you want it.',rom:'Place the fulcrum, stationary arm and moving arm. Drag the colored markers to adjust. Angles update live.'};
 let views=[makeView(),makeView()],active=0,tool='select',selected=-1,drag=null,draft=null;
 let undo=[],redo=[],chosenColor=colors[0],nextID=1,toastTimer=null;
+let romDraft=null,romPointActive=0,romMode='included',romReposition=false;
+let inspectorEditSession=0;
+// Settings for a new annotation should survive temporarily inspecting another object.
+const creationFields={};
+function rememberCreationFields(){
+ if(selected>=0||tool==='select')return;
+ creationFields[tool]={
+  label:$('labelInput').value,
+  jointType:$('jointType').value,
+  movement:$('movementType').value,
+  color:chosenColor,
+  width:Number($('strokeWidth').value),
+  labelScale:Number($('labelSize').value)
+ };
+}
+
+const toolStyles={joint:{color:'#e7e4a0',width:3,labelScale:1},bone:{color:'#b9dbfa',width:4.4,labelScale:1},muscle:{color:colors[0],width:5.5,labelScale:1},arrow:{color:'#fbc47a',width:4,labelScale:1},text:{color:'#ffffff',width:3,labelScale:1},rom:{color:'#e5f0e4',width:4,labelScale:1}};
+const inspectorNames={select:'SELECT ANNOTATION',joint:'SYNOVIAL JOINT',bone:'BONE TRACE',muscle:'MUSCLE TRACE',arrow:'MOVEMENT ARROW',text:'TEXT LABEL',rom:'RANGE OF MOTION'};
+function inspectorType(){return current().annotations[selected]?.type||tool}
+function populateInspector(){
+ const item=current().annotations[selected],type=item?.type||tool;
+ const mode=type==='select'?'none':type;
+ $('inspectorTitle').textContent=inspectorNames[type]+' OPTIONS';
+ $('inspectorHelp').textContent=item?'Editing selected '+item.type+' annotation. Changes appear immediately.':type==='select'?'Select an annotation on the photo or choose Edit → Manage Annotations.':'Draw in empty space, or tap an existing annotation to edit and move it.';
+ ['nameField','jointFields','muscleFields','arrowFields','styleFields','romFields'].forEach(i=>$(i).classList.toggle('hidden',i==='nameField'||i==='styleFields'?mode==='none':(i==='jointFields'&&mode!=='joint'||i==='muscleFields'&&mode!=='muscle'||i==='arrowFields'&&mode!=='arrow'||i==='romFields'&&mode!=='rom')));
+ $('strokeField').classList.toggle('hidden',!['bone','muscle','arrow','rom'].includes(type));
+ $('inspectorFootnote').textContent=item?'Changes appear immediately and are included in project saves and exports.':'Tip: Drawing controls are saved automatically with each new annotation.';
+ if(type==='select')return;
+ if(type==='rom'){romMode=item?.angleMode||romDraft?.angleMode||romMode;romPointActive=romPointActive??0;updateROMInspector();}
+ const style=toolStyles[type]||toolStyles.text;
+ const preset=item?null:creationFields[type];
+ chosenColor=item?.color||preset?.color||style.color;
+ $('strokeWidth').value=String(item?.strokeWidth||preset?.width||style.width);
+ $('strokeWidthValue').textContent=Number($('strokeWidth').value)+' px';
+ $('labelSize').value=String(item?.labelScale||preset?.labelScale||style.labelScale);
+ $('labelInput').value=item?.label||preset?.label||'';
+ if(type==='joint')$('jointType').value=item?.jointType||preset?.jointType||'Hinge';
+ if(type==='arrow')$('movementType').value=item?.movement||preset?.movement||'Flexion';
+ $('labelInput').placeholder=type==='joint'?'e.g., shoulder, knee':type==='bone'?'e.g., humerus, femur':type==='muscle'?'e.g., biceps brachii':type==='arrow'?'Optional: knee flexion':type==='rom'?'Optional: elbow ROM':'Annotation text';
+ renderPalette();
+}
+function updateStyleControl(property){
+ const type=inspectorType();
+ $('strokeWidthValue').textContent=Number($('strokeWidth').value)+' px';
+ if(selected<0){
+  if(toolStyles[type]){toolStyles[type].width=Number($('strokeWidth').value);toolStyles[type].labelScale=Number($('labelSize').value)}
+  return;
+ }
+ applySelectedProperty(property);
+}
+
 function makeView(){return{frameSrc:null,frameImg:null,annotations:[],source:null,preview:false,frameLabel:''}}
 function current(){return views[active]}
 function clamp(v,a=0,b=1){return Math.max(a,Math.min(b,v))}
@@ -93,8 +279,15 @@ function toast(msg){$('toast').textContent=msg;$('toast').classList.remove('hidd
 function time(t){t=Math.max(0,Number(t)||0);return String(Math.floor(t/60)).padStart(2,'0')+':'+String(Math.floor(t%60)).padStart(2,'0')+'.'+String(Math.floor((t%1)*100)).padStart(2,'0')}
 function safeName(){return (($('exercise').value||'exercise').trim()||'exercise').replace(/[^a-z0-9_-]+/gi,'-').slice(0,45)}
 function deepcopy(v){return JSON.parse(JSON.stringify(v))}
-function remember(before,index=active){const after=deepcopy(views[index].annotations);if(JSON.stringify(before)===JSON.stringify(after))return;undo.push({index,before,after});if(undo.length>50)undo.shift();redo=[];updateUI()}
-function replaceAnnotation(index,items){views[index].annotations=deepcopy(items);selected=-1;updateUI();draw()}
+function remember(before,index=active,mergeKey=null){
+ const after=deepcopy(views[index].annotations);
+ if(JSON.stringify(before)===JSON.stringify(after))return;
+ const previous=undo[undo.length-1];
+ if(mergeKey&&previous?.mergeKey===mergeKey&&previous.index===index){previous.after=after}
+ else {undo.push({index,before,after,mergeKey});if(undo.length>50)undo.shift()}
+ redo=[];updateUI();
+}
+function replaceAnnotation(index,items){views[index].annotations=deepcopy(items);selected=-1;populateInspector();updateUI();draw()}
 function undoAction(){const entry=undo.pop();if(!entry)return;redo.push(entry);active=entry.index;selected=-1;replaceAnnotation(active,entry.before);switchPlane(active)}
 function redoAction(){const entry=redo.pop();if(!entry)return;undo.push(entry);active=entry.index;selected=-1;replaceAnnotation(active,entry.after);switchPlane(active)}
 function disposeSource(v){if(v.source?.video){v.source.video.pause();v.source.video.removeAttribute('src');v.source.video.load()}if(v.source?.url)URL.revokeObjectURL(v.source.url);v.source=null;v.preview=false}
@@ -117,50 +310,299 @@ function seekVideo(v,t){const s=v.source;if(!s||!s.duration)return;const goal=cl
 function captureFrame(){const v=current(),s=v.source;if(!s||!s.ready||s.seeking||s.video.seeking){toast('Choose a fully loaded video frame.');return}try{const src=saveSnapshot(s.video,s.video.videoWidth,s.video.videoHeight);if(replaceFrame(v,src,s.fileName+' · '+time(s.video.currentTime)))toast('Peak frame captured. Start annotating.')}catch(e){toast('Unable to capture this video frame.')}}
 function visibleSource(v){if(v.preview&&v.source?.ready)return v.source.video;if(v.frameImg)return v.frameImg;if(v.source?.ready)return v.source.video;return null}
 function sourceSize(v){const s=visibleSource(v);if(!s)return{w:16,h:9};return s instanceof HTMLVideoElement?{w:s.videoWidth,h:s.videoHeight}:{w:s.naturalWidth,h:s.naturalHeight}}
-function switchPlane(index){active=index;selected=-1;draft=null;drag=null;document.querySelectorAll('[data-plane]').forEach(b=>{const yes=Number(b.dataset.plane)===active;b.classList.toggle('active',yes);b.setAttribute('aria-pressed',String(yes))});syncCanvas();updateUI();draw()}
+function switchPlane(index){active=index;selected=-1;draft=null;romDraft=null;romPointActive=0;romReposition=false;drag=null;document.querySelectorAll('[data-plane]').forEach(b=>{const yes=Number(b.dataset.plane)===active;b.classList.toggle('active',yes);b.setAttribute('aria-pressed',String(yes))});populateInspector();syncCanvas();updateUI();draw()}
 function syncCanvas(){const v=current(),source=visibleSource(v);$('empty').classList.toggle('hidden',!!source);$('pictureFrame').classList.toggle('hidden',!source);$('stage').classList.toggle('empty-screen',!source);const{w,h}=sourceSize(v);$('pictureFrame').style.setProperty('--aspect',String(w/h));requestAnimationFrame(resizeCanvas)}
 function resizeCanvas(){const rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;const dpr=Math.min(2,devicePixelRatio||1);const w=Math.round(rect.width*dpr),h=Math.round(rect.height*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}draw()}
 function normalized(e){const r=canvas.getBoundingClientRect();return{x:clamp((e.clientX-r.left)/r.width),y:clamp((e.clientY-r.top)/r.height)}}
 function pointToCanvas(p,w,h){return{x:p.x*w,y:p.y*h}}
 function distanceToSegment(p,a,b){let dx=b.x-a.x,dy=b.y-a.y;let d=dx*dx+dy*dy;const t=d?clamp(((p.x-a.x)*dx+(p.y-a.y)*dy)/d):0;return Math.hypot(p.x-a.x-t*dx,p.y-a.y-t*dy)}
-function annotationAnchor(a){if(a.type==='joint'||a.type==='text')return{x:a.x,y:a.y};if(a.type==='arrow')return{x:(a.from.x+a.to.x)/2,y:(a.from.y+a.to.y)/2};return a.points.at(-1)||{x:0,y:0}}
-function hitTest(pos){const v=current(),r=canvas.getBoundingClientRect(),p={x:pos.x*r.width,y:pos.y*r.height};for(let k=v.annotations.length-1;k>=0;k--){const a=v.annotations[k];const at=annotationAnchor(a),anchor={x:at.x*r.width,y:at.y*r.height};let dist=Math.hypot(anchor.x-p.x,anchor.y-p.y);if(a.points){const pts=a.points.map(q=>({x:q.x*r.width,y:q.y*r.height}));for(let i=1;i<pts.length;i++)dist=Math.min(dist,distanceToSegment(p,pts[i-1],pts[i]))}if(a.type==='arrow'){dist=Math.min(dist,distanceToSegment(p,pointToCanvas(a.from,r.width,r.height),pointToCanvas(a.to,r.width,r.height)))}if(dist<25)return k}return-1}
-function translate(a,dx,dy){const b=deepcopy(a);const move=p=>({x:clamp(p.x+dx),y:clamp(p.y+dy)});if(b.points)b.points=b.points.map(move);else if(b.type==='arrow'){b.from=move(b.from);b.to=move(b.to)}else{const p=move({x:b.x,y:b.y});b.x=p.x;b.y=p.y}return b}
-function makeAnnotation(){const label=$('labelInput').value.trim().slice(0,120);if((tool==='bone'||tool==='muscle'||tool==='text'||tool==='joint')&&!label){toast('Enter an annotation label first.');$('labelInput').focus();return null}const base={id:id(),type:tool,label,color:tool==='bone'?'#b9dbfa':tool==='joint'?'#e7e4a0':tool==='arrow'?'#fbc47a':tool==='text'?'#ffffff':chosenColor};if(tool==='joint'){base.jointType=$('jointType').value;base.region=$('bodyRegion').value}if(tool==='muscle'){base.set=$('muscleSet').value;const existing=allAnnotations().find(a=>a.type==='muscle'&&a.label.toLowerCase()===label.toLowerCase());if(existing){base.color=existing.color}else{const used=new Set(allAnnotations().filter(a=>a.type==='muscle').map(a=>a.color));if(used.has(base.color))base.color=colors.find(c=>!used.has(c))||base.color;chosenColor=base.color;renderPalette()}}if(tool==='arrow'){base.movement=$('movementType').value;base.label=label||base.movement}return base}
+function annotationAnchor(a){if(a.type==='rom')return a.points?.[0]||a.points?.find(Boolean)||{x:0,y:0};if(a.type==='joint'||a.type==='text')return{x:a.x,y:a.y};if(a.type==='arrow')return{x:(a.from.x+a.to.x)/2,y:(a.from.y+a.to.y)/2};return a.points.at(-1)||{x:0,y:0}}
+function labelHitBounds(a,w,h){
+ const scale=Math.max(.75,Math.min(1.35,w/750)),labelScale=scale*(a.labelScale||1);
+ let anchor=null,label='';
+ if(a.type==='joint'){anchor={x:a.x*w,y:a.y*h};label=`${a.label} · ${a.jointType}`}
+ else if(a.type==='text'){anchor={x:a.x*w,y:a.y*h};label=a.label}
+ else if(a.type==='arrow'){anchor=pointToCanvas(a.to,w,h);label=a.label||a.movement}
+ else if(a.type==='bone'||a.type==='muscle'){
+  if(!a.points?.length)return null;
+  anchor=pointToCanvas(a.points.at(-1),w,h);label=a.label;
+ }else if(a.type==='rom'){
+  const [f,s,m]=(a.points||[]).map(p=>p?pointToCanvas(p,w,h):null);
+  if(!f||!s||!m)return null;
+  const va=Math.atan2(s.y-f.y,s.x-f.x),vb=Math.atan2(m.y-f.y,m.x-f.x);
+  let delta=vb-va;while(delta>Math.PI)delta-=2*Math.PI;while(delta< -Math.PI)delta+=2*Math.PI;
+  const radius=Math.max(19*scale,Math.min(65*scale,Math.hypot(s.x-f.x,s.y-f.y)*.36,Math.hypot(m.x-f.x,m.y-f.y)*.36));
+  const mid=va+delta/2;
+  anchor={x:f.x+Math.cos(mid)*(radius+28*scale),y:f.y+Math.sin(mid)*(radius+28*scale)};
+  const sx=s.x-f.x,sy=s.y-f.y,mx=m.x-f.x,my=m.y-f.y,den=Math.hypot(sx,sy)*Math.hypot(mx,my);
+  if(den<=4)return null;
+  const included=Math.acos(clamp((sx*mx+sy*my)/den,-1,1))*180/Math.PI;
+  const measured=a.angleMode==='straight'?180-included:included;
+  label=(a.label||'ROM')+' · '+measured.toFixed(1)+'°'+(a.angleMode==='straight'?' (from straight)':' (included)');
+ }
+ if(!anchor||!label)return null;
+ return textPillLayout(ctx,label,anchor.x,anchor.y,labelScale,w,h);
+}
+function hitTest(pos){
+ const v=current(),r=canvas.getBoundingClientRect(),p={x:pos.x*r.width,y:pos.y*r.height};
+ for(let k=v.annotations.length-1;k>=0;k--){
+  const a=v.annotations[k],bounds=labelHitBounds(a,r.width,r.height);
+  if(bounds&&p.x>=bounds.left-7&&p.x<=bounds.left+bounds.width+7&&p.y>=bounds.top-7&&p.y<=bounds.top+bounds.height+7)return k;
+  const at=annotationAnchor(a),anchor={x:at.x*r.width,y:at.y*r.height};
+  let dist=Math.hypot(anchor.x-p.x,anchor.y-p.y);
+  if(a.points){
+   const pts=a.points.filter(Boolean).map(q=>pointToCanvas(q,r.width,r.height));
+   if(a.type==='rom'){
+    for(const q of pts)dist=Math.min(dist,Math.hypot(p.x-q.x,p.y-q.y));
+    if(a.points[0])for(const q of a.points.slice(1).filter(Boolean))dist=Math.min(dist,distanceToSegment(p,pointToCanvas(a.points[0],r.width,r.height),pointToCanvas(q,r.width,r.height)));
+   }else for(let i=1;i<pts.length;i++)dist=Math.min(dist,distanceToSegment(p,pts[i-1],pts[i]));
+  }
+  if(a.type==='arrow')dist=Math.min(dist,distanceToSegment(p,pointToCanvas(a.from,r.width,r.height),pointToCanvas(a.to,r.width,r.height)));
+  if(dist<25)return k;
+ }
+ return -1;
+}
+function translate(a,dx,dy){const b=deepcopy(a);const move=p=>({x:clamp(p.x+dx),y:clamp(p.y+dy)});if(b.points)b.points=b.points.map(p=>p?move(p):null);else if(b.type==='arrow'){b.from=move(b.from);b.to=move(b.to)}else{const p=move({x:b.x,y:b.y});b.x=p.x;b.y=p.y}return b}
+function makeAnnotation(){
+const label=$('labelInput').value.trim().slice(0,120);
+if((tool==='bone'||tool==='muscle'||tool==='text'||tool==='joint')&&!label){toast('Enter an annotation label first.');$('labelInput').focus();return null}
+const style=toolStyles[tool]||toolStyles.text;
+const base={id:id(),type:tool,label,color:chosenColor||style.color,strokeWidth:Number($('strokeWidth').value)||style.width,labelScale:Number($('labelSize').value)||style.labelScale};
+if(tool==='joint'){base.jointType=$('jointType').value}
+if(tool==='muscle'){const existing=allAnnotations().find(a=>a.type==='muscle'&&a.label.toLowerCase()===label.toLowerCase());if(existing){base.color=existing.color}else{const used=new Set(allAnnotations().filter(a=>a.type==='muscle').map(a=>a.color));if(used.has(base.color))base.color=colors.find(c=>!used.has(c))||base.color;chosenColor=base.color;style.color=base.color;renderPalette()}}
+if(tool==='arrow'){base.movement=$('movementType').value;base.label=label||base.movement}
+if(tool==='rom'){base.label=label||'ROM';base.points=[null,null,null];base.angleMode=romMode}
+return base}
+
 function allAnnotations(){return views.flatMap(v=>v.annotations)}
-function onDown(e){if(!current().frameSrc||current().preview){toast('Capture a photo or select USE THIS FRAME before annotating.');return}if(e.button!==undefined&&e.button!==0)return;e.preventDefault();const p=normalized(e),v=current();const before=deepcopy(v.annotations);if(tool==='select'){selected=hitTest(p);if(selected>=0)drag={kind:'move',from:p,original:deepcopy(v.annotations[selected]),index:selected,before};else drag=null;updateUI();draw();if(drag)canvas.setPointerCapture(e.pointerId);return}
-const a=makeAnnotation();if(!a)return;if(tool==='joint'||tool==='text'){a.x=p.x;a.y=p.y;v.annotations.push(a);selected=v.annotations.length-1;remember(before);updateUI();draw();return}
-if(tool==='arrow'){a.from=p;a.to=p;draft=a;drag={kind:'draw',before};canvas.setPointerCapture(e.pointerId);draw();return}
-if(tool==='bone'||tool==='muscle'){a.points=[p];draft=a;drag={kind:'draw',before};canvas.setPointerCapture(e.pointerId);draw()}}
-function onMove(e){if(!drag)return;e.preventDefault();const p=normalized(e),v=current();if(drag.kind==='move'){v.annotations[drag.index]=translate(drag.original,p.x-drag.from.x,p.y-drag.from.y)}else if(draft){if(draft.type==='arrow')draft.to=p;else if(draft.points){const last=draft.points.at(-1);if(Math.hypot(last.x-p.x,last.y-p.y)>.0025)draft.points.push(p)}}draw()}
-function onUp(e){if(!drag)return;const d=drag;drag=null;if(d.kind==='move')remember(d.before);else if(draft){const a=draft;draft=null;const size=sourceSize(current()),diag=(p,q)=>Math.hypot((p.x-q.x)*size.w,(p.y-q.y)*size.h);let valid=a.type==='arrow'?diag(a.from,a.to)>=12:a.points.length>=3&&diag(a.points[0],a.points.at(-1))>=12;if(valid){current().annotations.push(a);selected=current().annotations.length-1;remember(d.before)}else toast('Drag farther to draw a trace or movement arrow.')}updateUI();draw()}
-canvas.addEventListener('pointerdown',onDown);canvas.addEventListener('pointermove',onMove);canvas.addEventListener('pointerup',onUp);canvas.addEventListener('pointercancel',()=>{draft=null;drag=null;draw()});
-function textPill(c,text,x,y,color,scale=1,w=0,h=0){const font=Math.max(11,Math.min(20,15*scale));c.save();c.font=`700 ${font}px system-ui,sans-serif`;let tw=c.measureText(text).width;let ww=w||c.canvas.width,hh=h||c.canvas.height;const maxWidth=Math.min(Math.max(0,ww-16),Math.max(85,ww*.63));const shown=tw>maxWidth?shortenText(c,text,maxWidth):text;tw=c.measureText(shown).width;let left=clamp(x+11*scale,3,Math.max(3,ww-tw-15*scale));let top=clamp(y-23*scale,3,Math.max(3,hh-font-11*scale));c.fillStyle='#0a121eea';c.fillRect(left,top,tw+12*scale,font+9*scale);c.fillStyle=color;c.textBaseline='middle';c.fillText(shown,left+6*scale,top+(font+9*scale)/2);c.restore()}
+function romAngles(a){
+ if(!a||a.type!=='rom'||!Array.isArray(a.points)||a.points.length!==3||a.points.some(p=>!p))return null;
+ const sz=sourceSize(current());const [f,s,m]=a.points;
+ const ax=(s.x-f.x)*sz.w,ay=(s.y-f.y)*sz.h,bx=(m.x-f.x)*sz.w,by=(m.y-f.y)*sz.h;
+ const al=Math.hypot(ax,ay),bl=Math.hypot(bx,by);if(al<2||bl<2)return null;
+ const included=Math.acos(clamp((ax*bx+ay*by)/(al*bl),-1,1))*180/Math.PI;
+ return {included,straight:180-included};
+}
+function romTarget(){const item=current().annotations[selected];return item?.type==='rom'?item:romDraft;}
+function updateROMInspector(){
+ const a=romTarget(),angles=romAngles(a),mode=a?.angleMode||romMode;
+ const isROM=tool==='rom'||current().annotations[selected]?.type==='rom';
+ if(!isROM)return;
+ document.querySelectorAll('[data-rom-point]').forEach(b=>{
+  const i=Number(b.dataset.romPoint),yes=i===romPointActive;
+  b.classList.toggle('selected',yes);b.setAttribute('aria-pressed',String(yes));
+  $('romTick'+i).textContent=a?.points?.[i]?'✓':'';
+ });
+ document.querySelectorAll('[data-rom-mode]').forEach(b=>{
+  const yes=b.dataset.romMode===mode;b.classList.toggle('active',yes);b.setAttribute('aria-pressed',String(yes));
+ });
+ $('romReadingTitle').textContent=mode==='included'?'INCLUDED ANGLE':'FROM STRAIGHT';
+ $('romReading').textContent=angles?angles[mode].toFixed(1)+'°':'—';
+ $('romReadingStatus').textContent=angles?'MEASUREMENT READY':a?.points?.every(Boolean)?'MOVE ARMS FARTHER APART':'PLACE THREE MARKERS';
+ const names=['fulcrum','stationary arm','moving arm'];
+ $('romGuide').textContent=current().annotations[selected]?.type==='rom'
+  ?'Editing saved ROM: select a marker and tap a new location, or drag its circle on the image.'
+  :'Tap or drag to position the '+names[romPointActive]+'. Select another marker at any time.';
+}
+function hitROMMarker(p){
+ const r=canvas.getBoundingClientRect();let best=null,dist=27;
+ for(let i=current().annotations.length-1;i>=0;i--){const a=current().annotations[i];if(a.type!=='rom')continue;
+  a.points.forEach((q,k)=>{if(!q)return;const d=Math.hypot((q.x-p.x)*r.width,(q.y-p.y)*r.height);if(d<dist){dist=d;best={index:i,point:k}}})
+ }
+ return best;
+}
+function setROMPoint(i){romPointActive=i;romReposition=current().annotations[selected]?.type==='rom';updateROMInspector()}
+function newROM(){
+ if(!current().frameSrc||current().preview){toast('Capture a frame before placing the goniometer.');return}
+ romDraft=null;romPointActive=0;romReposition=false;selected=-1;
+ setTool('rom');updateROMInspector();draw();
+}
+
+function onDown(e){
+ const v=current();
+ if(!v.frameSrc||v.preview){toast('Capture a photo or select USE THIS FRAME before annotating.');return}
+ if(e.button!==undefined&&e.button!==0)return;
+ e.preventDefault();
+ const p=normalized(e),before=deepcopy(v.annotations);
+ // Explicit ROM marker replacement takes priority over tapping another object.
+ if(romReposition&&v.annotations[selected]?.type==='rom'){
+  v.annotations[selected].points[romPointActive]=p;
+  drag={kind:'rommove',index:selected,point:romPointActive,before};romReposition=false;
+  canvas.setPointerCapture(e.pointerId);updateROMInspector();updateUI();draw();return;
+ }
+ // Existing annotations ALWAYS win over a new stroke, regardless of active tool.
+ const marker=hitROMMarker(p);
+ const hit=marker?.index??hitTest(p);
+ if(hit>=0){
+  rememberCreationFields();
+  chooseSelected(hit); // Does not switch away from the currently chosen drawing tool.
+  if(marker){
+   romPointActive=marker.point;
+   drag={kind:'rommove',index:hit,point:marker.point,before};
+   v.annotations[hit].points[marker.point]=p;updateROMInspector();
+  }else{
+   drag={kind:'move',from:p,original:deepcopy(v.annotations[hit]),index:hit,before};
+  }
+  canvas.style.cursor='grabbing';canvas.setPointerCapture(e.pointerId);updateUI();draw();return;
+ }
+ // Blank canvas is still used to make a new annotation with the active tool.
+ if(selected>=0){selected=-1;romReposition=false;if(tool==='rom')romPointActive=0;populateInspector();updateUI()}
+ if(tool==='select'){drag=null;draw();return}
+ if(tool==='rom'){
+  if(!romDraft){romDraft=makeAnnotation();if(!romDraft)return}
+  romDraft.points[romPointActive]=p;
+  drag={kind:'romdraft',point:romPointActive,before};
+  canvas.setPointerCapture(e.pointerId);updateROMInspector();draw();return;
+ }
+ const a=makeAnnotation();if(!a)return;
+ if(tool==='joint'||tool==='text'){
+  a.x=p.x;a.y=p.y;v.annotations.push(a);remember(before);updateUI();draw();return;
+ }
+ if(tool==='arrow'){
+  a.from=p;a.to=p;draft=a;drag={kind:'draw',before};
+  canvas.setPointerCapture(e.pointerId);draw();return;
+ }
+ if(tool==='bone'||tool==='muscle'){
+  a.points=[p];draft=a;drag={kind:'draw',before};
+  canvas.setPointerCapture(e.pointerId);draw();
+ }
+}
+function onMove(e){
+ if(!drag){
+  if(e.pointerType!=='touch'&&current().frameSrc&&!current().preview){
+   const p=normalized(e);
+   canvas.style.cursor=(hitROMMarker(p)||hitTest(p)>=0)?'grab':'crosshair';
+  }
+  return;
+ }
+ e.preventDefault();const p=normalized(e),v=current();if(drag.kind==='move'){v.annotations[drag.index]=translate(drag.original,p.x-drag.from.x,p.y-drag.from.y)}else if(drag.kind==='rommove'){v.annotations[drag.index].points[drag.point]=p;updateROMInspector()}else if(drag.kind==='romdraft'){romDraft.points[drag.point]=p;updateROMInspector()}else if(draft){if(draft.type==='arrow')draft.to=p;else if(draft.points){const last=draft.points.at(-1);if(Math.hypot(last.x-p.x,last.y-p.y)>.0025)draft.points.push(p)}}draw()}
+function onUp(e){if(!drag)return;const d=drag;drag=null;canvas.style.cursor='crosshair';if(d.kind==='move'||d.kind==='rommove')remember(d.before);
+else if(d.kind==='romdraft'){
+ if(romDraft?.points.every(Boolean)){
+  const finished=romDraft;romDraft=null;
+  current().annotations.push(finished);remember(d.before);
+  selected=current().annotations.length-1;
+  romPointActive=0;populateInspector();toast('ROM measurement saved. Tap a marker to edit it, or tap empty space for another.');
+ }else{romPointActive=romDraft.points.findIndex(p=>!p);updateROMInspector()}
+}
+else if(draft){const a=draft;draft=null;const size=sourceSize(current()),diag=(p,q)=>Math.hypot((p.x-q.x)*size.w,(p.y-q.y)*size.h);let valid=a.type==='arrow'?diag(a.from,a.to)>=12:a.points.length>=3&&diag(a.points[0],a.points.at(-1))>=12;if(valid){current().annotations.push(a);selected=-1;remember(d.before)}else toast('Drag farther to draw a trace or movement arrow.')}updateUI();draw()}
+canvas.addEventListener('pointerdown',onDown);canvas.addEventListener('pointermove',onMove);canvas.addEventListener('pointerup',onUp);canvas.addEventListener('pointercancel',()=>{
+ if(drag?.kind==='rommove'||drag?.kind==='move')current().annotations=deepcopy(drag.before);
+ if(drag?.kind==='romdraft'&&romDraft)romDraft.points[drag.point]=null;
+ draft=null;drag=null;canvas.style.cursor='crosshair';populateInspector();updateUI();draw();
+});
+function textPillLayout(c,text,x,y,scale=1,w=0,h=0){
+ const font=Math.max(11,Math.min(20,15*scale));
+ c.save();c.font=`700 ${font}px system-ui,sans-serif`;
+ let tw=c.measureText(text).width;
+ const ww=w||c.canvas.width,hh=h||c.canvas.height;
+ const maxWidth=Math.min(Math.max(0,ww-16),Math.max(85,ww*.63));
+ const shown=tw>maxWidth?shortenText(c,text,maxWidth):text;
+ tw=c.measureText(shown).width;c.restore();
+ return {shown,font,left:clamp(x+11*scale,3,Math.max(3,ww-tw-15*scale)),
+  top:clamp(y-23*scale,3,Math.max(3,hh-font-11*scale)),width:tw+12*scale,height:font+9*scale};
+}
+function textPill(c,text,x,y,color,scale=1,w=0,h=0){
+ const b=textPillLayout(c,text,x,y,scale,w,h);
+ c.save();c.font=`700 ${b.font}px system-ui,sans-serif`;
+ c.fillStyle='#0a121eea';c.fillRect(b.left,b.top,b.width,b.height);
+ c.fillStyle=color;c.textBaseline='middle';c.fillText(b.shown,b.left+6*scale,b.top+b.height/2);
+ c.restore();
+}
 function shortenText(c,t,max){if(c.measureText(t).width<=max)return t;let a=t;while(a.length>2&&c.measureText(a+'…').width>max)a=a.slice(0,-1);return a+'…'}
-function drawOne(c,a,w,h,opts={}){const scale=opts.scale||Math.max(.75,Math.min(1.35,w/750));const isSelected=opts.selected;const x=p=>p.x*w,y=p=>p.y*h;
-c.save();c.lineCap='round';c.lineJoin='round';if(a.type==='bone'||a.type==='muscle'){if(!a.points?.length){c.restore();return}c.beginPath();a.points.forEach((p,i)=>i?c.lineTo(x(p),y(p)):c.moveTo(x(p),y(p)));if(isSelected){c.strokeStyle='#ffffff';c.lineWidth=8*scale;c.stroke()}c.strokeStyle=a.color;c.lineWidth=(a.type==='bone'?4.4:5.5)*scale;c.stroke();const p=a.points.at(-1);textPill(c,a.label,x(p),y(p),a.color,scale,w,h)}
-if(a.type==='arrow'){const ax=x(a.from),ay=y(a.from),bx=x(a.to),by=y(a.to),ang=Math.atan2(by-ay,bx-ax),len=17*scale;c.beginPath();c.moveTo(ax,ay);c.lineTo(bx,by);c.strokeStyle=isSelected?'#fff':a.color;c.lineWidth=4*scale;c.stroke();c.beginPath();c.moveTo(bx,by);c.lineTo(bx-len*Math.cos(ang-.52),by-len*Math.sin(ang-.52));c.moveTo(bx,by);c.lineTo(bx-len*Math.cos(ang+.52),by-len*Math.sin(ang+.52));c.strokeStyle=a.color;c.stroke();textPill(c,a.label||a.movement,x(a.to),y(a.to),a.color,scale,w,h)}
-if(a.type==='joint'){c.beginPath();c.arc(x(a),y(a),11*scale,0,2*Math.PI);c.fillStyle='#000c';c.fill();c.beginPath();c.arc(x(a),y(a),7*scale,0,2*Math.PI);c.strokeStyle=a.color;c.lineWidth=3*scale;c.stroke();textPill(c,`${a.label} · ${a.jointType}`,x(a),y(a),a.color,scale,w,h)}
-if(a.type==='text'){textPill(c,a.label,x(a),y(a),a.color,scale,w,h)}
+function drawOne(c,a,w,h,opts={}){const scale=opts.scale||Math.max(.75,Math.min(1.35,w/750));const labelScale=scale*(a.labelScale||1);const isSelected=opts.selected;const x=p=>p.x*w,y=p=>p.y*h;
+c.save();c.lineCap='round';c.lineJoin='round';
+if(a.type==='rom'){
+ const ps=(a.points||[]).map(p=>p?{x:x(p),y:y(p)}:null),[f,s,m]=ps;
+ const line=(end,col)=>{if(!f||!end)return;c.beginPath();c.moveTo(f.x,f.y);c.lineTo(end.x,end.y);c.strokeStyle='#030810dc';c.lineWidth=((a.strokeWidth||4)+4)*scale;c.stroke();c.strokeStyle=col;c.lineWidth=(a.strokeWidth||4)*scale;c.stroke()};
+ line(s,'#65c9ef');line(m,'#ffb56e');
+ if(f&&s&&m){
+  // Aspect-aware vectors: photo and its exported canvas share the same aspect ratio.
+  const va=Math.atan2(s.y-f.y,s.x-f.x),vb=Math.atan2(m.y-f.y,m.x-f.x);let delta=vb-va;
+  while(delta>Math.PI)delta-=2*Math.PI;while(delta< -Math.PI)delta+=2*Math.PI;
+  const r=Math.max(19*scale,Math.min(65*scale,Math.hypot(s.x-f.x,s.y-f.y)*.36,Math.hypot(m.x-f.x,m.y-f.y)*.36));
+  c.beginPath();c.moveTo(f.x,f.y);c.arc(f.x,f.y,r,va,va+delta,delta<0);c.closePath();c.fillStyle='#aed9f033';c.fill();
+  c.beginPath();c.arc(f.x,f.y,r,va,va+delta,delta<0);c.strokeStyle='#f3f8ff';c.lineWidth=2*scale;c.stroke();
+  const ux=(s.x-f.x)/w,uy=(s.y-f.y)/h,vx=(m.x-f.x)/w,vy=(m.y-f.y)/h;
+  const v1x=ux*w,v1y=uy*h,v2x=vx*w,v2y=vy*h;
+  const lens=Math.hypot(v1x,v1y)*Math.hypot(v2x,v2y);
+  if(lens>4){const included=Math.acos(clamp((v1x*v2x+v1y*v2y)/lens,-1,1))*180/Math.PI;
+   const display=a.angleMode==='straight'?180-included:included;
+   const suffix=a.angleMode==='straight'?' (from straight)':' (included)';
+   const mid=va+delta/2;const lx=f.x+Math.cos(mid)*(r+28*scale),ly=f.y+Math.sin(mid)*(r+28*scale);
+   textPill(c,(a.label||'ROM')+' · '+display.toFixed(1)+'°'+suffix,lx,ly,a.color||'#e5f0e4',labelScale,w,h)
+  }
+ }
+ ps.forEach((p,i)=>{if(!p)return;c.beginPath();c.arc(p.x,p.y,10*scale,0,2*Math.PI);c.fillStyle='#030710d9';c.fill();c.beginPath();c.arc(p.x,p.y,7*scale,0,2*Math.PI);c.fillStyle=['#c7e885','#65c9ef','#ffb56e'][i];c.fill();c.lineWidth=1.8*scale;c.strokeStyle='#142432';c.stroke()});
+ if(isSelected&&f){c.beginPath();c.arc(f.x,f.y,17*scale,0,2*Math.PI);c.setLineDash([4*scale,4*scale]);c.strokeStyle='#ffffffb0';c.lineWidth=1.5*scale;c.stroke()}
+}
+if(a.type==='bone'||a.type==='muscle'){if(!a.points?.length){c.restore();return}c.beginPath();a.points.forEach((p,i)=>i?c.lineTo(x(p),y(p)):c.moveTo(x(p),y(p)));if(isSelected){c.strokeStyle='#ffffff';c.lineWidth=8*scale;c.stroke()}c.strokeStyle=a.color;c.lineWidth=(a.strokeWidth||(a.type==='bone'?4.4:5.5))*scale;c.stroke();const p=a.points.at(-1);textPill(c,a.label,x(p),y(p),a.color,labelScale,w,h)}
+if(a.type==='arrow'){const ax=x(a.from),ay=y(a.from),bx=x(a.to),by=y(a.to),ang=Math.atan2(by-ay,bx-ax),len=17*scale;c.beginPath();c.moveTo(ax,ay);c.lineTo(bx,by);c.strokeStyle=isSelected?'#fff':a.color;c.lineWidth=(a.strokeWidth||4)*scale;c.stroke();c.beginPath();c.moveTo(bx,by);c.lineTo(bx-len*Math.cos(ang-.52),by-len*Math.sin(ang-.52));c.moveTo(bx,by);c.lineTo(bx-len*Math.cos(ang+.52),by-len*Math.sin(ang+.52));c.strokeStyle=a.color;c.stroke();textPill(c,a.label||a.movement,x(a.to),y(a.to),a.color,labelScale,w,h)}
+if(a.type==='joint'){c.beginPath();c.arc(x(a),y(a),11*scale,0,2*Math.PI);c.fillStyle='#000c';c.fill();c.beginPath();c.arc(x(a),y(a),7*scale,0,2*Math.PI);c.strokeStyle=a.color;c.lineWidth=(a.strokeWidth||3)*scale;c.stroke();textPill(c,`${a.label} · ${a.jointType}`,x(a),y(a),a.color,labelScale,w,h)}
+if(a.type==='text'){textPill(c,a.label,x(a),y(a),a.color,labelScale,w,h)}
 if(isSelected&&a.type!=='bone'&&a.type!=='muscle'){const p=annotationAnchor(a);c.beginPath();c.arc(x(p),y(p),17*scale,0,2*Math.PI);c.strokeStyle='#ffffffad';c.lineWidth=1.5*scale;c.setLineDash([4*scale,4*scale]);c.stroke()}
 c.restore()}
-function draw(){const v=current(),src=visibleSource(v),r=canvas.getBoundingClientRect();if(!src||!r.width||!r.height)return;ctx.setTransform(canvas.width/r.width,0,0,canvas.height/r.height,0,0);ctx.clearRect(0,0,r.width,r.height);ctx.fillStyle='#06080c';ctx.fillRect(0,0,r.width,r.height);try{ctx.drawImage(src,0,0,r.width,r.height)}catch(e){}if(v.preview)return;v.annotations.forEach((a,i)=>drawOne(ctx,a,r.width,r.height,{selected:i===selected}));if(draft)drawOne(ctx,draft,r.width,r.height)}
-function setTool(t){tool=t;selected=-1;document.querySelectorAll('[data-tool]').forEach(b=>{const on=b.dataset.tool===t;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on))});$('toolHint').textContent=help[t];$('jointFields').classList.toggle('hidden',t!=='joint');$('muscleFields').classList.toggle('hidden',t!=='muscle');$('arrowFields').classList.toggle('hidden',t!=='arrow');$('nameField').classList.toggle('hidden',t==='select');if(t==='select'){$('nameField').classList.remove('hidden');$('labelInput').placeholder='Select an annotation to edit its label'}else if(t==='joint')$('labelInput').placeholder='e.g., shoulder, knee';else if(t==='bone')$('labelInput').placeholder='e.g., humerus, femur';else if(t==='muscle')$('labelInput').placeholder='e.g., biceps brachii';else if(t==='arrow')$('labelInput').placeholder='Optional: knee flexion';else $('labelInput').placeholder='Label text';updateUI();draw()}
-function chooseSelected(i){selected=i;const a=current().annotations[i];if(a){$('labelInput').value=a.label||'';if(a.type==='joint'){$('jointType').value=a.jointType||'Hinge';$('bodyRegion').value=a.region||'upper'}if(a.type==='muscle'){$('muscleSet').value=a.set||'Set 1';chosenColor=a.color||chosenColor;renderPalette()}if(a.type==='arrow')$('movementType').value=a.movement||'Flexion';setTool(a.type==='arrow'?'arrow':a.type);selected=i;$('labelInput').value=a.label||'';}updateUI();draw()}
-function applySelection(){const v=current(),a=v.annotations[selected];if(!a)return;const before=deepcopy(v.annotations);const label=$('labelInput').value.trim();if(!label){toast('Label cannot be blank.');return}a.label=label.slice(0,120);if(a.type==='joint'){a.jointType=$('jointType').value;a.region=$('bodyRegion').value}if(a.type==='muscle'){a.set=$('muscleSet').value;a.color=chosenColor}if(a.type==='arrow')a.movement=$('movementType').value;remember(before);updateUI();draw();toast('Annotation updated.')}
-function removeSelected(){const v=current();if(selected<0)return;const before=deepcopy(v.annotations);v.annotations.splice(selected,1);selected=-1;remember(before);updateUI();draw()}
-function clearPlane(){const v=current();if(!v.annotations.length)return;if(!confirm('Clear all annotations in the current plane?'))return;const before=deepcopy(v.annotations);v.annotations=[];selected=-1;remember(before);updateUI();draw()}
-function renderPalette(){$('palette').replaceChildren();colors.forEach(col=>{const b=document.createElement('button');b.type='button';b.className='swatch'+(col===chosenColor?' selected':'');b.style.setProperty('--color',col);b.title='Use trace color '+col;b.setAttribute('aria-label','Trace color '+col);b.onclick=()=>{chosenColor=col;renderPalette()};$('palette').appendChild(b)})}
+function draw(){const v=current(),src=visibleSource(v),r=canvas.getBoundingClientRect();if(!src||!r.width||!r.height)return;ctx.setTransform(canvas.width/r.width,0,0,canvas.height/r.height,0,0);ctx.clearRect(0,0,r.width,r.height);ctx.fillStyle='#06080c';ctx.fillRect(0,0,r.width,r.height);try{ctx.drawImage(src,0,0,r.width,r.height)}catch(e){}if(v.preview)return;v.annotations.forEach((a,i)=>drawOne(ctx,a,r.width,r.height,{selected:i===selected}));if(draft)drawOne(ctx,draft,r.width,r.height);if(romDraft)drawOne(ctx,romDraft,r.width,r.height)}
+function setTool(t){
+ rememberCreationFields();
+ tool=t;selected=-1;romReposition=false;romDraft=null;romPointActive=0;
+ document.querySelectorAll('[data-tool]').forEach(b=>{const on=b.dataset.tool===t;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on))});
+ $('toolHint').textContent=help[t];populateInspector();updateUI();draw();
+}
+function chooseSelected(i){
+ romDraft=null;romReposition=false;selected=i;const item=current().annotations[i];if(!item){populateInspector();updateUI();draw();return}
+ // Allow editing this item while any annotation tool remains active.
+ populateInspector();updateUI();draw();
+}
+function applySelectedProperty(property){
+ // Live changes to the selected annotation also update the exported canvas.
+ const v=current(),a=v.annotations[selected];if(!a)return;
+ const before=deepcopy(v.annotations);
+ switch(property){
+  case 'label':{
+   const label=$('labelInput').value.trim().slice(0,120);
+   if(!label&&a.type!=='rom')return; // Permit temporarily empty editing fields.
+   a.label=label||'ROM';break;
+  }
+  case 'jointType':if(a.type==='joint')a.jointType=$('jointType').value;break;
+  case 'movement':if(a.type==='arrow')a.movement=$('movementType').value;break;
+  case 'color':a.color=chosenColor;break;
+  case 'strokeWidth':a.strokeWidth=Number($('strokeWidth').value)||a.strokeWidth||4;break;
+  case 'labelScale':a.labelScale=Number($('labelSize').value)||1;break;
+  default:return;
+ }
+ remember(before,active,`inspector:${a.id||selected}:${property}:${inspectorEditSession}`);
+ draw();
+}
+
+function removeSelected(){const v=current();if(selected<0)return;const before=deepcopy(v.annotations);v.annotations.splice(selected,1);selected=-1;populateInspector();remember(before);updateUI();draw()}
+function clearPlane(){const v=current();if(!v.annotations.length)return;if(!confirm('Clear all annotations in the current plane?'))return;const before=deepcopy(v.annotations);v.annotations=[];selected=-1;populateInspector();remember(before);updateUI();draw()}
+function renderPalette(){
+ const palette=$('palette');palette.replaceChildren();
+ const type=inspectorType();const standard=['#ffffff','#e7e4a0','#b9dbfa','#fbc47a'];
+ const swatches=[...new Set([...standard,...colors,chosenColor])];
+ swatches.forEach(col=>{const b=document.createElement('button');b.type='button';b.className='swatch'+(col===chosenColor?' selected':'');b.style.setProperty('--color',col);b.title='Use annotation color '+col;b.setAttribute('aria-label','Annotation color '+col);b.setAttribute('aria-pressed',String(col===chosenColor));b.onclick=()=>{chosenColor=col;inspectorEditSession++;if(selected<0&&toolStyles[type])toolStyles[type].color=col;else applySelectedProperty('color');renderPalette()};palette.appendChild(b)});
+}
+
+function inferredJointRegion(a){
+ if(a.type!=='joint')return null;
+ const label=String(a.label||'').toLowerCase();
+ const upper=/\b(shoulder|glenohumeral|acromioclavicular|sternoclavicular|elbow|humeroulnar|humeroradial|wrist|radiocarpal|hand|finger|thumb|metacarpophalangeal|carpometacarpal|proximal radioulnar|distal radioulnar)\b/.test(label);
+ const lower=/\b(hip|acetabulofemoral|knee|tibiofemoral|patellofemoral|ankle|talocrural|subtalar|foot|toe|metatarsophalangeal)\b/.test(label);
+ if(upper!==lower)return upper?'upper':'lower';
+ // Prior projects may have stored this classification explicitly.
+ return a.region==='upper'||a.region==='lower'?a.region:null;
+}
 function updateUI(){const v=current(),s=v.source,canAnnotate=!!v.frameSrc&&!v.preview;const source=visibleSource(v);$('screenTitle').textContent=viewNames[active]+' PLANE · '+(v.preview?'VIDEO PREVIEW':v.frameLabel||'NO FRAME');$('screenTag').textContent=v.preview?'VIDEO':v.frameSrc?'CAPTURED':'STANDBY';$('sourceStatus').textContent=v.preview?'Scrub to the peak position and choose USE THIS FRAME.':v.frameSrc?'Frame captured. Add joint types, trace bones/muscles and draw movement arrows.':'No '+viewNames[active].toLowerCase()+' frame captured yet. Upload a screenshot or video.';
 $('captureBtn').disabled=!s||!s.ready||s.seeking||s.video.seeking;
 $('videoControls').classList.toggle('hidden',!s);if(s){$('timeline').max=String(s.duration||1);$('timeline').value=String(s.video.currentTime||0);$('timeNow').textContent=time(s.video.currentTime);$('timeEnd').textContent=time(s.duration)}
 $('overlayNotice').classList.toggle('hidden',!v.preview);$('overlayNotice').textContent=v.preview?'VIDEO PREVIEW · CAPTURE FRAME BEFORE ANNOTATING':'';
 $('frontalLed').classList.toggle('on',!!views[0].frameSrc);$('sagittalLed').classList.toggle('on',!!views[1].frameSrc);
-$('planeReadout').textContent=String(v.annotations.length).padStart(2,'0');$('planeState').textContent=viewNames[active]+' · '+(v.frameSrc?'FRAME SAVED':'FRAME MISSING');$('clearBtn').disabled=!v.annotations.length;$('deleteBtn').disabled=selected<0;$('applyBtn').disabled=selected<0;$('undoBtn').disabled=!undo.length;$('redoBtn').disabled=!redo.length;$('singlePngBtn').disabled=!v.frameSrc;$('posterBtn').disabled=!views.some(z=>z.frameSrc);$('excalidrawBtn').disabled=!views.some(z=>z.frameSrc);
-const list=$('annotationList');list.replaceChildren();if(v.annotations.length===0){const p=document.createElement('p');p.className='hint';p.textContent='No annotations yet.';list.appendChild(p)}v.annotations.forEach((a,i)=>{const b=document.createElement('button');b.className='annotation-chip'+(selected===i?' active':'');const dot=document.createElement('span');dot.className='led on';dot.style.color=a.color;const label=document.createElement('span');label.className='name';label.textContent=a.label+(a.type==='joint'?' · '+a.jointType:'');const typ=document.createElement('small');typ.textContent=a.type.toUpperCase();b.append(dot,label,typ);b.onclick=()=>chooseSelected(i);list.appendChild(b)});
-const names=new Map();allAnnotations().filter(a=>a.type==='muscle').forEach(a=>{const key=a.label.trim().toLowerCase();if(!names.has(key))names.set(key,a)});const key=$('muscleKey');key.replaceChildren();if(!names.size){key.textContent='Trace labeled muscles to create the key.'}else names.forEach(a=>{const line=document.createElement('div');line.className='key-line';const dot=document.createElement('span');dot.className='key-color';dot.style.background=a.color;const text=document.createElement('span');text.textContent=a.label+' ('+a.set+')';line.append(dot,text);key.appendChild(line)});
-const all=allAnnotations(),check=[['Frontal plane image',!!views[0].frameSrc],['Sagittal plane image',!!views[1].frameSrc],['Upper-body joint type',all.some(a=>a.type==='joint'&&a.region==='upper')],['Lower-body joint type',all.some(a=>a.type==='joint'&&a.region==='lower')],['Named bone traces',all.some(a=>a.type==='bone')],['Visible muscles + color key',all.some(a=>a.type==='muscle')],['Movement arrows',all.some(a=>a.type==='arrow')],['Both views annotated',views.every(x=>x.frameSrc&&x.annotations.length)]];const grid=$('checkGrid');grid.replaceChildren();check.forEach(([label,yes])=>{const row=document.createElement('div');row.className='check-item'+(yes?' complete':'');const light=document.createElement('span');light.className='led on';const span=document.createElement('span');span.textContent=label;row.append(light,span);grid.appendChild(row)});
-$('canvasHelp').textContent=canAnnotate?help[tool]:v.preview?'Select USE THIS FRAME to freeze the video before drawing.':'Choose a photo or video for the active plane.'}
+$('clearBtn').disabled=!v.annotations.length;$('deleteBtn').disabled=selected<0;$('undoBtn').disabled=!undo.length;$('redoBtn').disabled=!redo.length;$('menuExportPlane').disabled=!v.frameSrc;$('menuExportPoster').disabled=!views.some(z=>z.frameSrc);$('menuExportExcalidraw').disabled=!views.some(z=>z.frameSrc);
+const list=$('annotationList');list.replaceChildren();if(v.annotations.length===0){const p=document.createElement('p');p.className='hint';p.textContent='No annotations yet.';list.appendChild(p)}v.annotations.forEach((a,i)=>{const b=document.createElement('button');b.className='annotation-chip'+(selected===i?' active':'');const dot=document.createElement('span');dot.className='led on';dot.style.color=a.color;const label=document.createElement('span');label.className='name';label.textContent=a.label+(a.type==='joint'?' · '+a.jointType:'');const typ=document.createElement('small');typ.textContent=a.type.toUpperCase();b.append(dot,label,typ);b.onclick=()=>{rememberCreationFields();chooseSelected(i);if(annotationsDialog.open)closeAnnotations()};list.appendChild(b)});
+const all=allAnnotations(),check=[['Frontal plane image',!!views[0].frameSrc],['Sagittal plane image',!!views[1].frameSrc],['Upper-body joint type',all.some(a=>inferredJointRegion(a)==='upper')],['Lower-body joint type',all.some(a=>inferredJointRegion(a)==='lower')],['Named bone traces',all.some(a=>a.type==='bone')],['Visible muscles + color key',all.some(a=>a.type==='muscle')],['Movement arrows',all.some(a=>a.type==='arrow')],['Both views annotated',views.every(x=>x.frameSrc&&x.annotations.length)]];const grid=$('checkGrid');grid.replaceChildren();$('checkSummary').textContent=check.filter(([,yes])=>yes).length+' of '+check.length+' requirements present';check.forEach(([label,yes])=>{const row=document.createElement('div');row.className='check-item'+(yes?' complete':'');const light=document.createElement('span');light.className='led on';const span=document.createElement('span');span.textContent=label;row.append(light,span);grid.appendChild(row)});
+syncMenuActions();
+$('canvasHelp').textContent=canAnnotate?help[tool]:v.preview?'Select USE THIS FRAME to freeze the video before drawing.':'Choose a photo or video for the active plane.';updateROMInspector()}
 function canvasPNG(v,dimension=2000){if(!v.frameImg)return null;const im=v.frameImg,scale=Math.min(1,dimension/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*scale)),h=Math.max(1,Math.round(im.naturalHeight*scale)),out=document.createElement('canvas');out.width=w;out.height=h;const c=out.getContext('2d');c.drawImage(im,0,0,w,h);v.annotations.forEach(a=>drawOne(c,a,w,h,{scale:Math.max(1,w/1000)}));return out}
 function download(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),30000)}
 async function downloadCanvas(c,name){if(!c)return;const blob=await new Promise((ok,no)=>c.toBlob(b=>b?ok(b):no(new Error('PNG export failed')),'image/png'));download(blob,name)}
@@ -169,7 +611,7 @@ function boardRect(v,i,g){const left=g.margin+i*(g.pw+g.gap);if(!v.frameImg)retu
 function boardContent(){const g=boardGeometry(),muscles=new Map(),all=allAnnotations();all.filter(a=>a.type==='muscle').forEach(a=>{if(!muscles.has(a.label.toLowerCase()))muscles.set(a.label.toLowerCase(),a)});const keyItems=[...muscles.values()];const rows=Math.ceil(keyItems.length/4);const H=Math.max(1120,g.base+195+rows*46+110);return{g,H,keyItems}}
 function board(){const {g,H,keyItems}=boardContent(),c=document.createElement('canvas');c.width=g.W;c.height=H;const q=c.getContext('2d');q.fillStyle='#f5f7f6';q.fillRect(0,0,g.W,H);q.fillStyle='#20272c';q.fillRect(0,0,g.W,164);q.fillStyle='#dbedda';q.font='bold 67px system-ui';q.fillText('MOVEMENT EVALUATION',g.margin,89);q.font='25px system-ui';q.fillStyle='#bbc9c2';q.fillText(($('exercise').value.trim()||'EXERCISE NOT SPECIFIED').slice(0,75)+'   ·   '+($('student').value.trim()||'ANATOMY LAB').slice(0,70),g.margin,139);
 views.forEach((v,i)=>{const x=g.margin+i*(g.pw+g.gap);q.fillStyle='#dde4df';q.fillRect(x,g.top,g.pw,g.base-g.top+18);q.fillStyle='#2d3439';q.fillRect(x,g.top,g.pw,70);q.fillStyle='#eff4ef';q.font='bold 32px system-ui';q.fillText(viewNames[i]+' PLANE · PEAK OF MOVEMENT',x+25,g.top+46);const r=boardRect(v,i,g);if(v.frameImg){q.drawImage(v.frameImg,r.x,r.y,r.w,r.h);q.save();q.translate(r.x,r.y);v.annotations.forEach(a=>drawOne(q,a,r.w,r.h,{scale:Math.max(.8,r.w/900)}));q.restore()}else{q.font='bold 24px system-ui';q.fillStyle='#65746d';q.fillText('NO IMAGE CAPTURED',x+55,g.imgTop+330)} });
-const ly=g.base+85;q.fillStyle='#1f2925';q.font='bold 35px system-ui';q.fillText('MUSCLE COLOR KEY  ·  VISIBLE SET 1 + SET 2',g.margin,ly);if(!keyItems.length){q.font='23px system-ui';q.fillStyle='#66746d';q.fillText('No muscle traces included',g.margin,ly+51)}keyItems.forEach((a,i)=>{const col=i%4,row=Math.floor(i/4),x=g.margin+col*565,y=ly+55+row*46;q.fillStyle=a.color;q.fillRect(x,y-21,27,27);q.fillStyle='#26352e';q.font='22px system-ui';q.fillText((a.label+' ('+a.set+')').slice(0,39),x+39,y,505)});q.fillStyle='#647069';q.font='20px system-ui';q.fillText('Manual anatomical annotations · Frontal and sagittal views · For classroom evaluation',g.margin,H-38);return c}
+const ly=g.base+85;q.fillStyle='#1f2925';q.font='bold 35px system-ui';q.fillText('MUSCLE COLOR KEY  ·  VISIBLE SET 1 + SET 2',g.margin,ly);if(!keyItems.length){q.font='23px system-ui';q.fillStyle='#66746d';q.fillText('No muscle traces included',g.margin,ly+51)}keyItems.forEach((a,i)=>{const col=i%4,row=Math.floor(i/4),x=g.margin+col*565,y=ly+55+row*46;q.fillStyle=a.color;q.fillRect(x,y-21,27,27);q.fillStyle='#26352e';q.font='22px system-ui';q.fillText(a.label.slice(0,39),x+39,y,505)});q.fillStyle='#647069';q.font='20px system-ui';q.fillText('Manual anatomical annotations · Frontal and sagittal views · For classroom evaluation',g.margin,H-38);return c}
 function saveProject(){const data={schema:'movement-evaluation-studio',version:1,exercise:$('exercise').value,student:$('student').value,views:views.map((v,i)=>({plane:viewNames[i],frameSrc:v.frameSrc,frameLabel:v.frameLabel,annotations:v.annotations}))};download(new Blob([JSON.stringify(data)],{type:'application/json'}),safeName()+'-movement-project.json');toast('Editable project saved with both captured images.')}
 function openProject(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(d.schema!=='movement-evaluation-studio'||d.version!==1||!Array.isArray(d.views)||d.views.length!==2)throw Error('Not a Movement Evaluation project');if(!confirm('Open project and replace the current work?'))return;views.forEach(disposeSource);views=[makeView(),makeView()];d.views.forEach((src,i)=>{const v=views[i];v.annotations=Array.isArray(src.annotations)?src.annotations:[];v.frameLabel=String(src.frameLabel||'Saved frame');if(src.frameSrc&&/^data:image\/(jpeg|png|webp);base64,/i.test(src.frameSrc))addImageToView(v,src.frameSrc,v.frameLabel)});$('exercise').value=String(d.exercise||'');$('student').value=String(d.student||'');selected=-1;undo=[];redo=[];switchPlane(0);toast('Editable project reopened.')}catch(e){toast('Project could not be opened: '+e.message)}};r.onerror=()=>toast('File could not be read.');r.readAsText(file)}
 function excalidrawScene(){const {g,H,keyItems}=boardContent(),elements=[],files={},timestamp=Date.now(),W=g.W;let counter=0;const uid=()=>`mes_${Date.now().toString(36)}_${(counter++).toString(36)}`;
@@ -178,32 +620,127 @@ function addText(text,x,y,color='#26352f',size=27){const str=String(text).slice(
 function lineShape(type,p1,p2,color){const x=Math.min(p1.x,p2.x),y=Math.min(p1.y,p2.y),e={...base(type,x,y,Math.abs(p2.x-p1.x),Math.abs(p2.y-p1.y),color),points:[[p1.x-x,p1.y-y],[p2.x-x,p2.y-y]],lastCommittedPoint:null,startBinding:null,endBinding:null,startArrowhead:null,endArrowhead:type==='arrow'?'arrow':null,elbowed:false};e.strokeWidth=4;elements.push(e)}
 addText('MOVEMENT EVALUATION · '+($('exercise').value.trim()||'EXERCISE'),75,62,'#1e3024',51);addText($('student').value||'Regular Anatomy · Muscular System Lab',75,135,'#4a6451',26);
 views.forEach((v,i)=>{const x=g.margin+i*(g.pw+g.gap);addText(viewNames[i]+' PLANE · PEAK MOVEMENT',x,g.top+7,'#354b3b',32);if(!v.frameImg)return;const r=boardRect(v,i,g),fid=uid();files[fid]={id:fid,mimeType:'image/jpeg',dataURL:v.frameSrc,created:timestamp,lastRetrieved:timestamp};elements.push({...base('image',r.x,r.y,r.w,r.h,'#1e1e1e'),fileId:fid,scale:[1,1],status:'saved'});
-const pt=p=>({x:r.x+p.x*r.w,y:r.y+p.y*r.h});v.annotations.forEach(a=>{if(a.type==='bone'||a.type==='muscle'){if(!a.points?.length)return;const coords=a.points.map(pt),xs=coords.map(z=>z.x),ys=coords.map(z=>z.y),ox=Math.min(...xs),oy=Math.min(...ys);const el={...base('freedraw',ox,oy,Math.max(...xs)-ox,Math.max(...ys)-oy,a.color),points:coords.map(z=>[z.x-ox,z.y-oy]),pressures:[],simulatePressure:true,lastCommittedPoint:null};el.strokeWidth=a.type==='muscle'?5:4;elements.push(el);const anchor=coords.at(-1);addText(a.label,anchor.x+12,anchor.y-18,a.color,20)}else if(a.type==='joint'){const p=pt(a);elements.push({...base('ellipse',p.x-10,p.y-10,20,20,a.color),strokeWidth:4});addText(a.label+' · '+a.jointType,p.x+12,p.y-19,a.color,20)}else if(a.type==='text'){const p=pt(a);addText(a.label,p.x,p.y,a.color,20)}else if(a.type==='arrow'){const from=pt(a.from),to=pt(a.to);lineShape('arrow',from,to,a.color);addText(a.label||a.movement,to.x+12,to.y-19,a.color,20)}})});
-addText('MUSCLE COLOR KEY · SETS 1 + 2',75,g.base+55,'#354b3b',32);keyItems.forEach((a,i)=>addText('● '+a.label+' ('+a.set+')',75+(i%4)*565,g.base+104+Math.floor(i/4)*46,a.color,23));return{type:'excalidraw',version:2,source:'https://excalidraw.com',elements,appState:{viewBackgroundColor:'#ffffff',gridSize:null},files}}
+const pt=p=>({x:r.x+p.x*r.w,y:r.y+p.y*r.h});v.annotations.forEach(a=>{if(a.type==='bone'||a.type==='muscle'){if(!a.points?.length)return;const coords=a.points.map(pt),xs=coords.map(z=>z.x),ys=coords.map(z=>z.y),ox=Math.min(...xs),oy=Math.min(...ys);const el={...base('freedraw',ox,oy,Math.max(...xs)-ox,Math.max(...ys)-oy,a.color),points:coords.map(z=>[z.x-ox,z.y-oy]),pressures:[],simulatePressure:true,lastCommittedPoint:null};el.strokeWidth=a.strokeWidth||(a.type==='muscle'?5:4);elements.push(el);const anchor=coords.at(-1);addText(a.label,anchor.x+12,anchor.y-18,a.color,20*(a.labelScale||1))}else if(a.type==='joint'){const p=pt(a);elements.push({...base('ellipse',p.x-10,p.y-10,20,20,a.color),strokeWidth:a.strokeWidth||4});addText(a.label+' · '+a.jointType,p.x+12,p.y-19,a.color,20*(a.labelScale||1))}else if(a.type==='rom'){
+ const p=(a.points||[]).map(q=>q?pt(q):null),[f,s,m]=p;
+ if(f&&s){lineShape('line',f,s,'#65c9ef');elements.at(-1).strokeWidth=a.strokeWidth||4}
+ if(f&&m){lineShape('line',f,m,'#ffb56e');elements.at(-1).strokeWidth=a.strokeWidth||4}
+ p.forEach((q,k)=>{if(q)elements.push({...base('ellipse',q.x-7,q.y-7,14,14,['#c7e885','#65c9ef','#ffb56e'][k]),strokeWidth:3})});
+ if(f&&s&&m){const ax=s.x-f.x,ay=s.y-f.y,bx=m.x-f.x,by=m.y-f.y,den=Math.hypot(ax,ay)*Math.hypot(bx,by);
+  if(den>4){
+   // Native Excalidraw polyline approximates the visible goniometer angle arc.
+   const start=Math.atan2(ay,ax),finish=Math.atan2(by,bx);let delta=finish-start;
+   while(delta>Math.PI)delta-=Math.PI*2;while(delta< -Math.PI)delta+=Math.PI*2;
+   const radius=Math.max(19,Math.min(65,Math.hypot(ax,ay)*.36,Math.hypot(bx,by)*.36));
+   const count=Math.max(8,Math.ceil(Math.abs(delta)*18));
+   const pts=Array.from({length:count+1},(_,i)=>({x:f.x+radius*Math.cos(start+delta*i/count),y:f.y+radius*Math.sin(start+delta*i/count)}));
+   const minx=Math.min(...pts.map(q=>q.x)),miny=Math.min(...pts.map(q=>q.y));
+   elements.push({...base('freedraw',minx,miny,Math.max(1,Math.max(...pts.map(q=>q.x))-minx),Math.max(1,Math.max(...pts.map(q=>q.y))-miny),'#f3f8ff'),points:pts.map(q=>[q.x-minx,q.y-miny]),pressures:[],simulatePressure:false,lastCommittedPoint:null,strokeWidth:2});
+   const included=Math.acos(clamp((ax*bx+ay*by)/den,-1,1))*180/Math.PI,shown=a.angleMode==='straight'?180-included:included;
+   addText((a.label||'ROM')+' · '+shown.toFixed(1)+'°'+(a.angleMode==='straight'?' from straight':' included'),f.x+17,f.y-37,a.color||'#e5f0e4',21*(a.labelScale||1))}
+ }
+ }else if(a.type==='text'){const p=pt(a);addText(a.label,p.x,p.y,a.color,20*(a.labelScale||1))}else if(a.type==='arrow'){const from=pt(a.from),to=pt(a.to);lineShape('arrow',from,to,a.color);elements.at(-1).strokeWidth=a.strokeWidth||4;addText(a.label||a.movement,to.x+12,to.y-19,a.color,20*(a.labelScale||1))}})});
+addText('MUSCLE COLOR KEY · SETS 1 + 2',75,g.base+55,'#354b3b',32);keyItems.forEach((a,i)=>addText('● '+a.label,75+(i%4)*565,g.base+104+Math.floor(i/4)*46,a.color,23));return{type:'excalidraw',version:2,source:'https://excalidraw.com',elements,appState:{viewBackgroundColor:'#ffffff',gridSize:null},files}}
 function exportExcalidraw(){const scene=excalidrawScene();download(new Blob([JSON.stringify(scene)],{type:'application/json'}),safeName()+'-movement.excalidraw');toast('Excalidraw project exported with editable annotations.')}
+
+// Top menu bar: use the existing application actions rather than duplicating logic.
+const menuButtons=[...document.querySelectorAll('.menu-trigger')];
+function closeMenus(){menuButtons.forEach(button=>{button.setAttribute('aria-expanded','false');$(button.getAttribute('aria-controls')).hidden=true})}
+menuButtons.forEach(button=>button.addEventListener('click',()=>{
+  const open=button.getAttribute('aria-expanded')==='true';
+  closeMenus();
+  if(!open){button.setAttribute('aria-expanded','true');$(button.getAttribute('aria-controls')).hidden=false}
+}));
+document.querySelectorAll('[data-click]').forEach(button=>button.addEventListener('click',()=>{
+  if(button.disabled)return;
+  closeMenus();
+  $(button.dataset.click).click();
+}));
+document.querySelectorAll('[data-plane-menu]').forEach(button=>button.addEventListener('click',()=>{
+  switchPlane(Number(button.dataset.planeMenu));
+  closeMenus();
+}));
+document.addEventListener('pointerdown',event=>{if(!event.target.closest('.menu-bar'))closeMenus()});
+
+function syncMenuActions(){
+  document.querySelectorAll('[data-click]').forEach(button=>{button.disabled=$(button.dataset.click).disabled});
+  document.querySelectorAll('[data-plane-menu]').forEach(button=>{
+    const currentPlane=Number(button.dataset.planeMenu)===active;
+    button.setAttribute('aria-current',currentPlane?'true':'false');
+    button.querySelector('.menu-selected').textContent=currentPlane?'✓':'';
+  });
+}
+
+$('menuNew').addEventListener('click',()=>{
+  closeMenus();
+  const hasWork=views.some(v=>v.frameSrc||v.source||v.annotations.length)||$('exercise').value||$('student').value;
+  if(hasWork&&!confirm('Start a new project? Unsaved changes to both planes will be lost.'))return;
+  views.forEach(disposeSource);
+  views=[makeView(),makeView()];
+  $('exercise').value='';$('student').value='';
+  undo=[];redo=[];selected=-1;draft=null;drag=null;romDraft=null;romReposition=false;
+  switchPlane(0);setTool('select');
+  toast('New empty project created.');
+});
+
+const annotationsDialog=$('annotationsDialog');
+function closeAnnotations(){annotationsDialog.close()}
+$('menuAnnotations').addEventListener('click',()=>{closeMenus();updateUI();annotationsDialog.showModal()});
+$('closeAnnotations').addEventListener('click',closeAnnotations);
+$('doneAnnotations').addEventListener('click',closeAnnotations);
+annotationsDialog.addEventListener('click',event=>{if(event.target===annotationsDialog)closeAnnotations()});
+const checklistDialog=$('checklistDialog');
+let checklistReturnFocus=null;
+function openChecklist(){
+  closeMenus();
+  checklistReturnFocus=document.activeElement;
+  updateUI();
+  checklistDialog.showModal();
+  $('closeChecklist').focus();
+}
+function closeChecklist(){checklistDialog.close()}
+$('menuChecklist').addEventListener('click',openChecklist);
+$('closeChecklist').addEventListener('click',closeChecklist);
+$('doneChecklist').addEventListener('click',closeChecklist);
+checklistDialog.addEventListener('click',event=>{if(event.target===checklistDialog)closeChecklist()});
+checklistDialog.addEventListener('close',()=>{checklistReturnFocus?.focus?.()});
+
+document.querySelectorAll('[data-rom-point]').forEach(b=>b.addEventListener('click',()=>setROMPoint(Number(b.dataset.romPoint))));
+document.querySelectorAll('[data-rom-mode]').forEach(b=>b.addEventListener('click',()=>{
+ const next=b.dataset.romMode;romMode=next;
+ const a=romTarget();if(a){const idx=selected,old=deepcopy(current().annotations);a.angleMode=next;if(idx>=0)remember(old)}
+ updateROMInspector();draw();
+}));
+$('romNew').addEventListener('click',newROM);
 $('photoBtn').onclick=()=>$('photoInput').click();$('videoBtn').onclick=()=>$('videoInput').click();$('photoInput').onchange=e=>{loadMedia(e.target.files?.[0]);e.target.value=''};$('videoInput').onchange=e=>{loadMedia(e.target.files?.[0]);e.target.value=''};
 document.querySelectorAll('[data-plane]').forEach(b=>b.onclick=()=>switchPlane(Number(b.dataset.plane)));
 document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));$('captureBtn').onclick=captureFrame;
 $('previous').onclick=()=>{const v=current();if(v.source)seekVideo(v,(v.source.video.currentTime||0)-1/120)};$('next').onclick=()=>{const v=current();if(v.source)seekVideo(v,(v.source.video.currentTime||0)+1/120)};$('timeline').oninput=e=>seekVideo(current(),Number(e.target.value));
-$('undoBtn').onclick=undoAction;$('redoBtn').onclick=redoAction;$('deleteBtn').onclick=removeSelected;$('clearBtn').onclick=clearPlane;$('applyBtn').onclick=applySelection;
-$('saveProjectBtn').onclick=saveProject;$('openProjectBtn').onclick=()=>$('projectInput').click();$('projectInput').onchange=e=>{openProject(e.target.files?.[0]);e.target.value=''};
-$('singlePngBtn').onclick=async()=>{try{await downloadCanvas(canvasPNG(current()),safeName()+'-'+viewNames[active].toLowerCase()+'-annotated.png');toast('Annotated plane picture saved.')}catch(e){toast('Could not export current plane.')}};
-$('posterBtn').onclick=async()=>{try{await downloadCanvas(board(),safeName()+'-exercise-evaluation.png');toast('Submission picture exported with both planes and the muscle key.')}catch(e){toast('Could not export combined image.')}};
-$('excalidrawBtn').onclick=()=>{try{exportExcalidraw()}catch(e){console.error(e);toast('Excalidraw export failed. Use editable project or PNG.')}};
+// Auto-apply inspector fields without an extra confirmation button.
+// Focus/drag groups let Undo restore the entire edit, not one typed character.
+for(const id of ['labelInput','jointType','movementType','strokeWidth','labelSize']){
+ $(id).addEventListener('focus',()=>inspectorEditSession++);
+}
+$('strokeWidth').addEventListener('pointerdown',()=>inspectorEditSession++);
+$('labelInput').addEventListener('input',()=>applySelectedProperty('label'));
+$('labelInput').addEventListener('blur',()=>{
+ const a=current().annotations[selected];
+ if(a&&!$('labelInput').value.trim()&&a.type!=='rom')$('labelInput').value=a.label||'';
+});
+$('jointType').addEventListener('change',()=>applySelectedProperty('jointType'));
+$('movementType').addEventListener('change',()=>applySelectedProperty('movement'));
+$('strokeWidth').addEventListener('input',()=>updateStyleControl('strokeWidth'));
+$('labelSize').addEventListener('change',()=>updateStyleControl('labelScale'));
+$('undoBtn').onclick=undoAction;$('redoBtn').onclick=redoAction;$('deleteBtn').onclick=removeSelected;$('clearBtn').onclick=clearPlane;
+// File menu actions run directly, with no duplicate project buttons in the workspace.
+$('menuOpenProject').onclick=()=>{closeMenus();$('projectInput').click()};
+$('menuSaveProject').onclick=()=>{closeMenus();saveProject()};
+$('projectInput').onchange=e=>{openProject(e.target.files?.[0]);e.target.value=''};
+$('menuExportPlane').onclick=async()=>{closeMenus();try{await downloadCanvas(canvasPNG(current()),safeName()+'-'+viewNames[active].toLowerCase()+'-annotated.png');toast('Annotated plane picture saved.')}catch(e){toast('Could not export current plane.')}};
+$('menuExportPoster').onclick=async()=>{closeMenus();try{await downloadCanvas(board(),safeName()+'-exercise-evaluation.png');toast('Submission picture exported with both planes and the muscle key.')}catch(e){toast('Could not export combined image.')}};
+$('menuExportExcalidraw').onclick=()=>{closeMenus();try{exportExcalidraw()}catch(e){console.error(e);toast('Excalidraw export failed. Use editable project or PNG.')}};
 const stage=$('stage');stage.addEventListener('dragover',e=>{e.preventDefault();stage.classList.add('dragover')});stage.addEventListener('dragleave',e=>{if(!stage.contains(e.relatedTarget))stage.classList.remove('dragover')});stage.addEventListener('drop',e=>{e.preventDefault();stage.classList.remove('dragover');loadMedia(e.dataTransfer?.files?.[0])});
-window.addEventListener('keydown',e=>{const tag=document.activeElement?.tagName||'';if(/INPUT|SELECT|TEXTAREA/.test(tag))return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redoAction():undoAction()}else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelected()}else if(e.key==='Escape'){selected=-1;setTool('select')}});
+window.addEventListener('keydown',e=>{if(checklistDialog.open||annotationsDialog.open)return;if(e.key==='Escape'&&menuButtons.some(b=>b.getAttribute('aria-expanded')==='true')){closeMenus();return}const tag=document.activeElement?.tagName||'';if(/INPUT|SELECT|TEXTAREA/.test(tag))return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redoAction():undoAction()}else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelected()}else if(e.key==='Escape'){selected=-1;setTool('select')}});
 window.addEventListener('resize',resizeCanvas);if('ResizeObserver' in window)new ResizeObserver(resizeCanvas).observe($('pictureFrame'));window.addEventListener('beforeunload',()=>views.forEach(disposeSource));
 renderPalette();setTool('select');switchPlane(0);})();
-</script>
-
-<script>
-// Register the offline shell only on HTTPS or localhost. Normal file opening still works.
-if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(error => {
-      console.warn('Offline app registration unavailable:', error);
-    });
-  });
-}
 </script>
 </body></html>
