@@ -85,6 +85,15 @@ body{background:var(--device);padding:0}
 .rom-modes button{font-size:9px;min-height:40px;padding:9px 5px}
 .rom-modes button.active{transform:translateY(2px);background:#22272e;color:var(--lcd);box-shadow:inset 4px 4px 10px #05070a99,inset -4px -4px 9px #ffffff0c}
 @media(max-width:1250px){#romFields{max-width:500px}}
+/* V9: preview transport controls on one row, with Capture between step buttons. */
+.frame-buttons{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr) minmax(0,1fr);gap:9px;align-items:stretch;justify-content:stretch;margin:13px 0 2px}
+.frame-buttons .tactile{min-width:0;width:100%;white-space:normal;line-height:1.2;font-size:10px;padding:10px 6px;min-height:44px}
+.frame-buttons #captureBtn{color:#d2ebcc}
+.frame-note{margin:8px 0 4px}
+@media(max-width:450px){.frame-buttons{gap:6px}.frame-buttons .tactile{font-size:9px;padding:9px 4px;min-height:46px}}
+/* Keep detached video decoders active on iPadOS/Safari and Chromebook browsers. */
+#videoDecodePool{position:fixed;left:-9999px;top:-9999px;width:2px;height:2px;overflow:hidden;pointer-events:none;opacity:0}
+#videoDecodePool video{width:2px;height:2px;display:block}
 </style>
 </head>
 <body>
@@ -136,7 +145,7 @@ body{background:var(--device);padding:0}
  <div class="upload-row"><button class="tactile" id="photoBtn">＋ PHOTO</button><button class="tactile" id="videoBtn">▣ VIDEO</button></div>
  <input type="file" id="photoInput" accept="image/*" hidden><input type="file" id="videoInput" accept="video/*" hidden>
  <div class="small-note" id="sourceStatus">No frontal-plane frame yet. Upload a screenshot, or choose a video and capture its peak frame.</div>
- <button class="tactile primary" id="captureBtn" style="width:100%" disabled>◎ USE THIS FRAME</button>
+
  <hr class="divider"><div class="eyebrow">02 / ANNOTATE</div>
  <div class="tool-grid" id="toolGrid">
   <button class="tactile active" data-tool="select"><span class="icon">↖</span>SELECT</button>
@@ -153,7 +162,7 @@ body{background:var(--device);padding:0}
 </aside>
 <section class="center" aria-label="Movement canvas">
   <div class="bezel"><div class="oled"><div class="screen-head"><span id="screenTitle">FRONTAL PLANE · NO FRAME</span><span class="screen-tag" id="screenTag">STANDBY</span></div><div id="stage" class="stage empty-screen"><div class="empty" id="empty"><div class="empty-symbol">⌁</div><h3>CAPTURE YOUR PEAK MOVEMENT</h3><p>Upload a frontal- or sagittal-plane screenshot, or scrub a slow-motion video and choose the exact peak frame.</p></div><div id="pictureFrame" class="picture-frame hidden"><canvas id="canvas" aria-label="Movement photo and interactive anatomical annotations"></canvas><div id="overlayNotice" class="screen-overlay hidden"></div></div></div></div></div>
-  <div class="screen-bottom"><div id="videoControls" class="hidden"><div class="timeline-pocket"><div class="timeline-row"><span id="timeNow" class="time">00:00.00</span><input type="range" id="timeline" min="0" max="1" step=".001" value="0" aria-label="Scrub slow-motion video"><span id="timeEnd" class="time">00:00.00</span></div></div><div class="frame-buttons"><button class="tactile" id="previous">◀ PREV FRAME</button><button class="tactile" id="next">NEXT FRAME ▶</button><span class="frame-note">Approx. ±1/120 s</span></div></div><div class="frame-note" id="canvasHelp">Tap to place labels, drag to draw traces or arrows. Switch planes without losing your annotations.</div></div>
+  <div class="screen-bottom"><div id="videoControls" class="hidden"><div class="timeline-pocket"><div class="timeline-row"><span id="timeNow" class="time">00:00.00</span><input type="range" id="timeline" min="0" max="1" step=".001" value="0" aria-label="Scrub slow-motion video"><span id="timeEnd" class="time">00:00.00</span></div></div><div class="frame-buttons"><button class="tactile" id="previous" type="button">◀ PREV FRAME</button><button class="tactile primary" id="captureBtn" type="button" disabled>◎ USE THIS FRAME</button><button class="tactile" id="next" type="button">NEXT FRAME ▶</button></div><div class="frame-note">Frame stepping is approximately ±1/120 second; the exact displayed frame depends on the video.</div></div><div class="frame-note" id="canvasHelp">Tap to place labels, drag to draw traces or arrows. Switch planes without losing your annotations.</div></div>
 </section>
 <aside class="right" aria-label="Advanced annotation settings">
   <div class="eyebrow">03 / TOOL OPTIONS</div>
@@ -212,6 +221,7 @@ body{background:var(--device);padding:0}
 
 <input type="file" id="projectInput" accept=".json,.movement.json,application/json" hidden>
 </div><div id="toast" class="hidden" role="status" aria-live="polite"></div>
+<div id="videoDecodePool" aria-hidden="true"></div>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id), canvas=$('canvas'),ctx=canvas.getContext('2d');
@@ -290,7 +300,7 @@ function remember(before,index=active,mergeKey=null){
 function replaceAnnotation(index,items){views[index].annotations=deepcopy(items);selected=-1;populateInspector();updateUI();draw()}
 function undoAction(){const entry=undo.pop();if(!entry)return;redo.push(entry);active=entry.index;selected=-1;replaceAnnotation(active,entry.before);switchPlane(active)}
 function redoAction(){const entry=redo.pop();if(!entry)return;undo.push(entry);active=entry.index;selected=-1;replaceAnnotation(active,entry.after);switchPlane(active)}
-function disposeSource(v){if(v.source?.video){v.source.video.pause();v.source.video.removeAttribute('src');v.source.video.load()}if(v.source?.url)URL.revokeObjectURL(v.source.url);v.source=null;v.preview=false}
+function disposeSource(v){if(v.source?.video){v.source.video.pause();v.source.video.removeAttribute('src');v.source.video.load();v.source.video.remove()}if(v.source?.url)URL.revokeObjectURL(v.source.url);v.source=null;v.preview=false}
 function addImageToView(v,src,label){const im=new Image();im.onload=()=>{v.frameImg=im;v.frameSrc=src;v.frameLabel=label||'Captured frame';v.preview=false;if(v===current()){selected=-1;syncCanvas();updateUI();draw()}};im.onerror=()=>toast('This image could not be decoded.');im.src=src}
 function saveSnapshot(source,w,h){const limit=2200,scale=Math.min(1,limit/Math.max(w,h)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*scale));c.height=Math.max(1,Math.round(h*scale));c.getContext('2d').drawImage(source,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.91)}
 function replaceFrame(v,src,label){if(v.annotations.length&&!confirm('Replace this plane’s frame and clear its annotations?'))return false;v.annotations=[];undo=[];redo=[];if(v===current())selected=-1;addImageToView(v,src,label);return true}
@@ -299,10 +309,10 @@ if(v.annotations.length&&!confirm('Load new media and clear this plane’s annot
 v.annotations=[];v.frameSrc=null;v.frameImg=null;selected=-1;undo=[];redo=[];disposeSource(v);
 const url=URL.createObjectURL(file);
 if(type==='photo'){const img=new Image();img.onload=()=>{if(views[idx]!==v)return;try{const src=saveSnapshot(img,img.naturalWidth,img.naturalHeight);addImageToView(v,src,file.name);toast('Photo captured. Begin annotating.')}catch(e){toast('Cannot read this photo; try JPG or PNG.')}URL.revokeObjectURL(url)};img.onerror=()=>{URL.revokeObjectURL(url);toast('Unsupported image format. Try JPG or PNG.');updateUI()};img.src=url}
-else{const vid=document.createElement('video');vid.preload='auto';vid.muted=true;vid.playsInline=true;vid.setAttribute('playsinline','');v.source={video:vid,url,fileName:file.name,duration:0,seeking:false,ready:false};v.preview=true;
+else{const vid=document.createElement('video');vid.preload='auto';vid.muted=true;vid.playsInline=true;vid.setAttribute('playsinline','');vid.setAttribute('webkit-playsinline','');$('videoDecodePool').appendChild(vid);v.source={video:vid,url,fileName:file.name,duration:0,seeking:false,ready:false};v.preview=true;
 vid.onloadedmetadata=()=>{if(v.source?.video!==vid)return;if(!vid.videoWidth||!vid.videoHeight||!Number.isFinite(vid.duration)||vid.duration<=0){toast('Could not read video duration. Use MP4/H.264.');return}v.source.duration=vid.duration;if(v===current()){syncCanvas();updateUI()}seekVideo(v,Math.min(.001,vid.duration));toast('Video ready. Scrub to the peak, then use this frame.')};
-vid.onloadeddata=()=>{if(v.source?.video!==vid)return;v.source.ready=true;if(!vid.seeking)v.source.seeking=false;if(v===current()){updateUI();draw()}};
-vid.onseeked=()=>{if(v.source?.video!==vid)return;v.source.seeking=false;v.source.ready=vid.readyState>=2;if(v===current()){updateUI();draw()}};
+vid.onloadeddata=()=>{if(v.source?.video!==vid)return;v.source.ready=true;if(!vid.seeking)v.source.seeking=false;if(v===current()){syncCanvas();updateUI();draw()}};
+vid.onseeked=()=>{if(v.source?.video!==vid)return;v.source.seeking=false;v.source.ready=vid.readyState>=2;if(v===current()){syncCanvas();updateUI();draw()}};
 vid.onerror=()=>{if(v.source?.video!==vid)return;v.source.ready=false;toast('Cannot decode this video. MP4/H.264 is recommended.');if(v===current())updateUI()};
 vid.src=url;vid.load()}
 syncCanvas();updateUI();draw()}
