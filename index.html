@@ -446,6 +446,35 @@ body{padding:0;background:#30343b;color:var(--text)}
 @media(max-width:750px){.header-toast-slot{flex:none;min-width:0;max-width:none;width:min(540px,calc(100vw - 18px))}}
 @media(max-width:450px){.document-header{padding-bottom:36px}.header-toast-slot{flex:none;max-width:none;width:min(540px,calc(100vw - 18px))}.header-toast-text{right:7px}}
 
+/* Kinetica Studio v23 — customisable ROM measurement list.
+   The nested Edit submenu lives at body level, avoiding the clipped dropdown. */
+.rom-select-wrap{position:relative}
+body:not(.rom-mode) #romSelectWrap{display:none!important}
+.rom-select-trigger{justify-content:space-between}
+.rom-select-submenu{position:fixed;top:0;left:0;z-index:1010;
+  width:min(300px,calc(100vw - 16px));max-height:min(72vh,560px);
+  overflow-y:auto;overscroll-behavior:contain;background:#39414a;
+  border:1px solid #667887;border-radius:10px;padding:5px 7px 9px;
+  box-shadow:0 15px 30px #0008;scrollbar-width:thin}
+.rom-select-submenu[hidden]{display:none!important}
+.rom-select-count{font-size:10px;font-weight:750;letter-spacing:.04em;
+  color:#b9cfe3;padding:8px 10px 9px;border-bottom:1px solid #ffffff22}
+.rom-select-heading{font-size:10px;font-weight:750;line-height:1.4;
+  letter-spacing:.01em;color:#c8d9e9;padding:11px 9px 5px;
+  border-top:1px solid #ffffff1b}
+.rom-select-heading:first-of-type{border-top:0}
+.rom-select-item{width:100%;display:flex;gap:9px;align-items:center;
+  text-align:left;background:transparent;border:0;border-radius:6px;
+  color:#f1f6fb;font-size:12px;font-weight:500;line-height:1.3;
+  min-height:33px;padding:7px 9px;cursor:pointer}
+.rom-select-item:hover,.rom-select-item:focus-visible{outline:none;background:#536b86}
+.rom-select-check{display:inline-flex;align-items:center;justify-content:center;
+  width:17px;height:17px;flex:none;border:1px solid #91a3b6;
+  background:#2b3440;border-radius:4px;color:transparent;font-size:12px;font-weight:900}
+.rom-select-item[aria-checked=true] .rom-select-check{background:#567ca5;
+  border-color:#add5fa;color:#f3f8ff}
+@media(max-width:600px){.rom-select-submenu{max-height:min(68dvh,540px)}}
+
 /* Kinetica v22 — fix clipped project-type submenu; retain the v21 ROM gallery */
 /* v22: Submenu is portaled to body so the scrollable File menu cannot clip it. */
 .project-type-wrap{position:relative}
@@ -531,6 +560,13 @@ body.rom-mode #galleryHeadingText{font-size:12px}
           <button type="button" class="menu-action" data-click="undoBtn" data-mirror="undoBtn">Undo <span class="menu-shortcut">⌘/Ctrl Z</span></button>
           <button type="button" class="menu-action" data-click="redoBtn" data-mirror="redoBtn">Redo</button>
           <div class="menu-separator" role="separator"></div>
+          <div class="rom-select-wrap" id="romSelectWrap">
+            <button type="button" class="menu-action rom-select-trigger" id="romSelectTrigger" aria-haspopup="true" aria-expanded="false" aria-controls="romSelectSubmenu">ROM Measurements <span class="submenu-caret" aria-hidden="true">›</span></button>
+            <div class="rom-select-submenu" id="romSelectSubmenu" role="group" aria-label="Show or hide ROM measurements" hidden>
+              <div class="rom-select-count" id="romSelectCount">28 of 28 measurements shown</div>
+              <div id="romSelectOptions"></div>
+            </div>
+          </div>
           <button type="button" class="menu-action" id="menuAnnotations">Manage Annotations…</button>
           <button type="button" class="menu-action" data-click="deleteBtn" data-mirror="deleteBtn">Delete Selected</button>
           <button type="button" class="menu-action" data-click="clearBtn" data-mirror="clearBtn">Clear Current Plane…</button>
@@ -705,6 +741,21 @@ const romGroups=[
 const romDefinitions=romGroups.flatMap((group,groupIndex)=>group[1].map((slot,slotIndex)=>({
  key:`rom-${groupIndex}-${slotIndex}`,group:group[0],slot,groupIndex,label:`${group[0]} — ${slot}`
 })));
+// The complete PDF list is the default. Hidden slots are kept in the project,
+// never discarded, so a student can re-enable an exercise later.
+const defaultROMKeys=()=>romDefinitions.map(def=>def.key);
+let enabledROMKeys=new Set(defaultROMKeys());
+const isROMEnabled=key=>enabledROMKeys.has(key);
+function setEnabledROMKeys(keys){
+ const valid=new Set(defaultROMKeys());
+ const selected=Array.isArray(keys)?keys.filter(key=>valid.has(key)):defaultROMKeys();
+ enabledROMKeys=new Set(selected.length?selected:defaultROMKeys());
+}
+function firstEnabledROMIndex(preferCaptured=true){
+ const visible=romDefinitions.map(def=>romViewFor(def.key)).filter(v=>v&&isROMEnabled(v.romKey));
+ const found=preferCaptured?visible.find(v=>v.frameSrc):null;
+ return views.indexOf(found||visible[0]);
+}
 let projectType='movement';
 let movementTitle='Untitled Exercise';
 function romDocument(def){const v=makeView(0,'ROM',def.label);v.romKey=def.key;return v}
@@ -729,8 +780,8 @@ function setProjectType(next,quiet=false){
  projectType=next;
  if(next==='rom'){
   ensureROMDocuments();$('exercise').value='ROM Lab';$('exercise').readOnly=true;
-  const first=views.findIndex(v=>v.romKey&&v.frameSrc);const fallback=views.findIndex(v=>v.romKey);
-  updateModeUI();switchDocument(first>=0?first:fallback);setTool('rom');
+  const index=firstEnabledROMIndex(true);
+  updateModeUI();switchDocument(index);setTool('rom');
  }else{
   $('exercise').value=movementTitle||'Untitled Exercise';$('exercise').readOnly=false;
   let ix=views.findIndex(v=>!v.romKey&&v.frameSrc);if(ix<0)ix=views.findIndex(v=>!v.romKey);
@@ -745,11 +796,12 @@ function renderROMGallery(){
  const container=$('romGallery');const previousScroll=container.scrollTop;
  const fragment=document.createDocumentFragment();
  for(const [groupIndex,group] of romGroups.entries()){
+  if(!romDefinitions.some(def=>def.groupIndex===groupIndex&&isROMEnabled(def.key)))continue;
   const section=document.createElement('section');section.className='rom-group';
   const heading=document.createElement('h3');heading.className='rom-group-heading';heading.textContent=group[0];
   const grid=document.createElement('div');grid.className='rom-slot-grid';
   for(let slotIndex=0;slotIndex<group[1].length;slotIndex++){
-   const def=romDefinitions.find(d=>d.groupIndex===groupIndex&&d.slot===group[1][slotIndex]);const v=romViewFor(def.key);if(!v)continue;
+   const def=romDefinitions.find(d=>d.groupIndex===groupIndex&&d.slot===group[1][slotIndex]);const v=romViewFor(def.key);if(!v||!isROMEnabled(def.key))continue;
    const b=document.createElement('button');b.type='button';b.className='rom-slot'+(current().uid===v.uid?' is-active':'');
    b.setAttribute('aria-label',(v.frameSrc?'Open ':'Add ')+def.label);
    const media=document.createElement('span');media.className='rom-slot-media';
@@ -1495,7 +1547,7 @@ function board(page=0){
  return c;
 }
 
-function romCompleteDocs(){return romDefinitions.map(def=>({def,v:romViewFor(def.key)})).filter(({v})=>v?.frameImg&&romSlotComplete(v))}
+function romCompleteDocs(){return romDefinitions.filter(def=>isROMEnabled(def.key)).map(def=>({def,v:romViewFor(def.key)})).filter(({v})=>v?.frameImg&&romSlotComplete(v))}
 function romAngleForView(v,a){
  if(!a||a.type!=='rom'||!a.points?.every(Boolean))return null;
  const [f,s,m]=a.points,im=v.frameImg;
@@ -1532,7 +1584,7 @@ function romBoard(page=0){
 function romPageCount(){return Math.max(1,Math.ceil(romCompleteDocs().length/8))}
 
 function exportPageCount(){const counts=[0,1].map(p=>movementViews().filter(v=>v.plane===p&&v.frameImg).length);return Math.max(1,Math.ceil(Math.max(...counts)/8))}
-function serializeProject(){return{schema:'movement-evaluation-studio',version:2,projectType,movementTitle,exercise:$('exercise').value,student:$('student').value,activeId:current().uid,views:views.map(v=>({uid:v.uid,romKey:v.romKey||null,plane:viewNames[v.plane],category:v.category||'Other',name:v.name||'',frameSrc:v.frameSrc,frameLabel:v.frameLabel,cropBaseSrc:v.cropBaseSrc,cropBounds:v.cropBounds,annotations:v.annotations}))}}
+function serializeProject(){return{schema:'movement-evaluation-studio',version:2,projectType,romEnabledKeys:romDefinitions.filter(def=>isROMEnabled(def.key)).map(def=>def.key),movementTitle,exercise:$('exercise').value,student:$('student').value,activeId:current().uid,views:views.map(v=>({uid:v.uid,romKey:v.romKey||null,plane:viewNames[v.plane],category:v.category||'Other',name:v.name||'',frameSrc:v.frameSrc,frameLabel:v.frameLabel,cropBaseSrc:v.cropBaseSrc,cropBounds:v.cropBounds,annotations:v.annotations}))}}
 function saveProject(){download(new Blob([JSON.stringify(serializeProject())],{type:'application/json'}),safeName()+'-movement-project.json');toast('Editable multi-frame project backup downloaded.');}
 function hydrateProject(d){
  if(d?.schema!=='movement-evaluation-studio'||![1,2].includes(d.version)||!Array.isArray(d.views))throw Error('Not a Movement Evaluation project');
@@ -1550,9 +1602,10 @@ function hydrateProject(d){
  });
  for(let plane=0;plane<2;plane++)if(!views.some(v=>v.plane===plane&&!v.romKey))views.push(makeView(plane));
  if(!views.length)views=[makeView(0),makeView(1)];
- projectType=d.projectType==='rom'?'rom':'movement';movementTitle=String(d.movementTitle||(projectType==='movement'?d.exercise:'Untitled Exercise')||'Untitled Exercise');if(projectType==='rom')ensureROMDocuments();$('exercise').value=projectType==='rom'?'ROM Lab':String(d.exercise||'Untitled Exercise');$('exercise').readOnly=projectType==='rom';$('student').value=String(d.student||'');updateModeUI();updateDocumentTitle();
+ setEnabledROMKeys(d.romEnabledKeys);
+ projectType=d.projectType==='rom'?'rom':'movement';movementTitle=String(d.movementTitle||(projectType==='movement'?d.exercise:'Untitled Exercise')||'Untitled Exercise');if(projectType==='rom')ensureROMDocuments();$('exercise').value=projectType==='rom'?'ROM Lab':String(d.exercise||'Untitled Exercise');$('exercise').readOnly=projectType==='rom';$('student').value=String(d.student||'');updateModeUI();refreshROMSelections();updateDocumentTitle();
  selected=-1;undo=[];redo=[];draft=null;drag=null;romDraft=null;
- const wanted=views.findIndex(v=>v.uid===d.activeId);const fallback=projectType==='rom'?views.findIndex(v=>v.romKey):views.findIndex(v=>!v.romKey);switchDocument(wanted>=0&&((projectType==='rom')===!!views[wanted].romKey)?wanted:fallback>=0?fallback:0);setTool(projectType==='rom'?'rom':'select');
+ const wanted=views.findIndex(v=>v.uid===d.activeId);const fallback=projectType==='rom'?firstEnabledROMIndex(true):views.findIndex(v=>!v.romKey);const wantedAllowed=wanted>=0&&((projectType==='rom')===!!views[wanted].romKey)&&(projectType!=='rom'||isROMEnabled(views[wanted].romKey));switchDocument(wantedAllowed?wanted:fallback>=0?fallback:0);setTool(projectType==='rom'?'rom':'select');
 }
 function openProject(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!confirm('Open project and replace the current work? Your current project is autosaved locally, but please download a backup first if needed.'))return;hydrateProject(d);queueAutosave(true);toast('Project restored with '+views.filter(v=>v.frameSrc).length+' frame(s).')}catch(e){console.error(e);toast('Could not open project: '+e.message)}};r.onerror=()=>toast('File could not be read');r.readAsText(file)}
 
@@ -1610,7 +1663,88 @@ window.addEventListener('resize',()=>{if(!projectSubmenu.hidden)positionProjectS
 window.addEventListener('scroll',()=>{if(!projectSubmenu.hidden)positionProjectSubmenu()},true);
 document.querySelectorAll('[data-project-type]').forEach(b=>b.addEventListener('click',()=>{setProjectType(b.dataset.projectType);closeMenus()}));
 
-function closeMenus(){showProjectSubmenu(false);menuButtons.forEach(button=>{button.setAttribute('aria-expanded','false');$(button.getAttribute('aria-controls')).hidden=true})}
+// ROM Measurement selector: same detached, edge-aware nested popup strategy
+// as Project Type. 28 independent checkboxes, organized by worksheet group.
+const romSelectSubmenu=$('romSelectSubmenu');
+const romSelectTrigger=$('romSelectTrigger');
+const romSelectWrap=$('romSelectWrap');
+document.body.appendChild(romSelectSubmenu);
+let romSelectCloseTimer=null;
+function refreshROMSelections(){
+ const count=enabledROMKeys.size;
+ $('romSelectCount').textContent=count+' of '+romDefinitions.length+' measurements shown';
+ romSelectSubmenu.querySelectorAll('[data-rom-key]').forEach(b=>{
+  const on=isROMEnabled(b.dataset.romKey);
+  b.setAttribute('aria-checked',String(on));
+  b.querySelector('.rom-select-check').textContent=on?'✓':'';
+ });
+}
+function buildROMOptions(){
+ const host=$('romSelectOptions'),frag=document.createDocumentFragment();
+ for(const [index,group] of romGroups.entries()){
+  const heading=document.createElement('div');heading.className='rom-select-heading';heading.textContent=group[0];frag.appendChild(heading);
+  romDefinitions.filter(def=>def.groupIndex===index).forEach(def=>{
+   const item=document.createElement('button');item.type='button';item.className='rom-select-item';
+   item.dataset.romKey=def.key;item.setAttribute('role','menuitemcheckbox');
+   item.setAttribute('aria-checked','true');item.setAttribute('aria-label',def.label);
+   const check=document.createElement('span');check.className='rom-select-check';check.setAttribute('aria-hidden','true');check.textContent='✓';
+   const label=document.createElement('span');label.textContent=def.slot;item.append(check,label);
+   item.addEventListener('click',()=>toggleROMSelection(def.key));frag.appendChild(item);
+  });
+ }
+ host.appendChild(frag);refreshROMSelections();
+}
+function toggleROMSelection(key){
+ if(projectType!=='rom')return;
+ if(!isROMEnabled(key))enabledROMKeys.add(key);
+ else if(enabledROMKeys.size>1)enabledROMKeys.delete(key);
+ else{toast('Keep at least one ROM measurement selected.');return}
+ if(!isROMEnabled(current().romKey)&&current().romKey){
+  const next=firstEnabledROMIndex(true);if(next>=0)switchDocument(next);
+ }
+ refreshROMSelections();updateGallery();updateUI();queueAutosave(true);
+}
+function positionROMSubmenu(){
+ if(romSelectSubmenu.hidden)return;
+ const trigger=romSelectTrigger.getBoundingClientRect();
+ romSelectSubmenu.style.maxHeight='';
+ const width=romSelectSubmenu.offsetWidth;
+ const vw=document.documentElement.clientWidth,vh=Math.min(window.innerHeight,document.documentElement.clientHeight,window.visualViewport?.height||Infinity),m=8,gap=6;
+ let x=trigger.right+gap,y=trigger.top-7;
+ if(x+width>vw-m)x=trigger.left-width-gap;
+ if(x<m){
+  // Narrow screens: the submenu must start BELOW the trigger, even if that
+  // means reducing its scrollable height. Otherwise it covers its own button.
+  x=Math.max(m,Math.min(trigger.left,vw-width-m));y=trigger.bottom+gap;
+  const available=vh-y-m;
+  if(available>=150)romSelectSubmenu.style.maxHeight=Math.min(540,available)+'px';
+  else{y=m;romSelectSubmenu.style.maxHeight=Math.max(120,trigger.top-m-gap)+'px'}
+ }else{
+  const height=romSelectSubmenu.offsetHeight;
+  y=Math.max(m,Math.min(y,vh-height-m));
+ }
+ romSelectSubmenu.style.left=Math.round(x)+'px';romSelectSubmenu.style.top=Math.round(y)+'px';
+}
+function showROMSubmenu(show){
+ clearTimeout(romSelectCloseTimer);
+ if(show&&(projectType!=='rom'||$('editMenuButton').getAttribute('aria-expanded')!=='true'))return;
+ romSelectSubmenu.hidden=!show;romSelectTrigger.setAttribute('aria-expanded',String(show));
+ if(show){refreshROMSelections();positionROMSubmenu()}
+}
+function scheduleROMSubmenuClose(){clearTimeout(romSelectCloseTimer);romSelectCloseTimer=setTimeout(()=>showROMSubmenu(false),300)}
+romSelectWrap.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'||e.pointerType==='pen')showROMSubmenu(true)});
+romSelectWrap.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'||e.pointerType==='pen')scheduleROMSubmenuClose()});
+romSelectSubmenu.addEventListener('pointerenter',()=>clearTimeout(romSelectCloseTimer));
+romSelectSubmenu.addEventListener('pointerleave',scheduleROMSubmenuClose);
+romSelectTrigger.addEventListener('click',e=>{e.stopPropagation();showROMSubmenu(true)});
+romSelectTrigger.addEventListener('keydown',e=>{if(['ArrowRight','Enter',' '].includes(e.key)){e.preventDefault();showROMSubmenu(true);romSelectSubmenu.querySelector('button')?.focus()}});
+romSelectSubmenu.addEventListener('keydown',e=>{
+ if(e.key==='Escape'||e.key==='ArrowLeft'){e.preventDefault();e.stopPropagation();showROMSubmenu(false);romSelectTrigger.focus()}
+});
+window.addEventListener('resize',()=>{if(!romSelectSubmenu.hidden)positionROMSubmenu()});
+window.addEventListener('scroll',e=>{if(e.target===romSelectSubmenu||romSelectSubmenu.contains(e.target))return;if(!romSelectSubmenu.hidden)positionROMSubmenu()},true);
+buildROMOptions();
+function closeMenus(){showProjectSubmenu(false);showROMSubmenu(false);menuButtons.forEach(button=>{button.setAttribute('aria-expanded','false');$(button.getAttribute('aria-controls')).hidden=true})}
 menuButtons.forEach(button=>button.addEventListener('click',()=>{
   const open=button.getAttribute('aria-expanded')==='true';
   closeMenus();
@@ -1626,7 +1760,7 @@ document.querySelectorAll('[data-plane-menu]').forEach(button=>button.addEventLi
   switchPlane(Number(button.dataset.planeMenu));
   closeMenus();
 }));
-document.addEventListener('pointerdown',event=>{if(!event.target.closest('.menu-bar')&&!projectSubmenu.contains(event.target))closeMenus()});
+document.addEventListener('pointerdown',event=>{if(!event.target.closest('.menu-bar')&&!projectSubmenu.contains(event.target)&&!romSelectSubmenu.contains(event.target))closeMenus()});
 const shortcutsDialog=$('shortcutsDialog');
 $('menuKeyboardShortcuts').addEventListener('click',()=>{
   closeMenus();shortcutsDialog.showModal();
@@ -1649,10 +1783,10 @@ function syncMenuActions(){
 $('menuNew').addEventListener('click',()=>{
  closeMenus();const hasWork=views.some(v=>v.frameSrc||v.source||v.annotations.length)||$('exercise').value.trim()!=='Untitled Exercise'||$('student').value.trim();
  if(hasWork&&!confirm('Start a new project? The current project will be replaced in local autosave. Download a project backup first if you need to keep it.'))return;
- views.forEach(disposeSource);views=[makeView(0),makeView(1)];if(projectType==='rom')ensureROMDocuments();
+ views.forEach(disposeSource);views=[makeView(0),makeView(1)];setEnabledROMKeys();if(projectType==='rom')ensureROMDocuments();
  $('exercise').value=projectType==='rom'?'ROM Lab':'Untitled Exercise';movementTitle='Untitled Exercise';$('student').value='';updateDocumentTitle();
  undo=[];redo=[];selected=-1;draft=null;drag=null;romDraft=null;romReposition=false;
- updateModeUI();const first=projectType==='rom'?views.findIndex(v=>v.romKey):0;switchDocument(first);setTool(projectType==='rom'?'rom':'select');queueAutosave(true);toast('New empty project created.');
+ updateModeUI();refreshROMSelections();const first=projectType==='rom'?firstEnabledROMIndex(false):0;switchDocument(first);setTool(projectType==='rom'?'rom':'select');queueAutosave(true);toast('New empty project created.');
 });
 
 const annotationsDialog=$('annotationsDialog');
