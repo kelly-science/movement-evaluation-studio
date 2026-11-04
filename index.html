@@ -459,6 +459,8 @@ body:not(.rom-mode) #romSelectWrap{display:none!important}
 .rom-select-submenu[hidden]{display:none!important}
 .rom-select-count{font-size:10px;font-weight:750;letter-spacing:.04em;
   color:#b9cfe3;padding:8px 10px 9px;border-bottom:1px solid #ffffff22}
+.rom-select-tier{font-size:10px;line-height:1.45;font-weight:850;letter-spacing:.075em;text-transform:uppercase;color:#b9d9f9;background:#25394c;padding:10px 13px;margin-top:10px;border-top:1px solid #52677c}
+.rom-select-tier:first-child{margin-top:0;border-top:0}
 .rom-select-heading{font-size:10px;font-weight:750;line-height:1.4;
   letter-spacing:.01em;color:#c8d9e9;padding:11px 9px 5px;
   border-top:1px solid #ffffff1b}
@@ -665,7 +667,7 @@ body.rom-mode #viewMenuWrap{display:none!important}
           <div class="rom-select-wrap" id="romSelectWrap">
             <button type="button" class="menu-action rom-select-trigger" id="romSelectTrigger" aria-haspopup="true" aria-expanded="false" aria-controls="romSelectSubmenu">ROM Measurements <span class="submenu-caret" aria-hidden="true">›</span></button>
             <div class="rom-select-submenu" id="romSelectSubmenu" role="group" aria-label="Show or hide ROM measurements" hidden>
-              <div class="rom-select-count" id="romSelectCount">28 of 28 measurements shown</div>
+              <div class="rom-select-count" id="romSelectCount">28 of 58 measurements shown</div>
               <div id="romSelectOptions"></div>
             </div>
           </div>
@@ -827,8 +829,8 @@ const newDocId=()=>`frame_${Date.now().toString(36)}_${(++documentCounter).toStr
 const help={select:'Tap any existing annotation or its label to edit or move it. You can do this with any drawing tool active.',joint:'Enter the joint name and select its synovial type, then tap the joint location.',bone:'Enter the bone name, then draw in empty space. Tap any existing annotation to edit or drag it.',muscle:'Enter a visible Set 1 or 2 muscle, then draw in empty space. Tap an existing trace to edit or move it.',arrow:'Choose a movement type, then drag an arrow on empty space. Tap an existing arrow to edit or move it.',text:'Enter a label, then tap the photo where you want it.',rom:'Place the fulcrum, stationary arm and moving arm. Drag the colored markers to adjust. Angles update live.'};
 let views=[makeView(0),makeView(1)],active=0,tool='select',selected=-1,drag=null,draft=null;
 
-// Measurement slots reproduce the exercise/side/motion organization on pages 1–2
-// of the teacher-supplied Joint Range of Motion Lab, without worksheet questions.
+// Slots from the Regular Anatomy ROM handout (pages 1–2) plus additional
+// Advanced ROM exercises (pages 3–4), excluding all worksheet questions.
 const romGroups=[
  ['Back Extension and Flexion',['Extension','Flexion']],
  ['Side Flexion',['Left','Right']],
@@ -839,19 +841,34 @@ const romGroups=[
  ['Elbow Extension and Flexion',['Left Extension','Left Flexion','Right Extension','Right Flexion']],
  ['Forearm Pronation and Supination',['Left Pronation','Left Supination','Right Pronation','Right Supination']],
  ['Ankle Inversion and Eversion',['Left Inversion','Left Eversion','Right Inversion','Right Eversion']],
- ['Ankle Plantarflexion and Dorsiflexion',['Left Plantarflexion','Left Dorsiflexion','Right Plantarflexion','Right Dorsiflexion']]
+ ['Ankle Plantarflexion and Dorsiflexion',['Left Plantarflexion','Left Dorsiflexion','Right Plantarflexion','Right Dorsiflexion']],
+ // Advanced ROM Lab, pages 3–4: optional measurements (initially unchecked).
+ ['Wrist Radial and Ulnar Deviation',['Left Radial','Left Ulnar','Right Radial','Right Ulnar']],
+ ['Wrist Flexion and Extension',['Left Extension','Left Flexion','Right Extension','Right Flexion']],
+ ['Thumb MCP Joint Flexion',['Left Flexion','Right Flexion']],
+ ['Thumb IP Joint Flexion',['Left Flexion','Right Flexion']],
+ ['Hip Flexion',['Left Knee Flexed','Left Knee Extended','Right Knee Flexed','Right Knee Extended']],
+ ['Hip Adduction',['Left','Right']],
+ ['Hip Abduction',['Left','Right']],
+ ['Knee Flexion',['Left','Right']],
+ ['Shoulder Adduction and Abduction',['Left Abduction','Left Adduction','Right Abduction','Right Adduction']],
+ ['Shoulder Flexion and Extension',['Left Extension','Left Flexion','Right Extension','Right Flexion']]
 ];
 const romDefinitions=romGroups.flatMap((group,groupIndex)=>group[1].map((slot,slotIndex)=>({
  key:`rom-${groupIndex}-${slotIndex}`,group:group[0],slot,groupIndex,label:`${group[0]} — ${slot}`
 })));
-// The complete PDF list is the default. Hidden slots are kept in the project,
-// never discarded, so a student can re-enable an exercise later.
-const defaultROMKeys=()=>romDefinitions.map(def=>def.key);
+// Original 28 Regular Anatomy measurements remain checked by default.
+// All 30 measurements newly added from ADV ROM Lab (pages 3–4) start off.
+// Stable rom-{groupIndex}-{slotIndex} keys preserve previously saved projects.
+const CORE_ROM_GROUP_COUNT=10;
+const defaultROMKeys=()=>romDefinitions.filter(def=>def.groupIndex<CORE_ROM_GROUP_COUNT).map(def=>def.key);
+const allROMKeys=new Set(romDefinitions.map(def=>def.key));
 let enabledROMKeys=new Set(defaultROMKeys());
 const isROMEnabled=key=>enabledROMKeys.has(key);
 function setEnabledROMKeys(keys){
- const valid=new Set(defaultROMKeys());
- const selected=Array.isArray(keys)?keys.filter(key=>valid.has(key)):defaultROMKeys();
+ // Missing key list = legacy project: retain the original 28 defaults.
+ // Explicit saved key list = preserve every chosen measurement as-is.
+ const selected=Array.isArray(keys)?keys.filter(key=>allROMKeys.has(key)):defaultROMKeys();
  enabledROMKeys=new Set(selected.length?selected:defaultROMKeys());
 }
 function firstEnabledROMIndex(preferCaptured=true){
@@ -1860,7 +1877,7 @@ window.addEventListener('scroll',()=>{if(!projectSubmenu.hidden)positionProjectS
 document.querySelectorAll('[data-project-type]').forEach(b=>b.addEventListener('click',()=>{setProjectType(b.dataset.projectType);closeMenus()}));
 
 // ROM Measurement selector: same detached, edge-aware nested popup strategy
-// as Project Type. 28 independent checkboxes, organized by worksheet group.
+// as Project Type. 58 independent checkboxes, organized by worksheet group.
 const romSelectSubmenu=$('romSelectSubmenu');
 const romSelectTrigger=$('romSelectTrigger');
 const romSelectWrap=$('romSelectWrap');
@@ -1878,17 +1895,22 @@ function refreshROMSelections(){
 function buildROMOptions(){
  const host=$('romSelectOptions'),frag=document.createDocumentFragment();
  for(const [index,group] of romGroups.entries()){
+  if(index===0||index===CORE_ROM_GROUP_COUNT){
+   const tier=document.createElement('div');tier.className='rom-select-tier';
+   tier.textContent=index===0?'Regular ROM Lab':'Additional Advanced ROM · Optional';
+   frag.appendChild(tier);
+  }
   const heading=document.createElement('div');heading.className='rom-select-heading';heading.textContent=group[0];frag.appendChild(heading);
   romDefinitions.filter(def=>def.groupIndex===index).forEach(def=>{
    const item=document.createElement('button');item.type='button';item.className='rom-select-item';
    item.dataset.romKey=def.key;item.setAttribute('role','menuitemcheckbox');
-   item.setAttribute('aria-checked','true');item.setAttribute('aria-label',def.label);
-   const check=document.createElement('span');check.className='rom-select-check';check.setAttribute('aria-hidden','true');check.textContent='✓';
+   item.setAttribute('aria-checked',String(isROMEnabled(def.key)));item.setAttribute('aria-label',def.label);
+   const check=document.createElement('span');check.className='rom-select-check';check.setAttribute('aria-hidden','true');check.textContent=isROMEnabled(def.key)?'✓':'';
    const label=document.createElement('span');label.textContent=def.slot;item.append(check,label);
    item.addEventListener('click',()=>toggleROMSelection(def.key));frag.appendChild(item);
   });
  }
- host.appendChild(frag);refreshROMSelections();
+ host.replaceChildren(frag);refreshROMSelections();
 }
 function toggleROMSelection(key){
  if(projectType!=='rom')return;
