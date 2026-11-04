@@ -1,5 +1,5 @@
 // Offline-first shell for Movement Evaluation Studio. Version this key for every release.
-const CACHE_NAME = 'movement-evaluation-studio-shell-v15';
+const CACHE_NAME = 'movement-evaluation-studio-shell-v16';
 const SHELL = [
   './',
   './index.html',

@@ -293,6 +293,26 @@ body{padding:0;background:#30343b;color:var(--text)}
 @media(max-width:920px){.document-header{flex-wrap:wrap;gap:5px 12px}.document-student{margin-left:46px}.document-student .local-save-status{font-size:9px}}
 @media(max-width:750px){.document-header{gap:5px 10px}.document-student{margin-left:0}.document-student input{width:120px}.document-student .local-save-status{max-width:190px;white-space:normal}.menu-bar{margin-left:-4px;margin-right:-4px}}
 @media(max-width:450px){.document-header{min-height:66px}.document-student{flex-basis:100%;margin-left:34px;justify-content:flex-start}.document-student input{width:112px}.document-student .local-save-status{max-width:calc(100vw - 178px)}.shortcuts-list>div{align-items:flex-start;flex-direction:column;gap:7px}}
+
+/* Kinetica Studio v16 — status before student; flat blue ROM selection */
+.document-student{justify-content:flex-end}
+.document-student .local-save-status{margin-right:7px}
+/* Match the toolbar's selected-label blue, not the former inset/neomorphic state. */
+.rom-point.selected,
+.rom-modes button.active{
+  transform:none!important;
+  background:#526b88;
+  color:#edf6ff;
+  border:1px solid #a4c9ee;
+  box-shadow:0 0 0 2px rgba(104,154,213,.22);
+}
+.rom-point.selected:hover:not(:disabled),
+.rom-modes button.active:hover:not(:disabled){background:#5c7899;border-color:#b6d8f6}
+.rom-point:focus-visible,.rom-modes button:focus-visible{outline:2px solid #b9dafd;outline-offset:2px}
+@media(max-width:450px){
+  .document-student{justify-content:space-between}
+  .document-student .local-save-status{margin-right:auto;max-width:calc(100vw - 190px)}
+}
 </style>
 </head>
 <body>
@@ -308,9 +328,9 @@ body{padding:0;background:#30343b;color:var(--text)}
       </div>
     </div>
     <div class="document-student">
+      <span class="local-save-status" id="localSaveStatus" role="status" aria-live="polite">Checking local storage…</span>
       <label for="student">Student</label>
       <input id="student" type="text" placeholder="Student name" autocomplete="off" aria-label="Student name for export" />
-      <span class="local-save-status" id="localSaveStatus" role="status" aria-live="polite">Checking local storage…</span>
     </div>
   </header>
   <nav class="menu-bar" aria-label="Studio menu bar">
