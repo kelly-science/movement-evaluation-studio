@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#30353c"><title>Movement Evaluation Studio · Anatomy Lab</title>
+<meta name="theme-color" content="#30353c"><title>Untitled Exercise — Movement Evaluation Studio</title>
 <style>
 :root{--body:#fff;--device:#30353c;--button:#373d45;--recess:#1b2026;--text:#eef1f4;--muted:#b7c2cd;--lcd:#b0c3a4;--line:#ffffff19;--blue:#65baf1;--green:#80df93;--amber:#ffbf72;--red:#ff8686}
 *{box-sizing:border-box}body{margin:0;background:var(--body);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:clamp(10px,2.7vw,38px)}button,input,select{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}button:disabled{opacity:.42;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #a9d2ff;outline-offset:3px}
@@ -124,10 +124,129 @@ body{background:var(--device);padding:0}
 @media(max-width:790px){.studio-toolbar{margin:0 -4px 14px;top:56px}.studio-toolbar-scroll{padding:8px 7px 10px;gap:10px}.toolbar-button{width:42px;height:42px;min-width:42px}.workbench{display:grid;grid-template-columns:minmax(0,1fr)}.center{order:1}.right{order:2}.right .tool-fields{display:block}}
 @media(max-width:450px){.menu-bar{min-height:52px}.studio-toolbar{top:52px;margin:0 -3px 13px}.toolbar-section-label{display:none}.toolbar-button{width:43px;height:43px;min-width:43px}.studio-toolbar-scroll{gap:9px;padding:7px 4px 10px}.toolbar-cluster{gap:7px}}
 
+
+/* MES V11 DOCUMENT WORKSPACE — modern neutral gray / Docs-inspired density */
+:root{--body:#30343b;--device:#30343b;--button:#3a4048;--text:#f1f3f6;--muted:#bbc3cd;--line:#ffffff19;--doc-title-height:68px;--doc-menu-height:43px;--doc-toolbar-height:52px}
+body{padding:0;background:#30343b;color:var(--text)}
+.device{width:min(100%,1840px);max-width:1840px;padding:0 clamp(12px,1.65vw,27px) 32px}
+.visually-hidden{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+/* Title / document identity */
+.document-header{position:sticky;top:0;z-index:130;display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:68px;margin:0 -4px;padding:10px 13px;background:#30343bf8;border-bottom:1px solid #ffffff13;-webkit-backdrop-filter:blur(15px);backdrop-filter:blur(15px)}
+.document-identity{display:flex;align-items:center;min-width:0;gap:12px;flex:1}
+.document-icon{width:35px;height:41px;flex:none;color:#c3d4eb;display:grid;place-items:center;background:#3d4858;border:1px solid #56667b;border-radius:8px}
+.document-icon svg{width:21px;height:25px}
+.document-titles{min-width:0;flex:1}
+.document-title-input{width:min(100%,630px);border:1px solid transparent;background:transparent;color:#f4f6f8;border-radius:6px;padding:4px 7px;margin:-4px 0 0 -7px;font-size:19px;font-weight:600;letter-spacing:-.02em;outline:none;overflow:hidden;text-overflow:ellipsis;transition:background .14s,border-color .14s}
+.document-title-input:hover{background:#ffffff0b;border-color:#ffffff25}
+.document-title-input:focus{background:#454c55;border-color:#a2bedf;box-shadow:0 0 0 2px #6f93c42a;outline:none}
+.document-subtitle{margin-top:2px;font-size:10px;color:#aeb9c5;letter-spacing:.025em}
+.document-subtitle span{padding:0 5px;color:#798491}
+.document-student{display:flex;align-items:center;gap:9px;flex:none;color:#b4becb;font-size:11px}
+.document-student label{font-weight:600}
+.document-student input{width:155px;border:1px solid #626d77;border-radius:7px;background:#3b424a;color:#f1f3f6;padding:8px 10px;font-size:12px;outline:none}
+.document-student input:focus{border-color:#a3c3eb;box-shadow:0 0 0 2px #7195c52d}
+.document-student input::placeholder{color:#8998a6}
+/* Flat document menus, staying immediately below the title */
+.menu-bar{position:sticky;top:var(--doc-title-height);z-index:120;min-height:43px;margin:0 -4px;padding:4px 8px;background:#30343bf8;border-bottom:1px solid #ffffff1b;box-shadow:none;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.menu-trigger{font-size:12px;font-weight:560;min-height:33px;padding:7px 12px;border-radius:6px;gap:6px}
+.menu-trigger:hover,.menu-trigger[aria-expanded=true]{background:#4b525d}
+.menu-chevron{font-size:9px}
+.menu-dropdown{background:#39414a;border-color:#ffffff25;border-radius:10px;box-shadow:0 14px 32px #0008}
+.menu-action{font-size:12px;font-weight:520}
+/* Dense toolbar in the manner of a document editor */
+.studio-toolbar{position:sticky;top:calc(var(--doc-title-height) + var(--doc-menu-height));z-index:110;margin:0 -4px 16px;background:#394048fa;border:1px solid #ffffff24;border-radius:0 0 10px 10px;box-shadow:none}
+.studio-toolbar-scroll{gap:7px;padding:6px 10px 7px;scrollbar-width:thin}
+.toolbar-cluster{gap:2px}
+.toolbar-section-label{font-size:9px;letter-spacing:.09em;margin:0 7px 0 2px;color:#bbc5d0}
+.toolbar-divider{height:25px;border-left:1px solid #ffffff2b}
+.toolbar-button{width:35px;min-width:35px;height:34px;background:transparent;border:1px solid transparent;border-radius:7px;box-shadow:none;color:#dfe5eb;transform:none;padding:0}
+.toolbar-button svg{width:19px;height:19px;stroke-width:1.7}
+.toolbar-button:hover:not(:disabled){background:#515c68;border-color:#ffffff1e}
+.toolbar-button:active:not(:disabled),.toolbar-button.active{background:#526b88;color:#e9f3ff;border:1px solid #a2bdd151;box-shadow:inset 0 0 0 1px #739ab838;transform:none}
+.toolbar-button.toolbar-danger:not(:disabled){color:#eeadad}
+.studio-toolbar.has-overflow:not(.at-scroll-end)::after{top:4px;bottom:4px;background:linear-gradient(90deg,#39404800,#394048f7);color:#e2eaf2}
+/* The gallery is its own left document navigation rail. */
+.workbench{display:grid;grid-template-columns:205px minmax(0,1fr) 253px;gap:18px;align-items:start}
+.plane-gallery{min-width:0;position:sticky;top:calc(var(--doc-title-height) + var(--doc-menu-height) + var(--doc-toolbar-height) + 16px);padding:3px 2px 15px}
+.gallery-heading{padding:5px 5px 15px}
+.gallery-heading-title{font-weight:720;font-size:13px;color:#eff3f6;letter-spacing:-.01em}
+.gallery-heading p{font-size:11px;line-height:1.55;color:#aab7c4;margin:6px 0 0}
+.gallery-group{border-top:1px solid #ffffff18;padding:16px 4px 17px}
+.gallery-section-header{display:flex;align-items:center;justify-content:space-between;gap:7px;margin:0 0 11px}
+.gallery-section-header h2{margin:0;font-size:12px;letter-spacing:.01em;font-weight:650;color:#e8edf2}
+.gallery-state{font-size:9px;letter-spacing:.065em;color:#9daab7;font-weight:750}
+.gallery-state.is-ready{color:#a3c6a0}
+.gallery-add,.gallery-photo-card{display:block;width:100%;text-align:left;min-height:112px;border:1px solid #66717e;border-radius:10px;background:#373e47;color:#cad4df;box-shadow:none;padding:0;overflow:hidden;transition:border-color .12s,background .12s,box-shadow .12s}
+.gallery-add{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:8px;border:1px dashed #77818e;color:#c0ccd9;font-size:11px;font-weight:550}
+.gallery-add:hover,.gallery-add.active-plane{background:#424c58;border-color:#96b3d0}
+.gallery-plus{font-size:24px;line-height:1;width:35px;height:35px;display:grid;place-items:center;border-radius:10px;background:#4e5b68;color:#e8f4ff}
+.gallery-photo-card{min-height:unset;border:2px solid #66717e;display:block}
+.gallery-photo-card:hover{border-color:#adb8c3;background:#414c56}
+.gallery-photo-card.active{border-color:#a9c8ec;box-shadow:0 0 0 2px #5f86bb35}
+.gallery-photo-surface{height:113px;background:#1d232b;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.gallery-photo-surface img{width:100%;height:100%;object-fit:contain;display:block}
+.gallery-video-state{text-align:center;font-size:12px;font-weight:800;color:#bbcfde;letter-spacing:.1em}
+.gallery-video-state small{display:block;font-size:10px;color:#a2afbc;margin-top:8px;font-weight:500;letter-spacing:0}
+.gallery-card-footer{min-height:38px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:7px;font-size:11px;color:#e8eef5}
+.gallery-card-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.gallery-card-footer>span:last-child{font-size:19px;line-height:1;color:#a9c8e8}
+.gallery-note{font-size:10px;color:#94a2ae;line-height:1.55;margin:5px 4px}
+/* Document-page center: calm, flat gray panels */
+.center,.right{min-width:0}
+.bezel{padding:5px;border-radius:12px;background:#3a424b;border:1px solid #ffffff1a;box-shadow:none}
+.bezel::after{display:none}
+.oled{border-radius:7px;box-shadow:none;background:#171d23}
+.screen-head{font-weight:650;letter-spacing:.025em;font-size:11px;padding:12px 14px;background:#2c333b}
+.screen-tag{color:#afc0d5}
+.stage,.stage.empty-screen{background:#141a21;min-height:440px}
+.empty{background:#222a33b8;padding:30px;border-radius:12px;max-width:390px}
+.empty-symbol{font-size:51px;text-shadow:none;color:#a5bdd7}
+.empty h3{font-size:13px;letter-spacing:.04em;margin:10px 0}
+.empty p{color:#b1c0ce}
+.picture-frame{width:min(100%,calc(71vh * var(--aspect,1.7778)))}
+.screen-bottom{padding:11px 5px}
+.timeline-pocket{box-shadow:none;border:1px solid #ffffff25;background:#39414b;border-radius:9px}
+.tactile{background:#424a54;box-shadow:none;border:1px solid #ffffff25;border-radius:8px;min-height:37px;font-weight:650;font-size:11px;letter-spacing:.01em;transform:none!important;padding:9px 12px}
+.tactile:hover:not(:disabled){filter:none;background:#55616f}
+.tactile:active:not(:disabled),.tactile.active{transform:none!important;background:#576b7e;box-shadow:none;border-color:#9bb6cd66}
+.tactile.primary{color:#e8f6ed;background:#4b685b;border-color:#739a84}
+.tactile.primary:hover:not(:disabled){background:#5a786a}
+.tactile:disabled{opacity:.45}
+.input-well,.select-well{background:#3c444e;border:1px solid #ffffff30;box-shadow:none;color:#e9edf3;border-radius:7px;font-weight:450}
+.input-well:focus,.select-well:focus{outline:2px solid #a6c6e9;outline-offset:0}
+.right{padding:6px 0}
+.right .eyebrow{font-size:9px;color:#acbdce;margin-bottom:9px;letter-spacing:.11em}
+.right h2{font-size:12px;font-weight:700}
+.right .hint{color:#bcc8d2}
+.rom-reading,.readout{box-shadow:none;border:1px solid #ffffff24;background:#242c33}
+.rom-reading-value{color:#d1e7cc;text-shadow:none}
+.palette .swatch{box-shadow:none;border:1px solid #ffffff4a}
+.checklist-dialog{border-radius:12px;background:#343b44;box-shadow:0 28px 80px #000a}
+/* Responsive, with the gallery preserved beside the working image on Chromebooks. */
+@media(max-width:1280px){.workbench{grid-template-columns:175px minmax(0,1fr) 235px;gap:14px}.gallery-photo-surface{height:95px}}
+@media(max-width:1060px){.workbench{grid-template-columns:170px minmax(0,1fr);gap:15px}.plane-gallery{grid-column:1;grid-row:1 / span 2}.center{grid-column:2;grid-row:1;order:initial;width:100%}.right{grid-column:2;grid-row:2;order:initial;max-width:none;width:100%}.right .tool-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 17px}.right .tool-fields #inspectorFootnote{grid-column:1/-1}}
+@media(max-width:750px){.document-header{padding:9px 8px;gap:10px;min-height:62px}.document-title-input{font-size:17px}.document-subtitle{font-size:9px}.document-icon{width:29px;height:35px}.document-icon svg{width:18px}.document-student{gap:5px}.document-student label{display:none}.document-student input{width:112px;font-size:11px;padding:7px 8px}.menu-bar{padding:3px 4px}.studio-toolbar{margin-bottom:12px}.workbench{display:flex;flex-direction:column;gap:15px}.plane-gallery{position:static;order:1;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:0 12px;padding:0 0 4px}.gallery-heading{grid-column:1/-1;padding-bottom:8px}.gallery-heading p{margin-top:3px}.gallery-group{border-top:1px solid #ffffff23;padding:12px 2px}.gallery-note{display:none}.gallery-add,.gallery-photo-card{min-height:90px}.gallery-photo-card{min-height:unset}.gallery-photo-surface{height:96px}.center{order:2;width:100%}.right{order:3;display:block;width:100%}.right .tool-fields{display:block}.stage{min-height:250px;padding:7px}.picture-frame{width:min(100%,calc(51svh * var(--aspect,1.7778)))}}
+@media(max-width:450px){.device{padding:0 9px 24px}.document-header{margin:0 -2px;padding:8px 5px}.document-identity{gap:7px}.document-title-input{font-size:15px}.document-subtitle{display:none}.document-student input{width:97px}.menu-bar{margin:0 -2px;padding:3px 1px}.studio-toolbar{margin:0 -2px 10px}.studio-toolbar-scroll{padding:5px 6px 6px}.toolbar-section-label{display:none}.toolbar-cluster{gap:1px}.toolbar-button{height:33px;width:34px;min-width:34px}.toolbar-button svg{width:18px;height:18px}.gallery-photo-surface{height:76px}.gallery-add{min-height:101px}.gallery-heading-title{font-size:12px}}
+
 </style>
 </head>
 <body>
 <div class="device">
+  <!-- MES V11 DOCUMENT HEADER -->
+  <header class="document-header" id="documentHeader">
+    <div class="document-identity">
+      <span class="document-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.8h8l4.7 4.7V21H6z"/><path d="M14 2.8V8h4.7M9 12h7M9 15.8h7"/></svg></span>
+      <div class="document-titles">
+        <label class="visually-hidden" for="exercise">Exercise project title</label>
+        <input id="exercise" class="document-title-input" type="text" value="Untitled Exercise" maxlength="90" spellcheck="false" autocomplete="off" aria-label="Project title; click to rename exercise" title="Click to rename this exercise" />
+        <div class="document-subtitle">Regular Anatomy <span aria-hidden="true">·</span> Muscular System Lab</div>
+      </div>
+    </div>
+    <div class="document-student">
+      <label for="student">Student</label>
+      <input id="student" type="text" placeholder="Student name" autocomplete="off" aria-label="Student name for export" />
+    </div>
+  </header>
   <nav class="menu-bar" aria-label="Studio menu bar">
     <div class="menu-group">
       <div class="menu-wrap">
@@ -167,12 +286,6 @@ body{background:var(--device);padding:0}
 <!-- MES V10 TOP TOOLBAR -->
   <nav class="studio-toolbar" id="studioToolbar" aria-label="Movement Evaluation tools">
     <div class="studio-toolbar-scroll" id="studioToolbarScroll" role="toolbar" aria-label="Movement Evaluation controls">
-      <div class="toolbar-cluster" role="group" aria-label="Viewing plane">
-        <span class="toolbar-section-label">PLANE</span>
-        <button type="button" class="toolbar-button active" data-plane="0" title="Frontal Plane" aria-label="Frontal Plane" data-tooltip="Frontal Plane" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M12 6v13M5 9l7-2 7 2M8 21l4-2 4 2M7 13l-2 5M17 13l2 5"/></svg><span id="frontalLed" class="led green toolbar-led" aria-hidden="true"></span></button>
-        <button type="button" class="toolbar-button" data-plane="1" title="Sagittal Plane" aria-label="Sagittal Plane" data-tooltip="Sagittal Plane" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M12 6v12M12 8l5 4-5 1M12 18l-4 4M12 18l5 4M12 9l-4 4"/></svg><span id="sagittalLed" class="led green toolbar-led" aria-hidden="true"></span></button>
-      </div>
-      <span class="toolbar-divider" role="separator" aria-hidden="true"></span>
       <div class="toolbar-cluster" role="group" aria-label="Import media">
         <span class="toolbar-section-label">IMPORT</span>
         <button type="button" class="toolbar-button" id="photoBtn" title="Upload Photo" aria-label="Upload Photo" data-tooltip="Upload Photo"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></button>
@@ -201,12 +314,34 @@ body{background:var(--device);padding:0}
     <div class="toolbar-a11y" aria-live="polite"><span id="sourceStatus">No frontal-plane frame yet.</span><span id="toolHint">Select an annotation.</span></div>
     <input type="file" id="photoInput" accept="image/*" hidden>
     <input type="file" id="videoInput" accept="video/*" hidden>
+    <input type="file" id="galleryInput" accept="image/*,video/*" hidden aria-label="Upload photo or video for the selected plane">
   </nav>
   <div class="toolbar-tooltip" id="toolbarTooltip" role="tooltip" hidden></div>
 
-<header class="header"><div class="brand"><div class="logo">⌁</div><div><div class="overline">REGULAR ANATOMY · MUSCULAR SYSTEM LAB</div><h1>MOVEMENT <span>EVALUATION STUDIO</span></h1><p>TWO-PLANE EXERCISE ANALYSIS · ANNOTATED EVIDENCE</p></div></div></header>
-<div class="meta-bar"><div><label class="field-name" for="student">STUDENT NAME (OPTIONAL)</label><input class="input-well" id="student" placeholder="Name for the exported project" autocomplete="off"></div><div><label class="field-name" for="exercise">EXERCISE BEING EVALUATED</label><input class="input-well" id="exercise" placeholder="e.g., squat, lunge, push-up"></div></div>
 <div class="workbench">
+  <aside class="plane-gallery" aria-label="Plane gallery">
+    <div class="gallery-heading">
+      <div class="gallery-heading-title">Plane gallery</div>
+      <p>Choose an image to open that plane’s live workspace.</p>
+    </div>
+    <section class="gallery-group" aria-labelledby="frontalGalleryTitle">
+      <div class="gallery-section-header"><h2 id="frontalGalleryTitle">Frontal plane</h2><span class="gallery-state" id="galleryStatus0">EMPTY</span></div>
+      <button type="button" class="gallery-photo-card hidden" id="galleryCard0" data-gallery-plane="0" aria-label="Open frontal plane workspace">
+        <span class="gallery-photo-surface"><img id="galleryImage0" alt="Frontal plane captured frame" class="hidden"><span class="gallery-video-state hidden" id="galleryPreview0">VIDEO<br><small>Choose peak frame</small></span></span>
+        <span class="gallery-card-footer"><span class="gallery-card-name" id="galleryName0">Frontal frame</span><span aria-hidden="true">›</span></span>
+      </button>
+      <button type="button" class="gallery-add" id="galleryAdd0" data-gallery-add="0" aria-label="Add frontal plane photo or video" title="Add frontal plane photo or video"><span class="gallery-plus" aria-hidden="true">+</span><span>Add image or video</span></button>
+    </section>
+    <section class="gallery-group" aria-labelledby="sagittalGalleryTitle">
+      <div class="gallery-section-header"><h2 id="sagittalGalleryTitle">Sagittal plane</h2><span class="gallery-state" id="galleryStatus1">EMPTY</span></div>
+      <button type="button" class="gallery-photo-card hidden" id="galleryCard1" data-gallery-plane="1" aria-label="Open sagittal plane workspace">
+        <span class="gallery-photo-surface"><img id="galleryImage1" alt="Sagittal plane captured frame" class="hidden"><span class="gallery-video-state hidden" id="galleryPreview1">VIDEO<br><small>Choose peak frame</small></span></span>
+        <span class="gallery-card-footer"><span class="gallery-card-name" id="galleryName1">Sagittal frame</span><span aria-hidden="true">›</span></span>
+      </button>
+      <button type="button" class="gallery-add" id="galleryAdd1" data-gallery-add="1" aria-label="Add sagittal plane photo or video" title="Add sagittal plane photo or video"><span class="gallery-plus" aria-hidden="true">+</span><span>Add image or video</span></button>
+    </section>
+    <p class="gallery-note">Each plane has one captured frame. Use the photo or video tools above to replace a frame.</p>
+  </aside>
 <section class="center" aria-label="Movement canvas">
   <div class="bezel"><div class="oled"><div class="screen-head"><span id="screenTitle">FRONTAL PLANE · NO FRAME</span><span class="screen-tag" id="screenTag">STANDBY</span></div><div id="stage" class="stage empty-screen"><div class="empty" id="empty"><div class="empty-symbol">⌁</div><h3>CAPTURE YOUR PEAK MOVEMENT</h3><p>Upload a frontal- or sagittal-plane screenshot, or scrub a slow-motion video and choose the exact peak frame.</p></div><div id="pictureFrame" class="picture-frame hidden"><canvas id="canvas" aria-label="Movement photo and interactive anatomical annotations"></canvas><div id="overlayNotice" class="screen-overlay hidden"></div></div></div></div></div>
   <div class="screen-bottom"><div id="videoControls" class="hidden"><div class="timeline-pocket"><div class="timeline-row"><span id="timeNow" class="time">00:00.00</span><input type="range" id="timeline" min="0" max="1" step=".001" value="0" aria-label="Scrub slow-motion video"><span id="timeEnd" class="time">00:00.00</span></div></div><div class="frame-buttons"><button class="tactile" id="previous" type="button">◀ PREV FRAME</button><button class="tactile primary" id="captureBtn" type="button" disabled>◎ USE THIS FRAME</button><button class="tactile" id="next" type="button">NEXT FRAME ▶</button></div><div class="frame-note">Frame stepping is approximately ±1/120 second; the exact displayed frame depends on the video.</div></div><div class="frame-note" id="canvasHelp">Tap to place labels, drag to draw traces or arrows. Switch planes without losing your annotations.</div></div>
@@ -348,7 +483,7 @@ function replaceAnnotation(index,items){views[index].annotations=deepcopy(items)
 function undoAction(){const entry=undo.pop();if(!entry)return;redo.push(entry);active=entry.index;selected=-1;replaceAnnotation(active,entry.before);switchPlane(active)}
 function redoAction(){const entry=redo.pop();if(!entry)return;undo.push(entry);active=entry.index;selected=-1;replaceAnnotation(active,entry.after);switchPlane(active)}
 function disposeSource(v){if(v.source?.video){v.source.video.pause();v.source.video.removeAttribute('src');v.source.video.load();v.source.video.remove()}if(v.source?.url)URL.revokeObjectURL(v.source.url);v.source=null;v.preview=false}
-function addImageToView(v,src,label){const im=new Image();im.onload=()=>{v.frameImg=im;v.frameSrc=src;v.frameLabel=label||'Captured frame';v.preview=false;if(v===current()){selected=-1;syncCanvas();updateUI();draw()}};im.onerror=()=>toast('This image could not be decoded.');im.src=src}
+function addImageToView(v,src,label){const im=new Image();im.onload=()=>{v.frameImg=im;v.frameSrc=src;v.frameLabel=label||'Captured frame';v.preview=false;updateGallery();if(v===current()){selected=-1;syncCanvas();updateUI();draw()}};im.onerror=()=>toast('This image could not be decoded.');im.src=src}
 function saveSnapshot(source,w,h){const limit=2200,scale=Math.min(1,limit/Math.max(w,h)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*scale));c.height=Math.max(1,Math.round(h*scale));c.getContext('2d').drawImage(source,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.91)}
 function replaceFrame(v,src,label){if(v.annotations.length&&!confirm('Replace this plane’s frame and clear its annotations?'))return false;v.annotations=[];undo=[];redo=[];if(v===current())selected=-1;addImageToView(v,src,label);return true}
 function loadMedia(file){if(!file)return;const v=current();const type=file.type.startsWith('image/')?'photo':file.type.startsWith('video/')?'video':null;if(!type){toast('Choose a photo or video.');return}const idx=active;
@@ -654,7 +789,7 @@ function updateUI(){const v=current(),s=v.source,canAnnotate=!!v.frameSrc&&!v.pr
 $('captureBtn').disabled=!s||!s.ready||s.seeking||s.video.seeking;
 $('videoControls').classList.toggle('hidden',!s);if(s){$('timeline').max=String(s.duration||1);$('timeline').value=String(s.video.currentTime||0);$('timeNow').textContent=time(s.video.currentTime);$('timeEnd').textContent=time(s.duration)}
 $('overlayNotice').classList.toggle('hidden',!v.preview);$('overlayNotice').textContent=v.preview?'VIDEO PREVIEW · CAPTURE FRAME BEFORE ANNOTATING':'';
-$('frontalLed').classList.toggle('on',!!views[0].frameSrc);$('sagittalLed').classList.toggle('on',!!views[1].frameSrc);
+updateGallery();
 $('clearBtn').disabled=!v.annotations.length;$('deleteBtn').disabled=selected<0;$('undoBtn').disabled=!undo.length;$('redoBtn').disabled=!redo.length;$('menuExportPlane').disabled=!v.frameSrc;$('menuExportPoster').disabled=!views.some(z=>z.frameSrc);$('menuExportExcalidraw').disabled=!views.some(z=>z.frameSrc);
 const list=$('annotationList');list.replaceChildren();if(v.annotations.length===0){const p=document.createElement('p');p.className='hint';p.textContent='No annotations yet.';list.appendChild(p)}v.annotations.forEach((a,i)=>{const b=document.createElement('button');b.className='annotation-chip'+(selected===i?' active':'');const dot=document.createElement('span');dot.className='led on';dot.style.color=a.color;const label=document.createElement('span');label.className='name';label.textContent=a.label+(a.type==='joint'?' · '+a.jointType:'');const typ=document.createElement('small');typ.textContent=a.type.toUpperCase();b.append(dot,label,typ);b.onclick=()=>{rememberCreationFields();chooseSelected(i);if(annotationsDialog.open)closeAnnotations()};list.appendChild(b)});
 const all=allAnnotations(),check=[['Frontal plane image',!!views[0].frameSrc],['Sagittal plane image',!!views[1].frameSrc],['Upper-body joint type',all.some(a=>inferredJointRegion(a)==='upper')],['Lower-body joint type',all.some(a=>inferredJointRegion(a)==='lower')],['Named bone traces',all.some(a=>a.type==='bone')],['Visible muscles + color key',all.some(a=>a.type==='muscle')],['Movement arrows',all.some(a=>a.type==='arrow')],['Both views annotated',views.every(x=>x.frameSrc&&x.annotations.length)]];const grid=$('checkGrid');grid.replaceChildren();$('checkSummary').textContent=check.filter(([,yes])=>yes).length+' of '+check.length+' requirements present';check.forEach(([label,yes])=>{const row=document.createElement('div');row.className='check-item'+(yes?' complete':'');const light=document.createElement('span');light.className='led on';const span=document.createElement('span');span.textContent=label;row.append(light,span);grid.appendChild(row)});
@@ -670,7 +805,7 @@ function board(){const {g,H,keyItems}=boardContent(),c=document.createElement('c
 views.forEach((v,i)=>{const x=g.margin+i*(g.pw+g.gap);q.fillStyle='#dde4df';q.fillRect(x,g.top,g.pw,g.base-g.top+18);q.fillStyle='#2d3439';q.fillRect(x,g.top,g.pw,70);q.fillStyle='#eff4ef';q.font='bold 32px system-ui';q.fillText(viewNames[i]+' PLANE · PEAK OF MOVEMENT',x+25,g.top+46);const r=boardRect(v,i,g);if(v.frameImg){q.drawImage(v.frameImg,r.x,r.y,r.w,r.h);q.save();q.translate(r.x,r.y);v.annotations.forEach(a=>drawOne(q,a,r.w,r.h,{scale:Math.max(.8,r.w/900)}));q.restore()}else{q.font='bold 24px system-ui';q.fillStyle='#65746d';q.fillText('NO IMAGE CAPTURED',x+55,g.imgTop+330)} });
 const ly=g.base+85;q.fillStyle='#1f2925';q.font='bold 35px system-ui';q.fillText('MUSCLE COLOR KEY  ·  VISIBLE SET 1 + SET 2',g.margin,ly);if(!keyItems.length){q.font='23px system-ui';q.fillStyle='#66746d';q.fillText('No muscle traces included',g.margin,ly+51)}keyItems.forEach((a,i)=>{const col=i%4,row=Math.floor(i/4),x=g.margin+col*565,y=ly+55+row*46;q.fillStyle=a.color;q.fillRect(x,y-21,27,27);q.fillStyle='#26352e';q.font='22px system-ui';q.fillText(a.label.slice(0,39),x+39,y,505)});q.fillStyle='#647069';q.font='20px system-ui';q.fillText('Manual anatomical annotations · Frontal and sagittal views · For classroom evaluation',g.margin,H-38);return c}
 function saveProject(){const data={schema:'movement-evaluation-studio',version:1,exercise:$('exercise').value,student:$('student').value,views:views.map((v,i)=>({plane:viewNames[i],frameSrc:v.frameSrc,frameLabel:v.frameLabel,annotations:v.annotations}))};download(new Blob([JSON.stringify(data)],{type:'application/json'}),safeName()+'-movement-project.json');toast('Editable project saved with both captured images.')}
-function openProject(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(d.schema!=='movement-evaluation-studio'||d.version!==1||!Array.isArray(d.views)||d.views.length!==2)throw Error('Not a Movement Evaluation project');if(!confirm('Open project and replace the current work?'))return;views.forEach(disposeSource);views=[makeView(),makeView()];d.views.forEach((src,i)=>{const v=views[i];v.annotations=Array.isArray(src.annotations)?src.annotations:[];v.frameLabel=String(src.frameLabel||'Saved frame');if(src.frameSrc&&/^data:image\/(jpeg|png|webp);base64,/i.test(src.frameSrc))addImageToView(v,src.frameSrc,v.frameLabel)});$('exercise').value=String(d.exercise||'');$('student').value=String(d.student||'');selected=-1;undo=[];redo=[];switchPlane(0);toast('Editable project reopened.')}catch(e){toast('Project could not be opened: '+e.message)}};r.onerror=()=>toast('File could not be read.');r.readAsText(file)}
+function openProject(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(d.schema!=='movement-evaluation-studio'||d.version!==1||!Array.isArray(d.views)||d.views.length!==2)throw Error('Not a Movement Evaluation project');if(!confirm('Open project and replace the current work?'))return;views.forEach(disposeSource);views=[makeView(),makeView()];d.views.forEach((src,i)=>{const v=views[i];v.annotations=Array.isArray(src.annotations)?src.annotations:[];v.frameLabel=String(src.frameLabel||'Saved frame');if(src.frameSrc&&/^data:image\/(jpeg|png|webp);base64,/i.test(src.frameSrc))addImageToView(v,src.frameSrc,v.frameLabel)});$('exercise').value=String(d.exercise||'Untitled Exercise');$('student').value=String(d.student||'');updateDocumentTitle();selected=-1;undo=[];redo=[];switchPlane(0);toast('Editable project reopened.')}catch(e){toast('Project could not be opened: '+e.message)}};r.onerror=()=>toast('File could not be read.');r.readAsText(file)}
 function excalidrawScene(){const {g,H,keyItems}=boardContent(),elements=[],files={},timestamp=Date.now(),W=g.W;let counter=0;const uid=()=>`mes_${Date.now().toString(36)}_${(counter++).toString(36)}`;
 function base(type,x,y,w,h,color='#222222'){return{id:uid(),type,x,y,width:Math.max(1,w),height:Math.max(1,h),angle:0,strokeColor:color,backgroundColor:'transparent',fillStyle:'solid',strokeWidth:2,strokeStyle:'solid',roughness:0,opacity:100,groupIds:[],frameId:null,roundness:null,seed:Math.floor(Math.random()*1e9),version:1,versionNonce:Math.floor(Math.random()*1e9),isDeleted:false,boundElements:null,updated:timestamp,link:null,locked:false}}
 function addText(text,x,y,color='#26352f',size=27){const str=String(text).slice(0,250),e={...base('text',x,y,Math.max(20,str.length*size*.56),size*1.4,color),text:str,originalText:str,fontSize:size,fontFamily:2,textAlign:'left',verticalAlign:'top',lineHeight:1.25,autoResize:true,containerId:null};elements.push(e)}
@@ -729,11 +864,11 @@ function syncMenuActions(){
 
 $('menuNew').addEventListener('click',()=>{
   closeMenus();
-  const hasWork=views.some(v=>v.frameSrc||v.source||v.annotations.length)||$('exercise').value||$('student').value;
+  const hasWork=views.some(v=>v.frameSrc||v.source||v.annotations.length)||($('exercise').value.trim() && $('exercise').value.trim()!=='Untitled Exercise')||$('student').value;
   if(hasWork&&!confirm('Start a new project? Unsaved changes to both planes will be lost.'))return;
   views.forEach(disposeSource);
   views=[makeView(),makeView()];
-  $('exercise').value='';$('student').value='';
+  $('exercise').value='Untitled Exercise';$('student').value='';updateDocumentTitle();
   undo=[];redo=[];selected=-1;draft=null;drag=null;romDraft=null;romReposition=false;
   switchPlane(0);setTool('select');
   toast('New empty project created.');
@@ -845,6 +980,72 @@ mesToolbar.addEventListener('click',event=>{
 requestAnimationFrame(mesUpdateOverflow);
 window.addEventListener('scroll',mesHideTooltip,{passive:true});
 window.addEventListener('resize',()=>{mesHideTooltip();mesUpdateOverflow()},{passive:true});
+
+
+// MES V11 DOCUMENT + GALLERY WORKSPACE
+const documentHeader=$('documentHeader');
+const exerciseTitle=$('exercise');
+const untitledExercise='Untitled Exercise';
+const galleryDisplayedSrc=[null,null];
+function updateDocumentTitle(){
+ const name=exerciseTitle.value.trim()||untitledExercise;
+ document.title=name+' — Movement Evaluation Studio';
+ exerciseTitle.setAttribute('aria-label','Exercise project title: '+name+'. Click to rename');
+}
+exerciseTitle.addEventListener('focus',()=>{
+ if(exerciseTitle.value===untitledExercise)exerciseTitle.select();
+});
+exerciseTitle.addEventListener('input',updateDocumentTitle);
+exerciseTitle.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();exerciseTitle.blur();}});
+exerciseTitle.addEventListener('blur',()=>{
+ if(!exerciseTitle.value.trim())exerciseTitle.value=untitledExercise;
+ updateDocumentTitle();
+});
+function updateStickyOffsets(){
+ document.documentElement.style.setProperty('--doc-title-height',Math.ceil(documentHeader.getBoundingClientRect().height)+'px');
+ document.documentElement.style.setProperty('--doc-menu-height',Math.ceil(document.querySelector('.menu-bar').getBoundingClientRect().height)+'px');
+ document.documentElement.style.setProperty('--doc-toolbar-height',Math.ceil($('studioToolbar').getBoundingClientRect().height)+'px');
+}
+if('ResizeObserver' in window){
+ const stickyObserver=new ResizeObserver(updateStickyOffsets);
+ [documentHeader,document.querySelector('.menu-bar'),$('studioToolbar')].forEach(el=>stickyObserver.observe(el));
+}
+window.addEventListener('resize',updateStickyOffsets);
+function updateGallery(){
+ views.forEach((v,i)=>{
+  const card=$('galleryCard'+i),add=$('galleryAdd'+i),image=$('galleryImage'+i);
+  const preview=$('galleryPreview'+i),status=$('galleryStatus'+i),caption=$('galleryName'+i);
+  const hasImage=!!v.frameSrc;
+  const showingVideo=!!v.preview && !hasImage;
+  const filled=hasImage||showingVideo;
+  card.classList.toggle('hidden',!filled);
+  add.classList.toggle('hidden',filled);
+  card.classList.toggle('active',active===i);
+  add.classList.toggle('active-plane',active===i);
+  card.setAttribute('aria-pressed',String(active===i));
+  status.textContent=hasImage?'CAPTURED':showingVideo?'PREVIEW':'EMPTY';
+  status.classList.toggle('is-ready',hasImage);
+  preview.classList.toggle('hidden',!showingVideo);
+  image.classList.toggle('hidden',!hasImage);
+  if(hasImage&&galleryDisplayedSrc[i]!==v.frameSrc){image.src=v.frameSrc;galleryDisplayedSrc[i]=v.frameSrc;}
+  if(!hasImage&&galleryDisplayedSrc[i]!==null){image.removeAttribute('src');galleryDisplayedSrc[i]=null;}
+  caption.textContent=showingVideo?'Video preview':(v.frameLabel||((i===0?'Frontal':'Sagittal')+' frame'));
+ });
+}
+document.querySelectorAll('[data-gallery-plane]').forEach(button=>{
+ button.addEventListener('click',()=>switchPlane(Number(button.dataset.galleryPlane)));
+});
+document.querySelectorAll('[data-gallery-add]').forEach(button=>{
+ button.addEventListener('click',()=>{
+  switchPlane(Number(button.dataset.galleryAdd));
+  $('galleryInput').click();
+ });
+});
+$('galleryInput').addEventListener('change',e=>{
+ loadMedia(e.target.files?.[0]);
+ e.target.value='';
+});
+updateDocumentTitle();updateGallery();requestAnimationFrame(updateStickyOffsets);
 
 renderPalette();setTool('select');switchPlane(0);})();
 </script>
