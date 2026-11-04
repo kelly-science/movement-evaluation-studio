@@ -266,6 +266,12 @@ body{padding:0;background:#30343b;color:var(--text)}
 .add-document-dialog .dialog-footer button{flex:1;min-width:135px}
 @media(max-width:750px){.gallery-documents{gap:8px}.gallery-doc-preview{height:78px}.gallery-doc-actions button{width:28px;height:28px}.gallery-group .gallery-add{min-height:60px}.frame-properties{gap:8px}}
 
+
+/* MES V14 — unified document navigation color and simpler frame import */
+.menu-bar{background:#394048fa;border-bottom:1px solid #ffffff24;box-shadow:none}
+.menu-trigger{gap:0}
+.menu-chevron{display:none}
+.gallery-heading .local-save-status{display:block;margin-top:9px}
 </style>
 </head>
 <body>
@@ -288,7 +294,7 @@ body{padding:0;background:#30343b;color:var(--text)}
   <nav class="menu-bar" aria-label="Studio menu bar">
     <div class="menu-group">
       <div class="menu-wrap">
-        <button type="button" class="menu-trigger" id="fileMenuButton" aria-expanded="false" aria-haspopup="true" aria-controls="fileMenu">File <span class="menu-chevron" aria-hidden="true">▾</span></button>
+        <button type="button" class="menu-trigger" id="fileMenuButton" aria-expanded="false" aria-haspopup="true" aria-controls="fileMenu">File</button>
         <div class="menu-dropdown" id="fileMenu" role="group" aria-label="File actions" hidden>
           <button type="button" class="menu-action" id="menuNew">New Project</button>
           <button type="button" class="menu-action" id="menuOpenProject">Open Project…</button>
@@ -299,7 +305,7 @@ body{padding:0;background:#30343b;color:var(--text)}
         </div>
       </div>
       <div class="menu-wrap">
-        <button type="button" class="menu-trigger" id="editMenuButton" aria-expanded="false" aria-haspopup="true" aria-controls="editMenu">Edit <span class="menu-chevron" aria-hidden="true">▾</span></button>
+        <button type="button" class="menu-trigger" id="editMenuButton" aria-expanded="false" aria-haspopup="true" aria-controls="editMenu">Edit</button>
         <div class="menu-dropdown" id="editMenu" role="group" aria-label="Edit actions" hidden>
           <button type="button" class="menu-action" data-click="undoBtn" data-mirror="undoBtn">Undo <span class="menu-shortcut">⌘/Ctrl Z</span></button>
           <button type="button" class="menu-action" data-click="redoBtn" data-mirror="redoBtn">Redo</button>
@@ -310,7 +316,7 @@ body{padding:0;background:#30343b;color:var(--text)}
         </div>
       </div>
       <div class="menu-wrap">
-        <button type="button" class="menu-trigger" id="viewMenuButton" aria-expanded="false" aria-haspopup="true" aria-controls="viewMenu">View <span class="menu-chevron" aria-hidden="true">▾</span></button>
+        <button type="button" class="menu-trigger" id="viewMenuButton" aria-expanded="false" aria-haspopup="true" aria-controls="viewMenu">View</button>
         <div class="menu-dropdown" id="viewMenu" role="group" aria-label="View actions" hidden>
           <button type="button" class="menu-action" data-plane-menu="0">Frontal Plane <span class="menu-selected" aria-hidden="true">✓</span></button>
           <button type="button" class="menu-action" data-plane-menu="1">Sagittal Plane <span class="menu-selected" aria-hidden="true"></span></button>
@@ -347,7 +353,7 @@ body{padding:0;background:#30343b;color:var(--text)}
   <aside class="plane-gallery" aria-label="Plane gallery">
     <div class="gallery-heading">
       <div class="gallery-heading-title">Plane gallery</div>
-      <p>Each photo is its own editable, locally saved workspace.</p><span class="local-save-status" id="localSaveStatus" role="status" aria-live="polite">Checking local storage…</span>
+      <span class="local-save-status" id="localSaveStatus" role="status" aria-live="polite">Checking local storage…</span>
     </div>
     <section class="gallery-group" aria-labelledby="frontalGalleryTitle">
       <div class="gallery-section-header"><h2 id="frontalGalleryTitle">Frontal plane</h2><span class="gallery-state" id="galleryStatus0">EMPTY</span></div>
@@ -407,13 +413,6 @@ body{padding:0;background:#30343b;color:var(--text)}
     <p class="dialog-description">Choose an annotation to edit its appearance or label in Tool Options. Use Edit → Delete Selected to remove it.</p>
     <div id="annotationList" class="selected-list"><p class="hint">No annotations yet.</p></div>
     <div class="dialog-footer"><button class="tactile primary" id="doneAnnotations" type="button">DONE</button></div>
-  </dialog>
-  <dialog class="checklist-dialog add-document-dialog" id="addDocumentDialog" aria-labelledby="addDocumentTitle">
-    <div class="dialog-header"><div><div class="dialog-overline">ADD ANNOTATION WORKSPACE</div><h2 id="addDocumentTitle">NEW FRAME</h2></div><button class="tactile dialog-close" type="button" id="closeAddDocument" aria-label="Close">✕</button></div>
-    <p class="dialog-description">Choose what you will evaluate in this image. You can add as many frames as needed to each plane.</p>
-    <div class="fieldgroup"><label for="newDocCategory">CATEGORY</label><select id="newDocCategory" class="select-well"><option>ROM</option><option>Muscles</option><option>Skeletal</option><option>Joints</option><option>Movement</option><option>Other</option></select></div>
-    <div class="fieldgroup"><label for="newDocName">FRAME NAME (OPTIONAL)</label><input id="newDocName" class="input-well" maxlength="75" placeholder="e.g., Frontal ROM"></div>
-    <div class="dialog-footer"><button type="button" class="tactile primary" id="addDocumentPhoto">CHOOSE PHOTO</button><button type="button" class="tactile" id="addDocumentVideo">CHOOSE VIDEO</button></div>
   </dialog>
 
 <input type="file" id="projectInput" accept=".json,.movement.json,application/json" hidden>
@@ -503,23 +502,96 @@ function redoAction(){const entry=redo.pop();if(!entry)return;undo.push(entry);a
 function disposeSource(v){if(v.source?.video){v.source.video.pause();v.source.video.removeAttribute('src');v.source.video.load();v.source.video.remove()}if(v.source?.url)URL.revokeObjectURL(v.source.url);v.source=null;v.preview=false}
 function addImageToView(v,src,label){const im=new Image();im.onload=()=>{v.frameImg=im;v.frameSrc=src;v.frameLabel=label||'Captured frame';v.preview=false;updateGallery();if(v===current()){selected=-1;syncCanvas();updateFrameProperties();updateUI();draw()}else queueAutosave()};im.onerror=()=>toast('This image could not be decoded.');im.src=src}
 function saveSnapshot(source,w,h){const limit=2200,scale=Math.min(1,limit/Math.max(w,h)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*scale));c.height=Math.max(1,Math.round(h*scale));c.getContext('2d').drawImage(source,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.91)}
-function replaceFrame(v,src,label){if(v.annotations.length&&!confirm('Replace this plane’s frame and clear its annotations?'))return false;v.annotations=[];undo=[];redo=[];if(v===current())selected=-1;addImageToView(v,src,label);return true}
-function loadMedia(file){if(!file)return;const v=current();const type=file.type.startsWith('image/')?'photo':file.type.startsWith('video/')?'video':null;if(!type){toast('Choose a photo or video.');return}const idx=active;
-if(v.annotations.length&&!confirm('Load new media and clear this plane’s annotations?'))return;
-v.annotations=[];v.frameSrc=null;v.frameImg=null;selected=-1;undo=[];redo=[];disposeSource(v);
-const url=URL.createObjectURL(file);
-if(type==='photo'){const img=new Image();img.onload=()=>{if(views[idx]!==v)return;try{const src=saveSnapshot(img,img.naturalWidth,img.naturalHeight);addImageToView(v,src,file.name);toast('Photo captured. Begin annotating.')}catch(e){toast('Cannot read this photo; try JPG or PNG.')}URL.revokeObjectURL(url)};img.onerror=()=>{URL.revokeObjectURL(url);toast('Unsupported image format. Try JPG or PNG.');updateUI()};img.src=url}
-else{const vid=document.createElement('video');vid.preload='auto';vid.muted=true;vid.playsInline=true;vid.setAttribute('playsinline','');vid.setAttribute('webkit-playsinline','');$('videoDecodePool').appendChild(vid);v.source={video:vid,url,fileName:file.name,duration:0,seeking:false,ready:false};v.preview=true;
-vid.onloadedmetadata=()=>{if(v.source?.video!==vid)return;if(!vid.videoWidth||!vid.videoHeight||!Number.isFinite(vid.duration)||vid.duration<=0){toast('Could not read video duration. Use MP4/H.264.');return}v.source.duration=vid.duration;if(v===current()){syncCanvas();updateUI()}seekVideo(v,Math.min(.001,vid.duration));toast('Video ready. Scrub to the peak, then use this frame.')};
-vid.onloadeddata=()=>{if(v.source?.video!==vid)return;v.source.ready=true;if(!vid.seeking)v.source.seeking=false;if(v===current()){syncCanvas();updateUI();draw()}};
-vid.onseeked=()=>{if(v.source?.video!==vid)return;v.source.seeking=false;v.source.ready=vid.readyState>=2;if(v===current()){syncCanvas();updateUI();draw()}};
-vid.onerror=()=>{if(v.source?.video!==vid)return;v.source.ready=false;toast('Cannot decode this video. MP4/H.264 is recommended.');if(v===current())updateUI()};
-vid.src=url;vid.load()}
-syncCanvas();updateUI();draw()}
+function confirmFrameReplacement(v){
+ if(!v.frameSrc||v.replacementApproved)return true;
+ return confirm('Choose another frame?\n\nThe new image or captured video frame will replace this photo and permanently clear its annotations. This cannot be undone. Save a project backup first if you need the original.');
+}
+function replaceFrame(v,src,label){
+ if(!confirmFrameReplacement(v))return false;
+ v.annotations=[];undo=[];redo=[];if(v===current())selected=-1;
+ v.replacementApproved=false;
+ addImageToView(v,src,label);return true;
+}
+function loadMedia(file){
+ if(!file)return;
+ const v=current();
+ const type=file.type.startsWith('image/')?'photo':file.type.startsWith('video/')?'video':null;
+ if(!type){toast('Choose a photo or video.');return}
+ if(!confirmFrameReplacement(v))return;
+ const idx=active;
+ if(v.frameSrc)v.replacementApproved=true;
+ const url=URL.createObjectURL(file);
+ if(type==='photo'){
+  const img=new Image();
+  img.onload=()=>{
+   if(views[idx]!==v){URL.revokeObjectURL(url);return}
+   try{
+    const src=saveSnapshot(img,img.naturalWidth,img.naturalHeight);
+    if(replaceFrame(v,src,file.name)){
+     disposeSource(v);
+     toast('Photo captured. Begin annotating.');
+    }
+   }catch(e){console.error(e);v.replacementApproved=false;toast('Cannot read this photo; try JPG or PNG.')}
+   URL.revokeObjectURL(url);
+  };
+  img.onerror=()=>{URL.revokeObjectURL(url);v.replacementApproved=false;toast('Unsupported image format. Try JPG or PNG.');updateUI()};
+  img.src=url;
+ }else{
+  // Do not remove the captured still or its annotations while the user scrubs.
+  // They are committed only when the new frame is explicitly captured.
+  disposeSource(v);
+  const vid=document.createElement('video');vid.preload='auto';vid.muted=true;vid.playsInline=true;
+  vid.setAttribute('playsinline','');vid.setAttribute('webkit-playsinline','');
+  $('videoDecodePool').appendChild(vid);
+  v.source={video:vid,url,fileName:file.name,duration:0,seeking:false,ready:false};v.preview=true;
+  vid.onloadedmetadata=()=>{
+   if(v.source?.video!==vid)return;
+   if(!vid.videoWidth||!vid.videoHeight||!Number.isFinite(vid.duration)||vid.duration<=0){
+    toast('Could not read video duration. Use MP4/H.264.');v.replacementApproved=false;disposeSource(v);syncCanvas();updateUI();return;
+   }
+   v.source.duration=vid.duration;
+   if(v===current()){syncCanvas();updateUI()}
+   seekVideo(v,Math.min(.001,vid.duration));toast('Video ready. Scrub to the peak, then use this frame.');
+  };
+  vid.onloadeddata=()=>{
+   if(v.source?.video!==vid)return;v.source.ready=true;
+   if(!vid.seeking)v.source.seeking=false;
+   if(v===current()){syncCanvas();updateUI();draw()}
+  };
+  vid.onseeked=()=>{
+   if(v.source?.video!==vid)return;v.source.seeking=false;v.source.ready=vid.readyState>=2;
+   if(v===current()){syncCanvas();updateUI();draw()}
+  };
+  vid.onerror=()=>{
+   if(v.source?.video!==vid)return;
+   v.replacementApproved=false;
+   disposeSource(v); // restore the preserved original frame on decode failure
+   toast('Cannot decode this video. MP4/H.264 is recommended.');
+   if(v===current()){syncCanvas();updateUI();draw()}
+  };
+  vid.src=url;vid.load();
+ }
+ syncCanvas();updateUI();draw();
+}
 function seekVideo(v,t){const s=v.source;if(!v.preview||!s||!s.duration)return;const goal=clamp(t,0,s.duration);s.seeking=true;if(v===current())updateUI();try{if(Math.abs(s.video.currentTime-goal)<.0003&&s.ready){s.seeking=false;if(v===current()){updateUI();draw()}}else s.video.currentTime=goal}catch(e){s.seeking=false;toast('Unable to show this frame.')}if(v===current()){$('timeline').value=String(goal);$('timeNow').textContent=time(goal)}}
 function captureFrame(){const v=current(),s=v.source;if(!v.preview||!s||!s.ready||s.seeking||s.video.seeking){toast('Choose a fully loaded video frame.');return}try{const src=saveSnapshot(s.video,s.video.videoWidth,s.video.videoHeight);if(replaceFrame(v,src,s.fileName+' · '+time(s.video.currentTime)))toast('Peak frame captured. Start annotating.');else if(v.frameSrc)cancelFrameEdit()}catch(e){toast('Unable to capture this video frame.')}}
-function cancelFrameEdit(){const v=current();if(!v.frameSrc)return;v.preview=false;selected=-1;draft=null;romDraft=null;drag=null;syncCanvas();updateUI();draw();toast('Original frame and annotations preserved.')}
-function reopenCapturedFrame(index){switchDocument(index);const v=current();if(v.source?.ready&&v.frameSrc){v.preview=true;selected=-1;draft=null;romDraft=null;drag=null;syncCanvas();updateUI();draw();toast('Choose a new frame or keep your original annotations.')}else{$('galleryInput').accept='image/*,video/*';$('galleryInput').click()}}
+function cancelFrameEdit(){
+ const v=current();if(!v.frameSrc)return;
+ v.replacementApproved=false;v.preview=false;selected=-1;draft=null;romDraft=null;drag=null;
+ syncCanvas();updateUI();draw();toast('Original frame and annotations preserved.');
+}
+function reopenCapturedFrame(index){
+ switchDocument(index);
+ const v=current();
+ if(!confirmFrameReplacement(v))return;
+ v.replacementApproved=!!v.frameSrc;
+ if(v.source?.ready&&v.frameSrc){
+  v.preview=true;selected=-1;draft=null;romDraft=null;drag=null;
+  syncCanvas();updateUI();draw();toast('Choose a new frame or keep your original annotations.');
+ }else{
+  $('galleryInput').accept='image/*,video/*';$('galleryInput').click();
+ }
+}
 function visibleSource(v){if(v.preview&&v.source?.ready)return v.source.video;if(v.frameImg)return v.frameImg;if(v.source?.ready)return v.source.video;return null}
 function sourceSize(v){const s=visibleSource(v);if(!s)return{w:16,h:9};return s instanceof HTMLVideoElement?{w:s.videoWidth,h:s.videoHeight}:{w:s.naturalWidth,h:s.naturalHeight}}
 function switchDocument(index){
@@ -958,7 +1030,7 @@ $('menuExportPlane').onclick=async()=>{closeMenus();try{await downloadCanvas(can
 $('menuExportPoster').onclick=async()=>{closeMenus();try{const count=exportPageCount();for(let i=0;i<count;i++){await downloadCanvas(board(i),safeName()+'-exercise-evaluation'+(count>1?'-page-'+(i+1):'')+'.png');}toast('Exported all '+views.filter(v=>v.frameImg).length+' saved frames'+(count>1?' across '+count+' PNG pages.':'.'));}catch(e){console.error(e);toast('Unable to export all frames.')}};
 
 const stage=$('stage');stage.addEventListener('dragover',e=>{e.preventDefault();stage.classList.add('dragover')});stage.addEventListener('dragleave',e=>{if(!stage.contains(e.relatedTarget))stage.classList.remove('dragover')});stage.addEventListener('drop',e=>{e.preventDefault();stage.classList.remove('dragover');loadMedia(e.dataTransfer?.files?.[0])});
-window.addEventListener('keydown',e=>{if(annotationsDialog.open||$('addDocumentDialog').open)return;if(e.key==='Escape'&&menuButtons.some(b=>b.getAttribute('aria-expanded')==='true')){closeMenus();return}const tag=document.activeElement?.tagName||'';if(/INPUT|SELECT|TEXTAREA/.test(tag))return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redoAction():undoAction()}else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelected()}else if(e.key==='Escape'){selected=-1;setTool('select')}});
+window.addEventListener('keydown',e=>{if(annotationsDialog.open)return;if(e.key==='Escape'&&menuButtons.some(b=>b.getAttribute('aria-expanded')==='true')){closeMenus();return}const tag=document.activeElement?.tagName||'';if(/INPUT|SELECT|TEXTAREA/.test(tag))return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redoAction():undoAction()}else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelected()}else if(e.key==='Escape'){selected=-1;setTool('select')}});
 window.addEventListener('resize',resizeCanvas);if('ResizeObserver' in window)new ResizeObserver(resizeCanvas).observe($('pictureFrame'));window.addEventListener('beforeunload',()=>views.forEach(disposeSource));
 
 // MES V10 TOP TOOLBAR TOOLTIP — keyboard accessible, independent of scroll clipping.
@@ -1046,7 +1118,7 @@ function createGalleryNode(v){
  card.append(surface,name,category);
  card.addEventListener('click',()=>{const i=views.findIndex(x=>x.uid===v.uid);if(i>=0)switchDocument(i)});
  const actions=document.createElement('div');actions.className='gallery-doc-actions';
- const edit=document.createElement('button');edit.type='button';edit.innerHTML=pencilIcon;edit.title='Edit or replace this frame';edit.setAttribute('aria-label','Edit or replace frame');
+ const edit=document.createElement('button');edit.type='button';edit.innerHTML=pencilIcon;edit.title='Choose another frame';edit.setAttribute('aria-label','Choose another frame');
  edit.addEventListener('click',e=>{e.stopPropagation();const i=views.findIndex(x=>x.uid===v.uid);if(i>=0)reopenCapturedFrame(i)});
  const remove=document.createElement('button');remove.type='button';remove.innerHTML=trashIcon;remove.title='Delete frame and annotations';remove.setAttribute('aria-label','Delete frame');
  remove.addEventListener('click',e=>{e.stopPropagation();deleteFrame(v.uid)});
@@ -1090,26 +1162,25 @@ function deleteFrame(uid){
  undo=[];redo=[];switchDocument(Math.min(i,views.length-1));queueAutosave(true);toast('Frame deleted from project.');
 }
 let pendingNew=null;
-const addDlg=$('addDocumentDialog');
 function addNewFrame(plane){
- pendingNew={plane};$('newDocCategory').value='ROM';$('newDocName').value='';
- $('addDocumentTitle').textContent='ADD '+viewNames[plane]+' FRAME';addDlg.showModal();
+ pendingNew={plane};
+ $('galleryInput').accept='image/*,video/*';
+ $('galleryInput').click();
 }
-$('closeAddDocument').onclick=()=>addDlg.close();
-addDlg.addEventListener('click',e=>{if(e.target===addDlg)addDlg.close()});
-function chooseFrameMedia(mediaType){
- if(!pendingNew)return;
- pendingNew.category=$('newDocCategory').value;pendingNew.name=$('newDocName').value.trim().slice(0,75);
- $('galleryInput').accept=mediaType==='video'?'video/*':'image/*';
- addDlg.close();$('galleryInput').click();
-}
-$('addDocumentPhoto').onclick=()=>chooseFrameMedia('photo');
-$('addDocumentVideo').onclick=()=>chooseFrameMedia('video');
-document.querySelectorAll('[data-gallery-add]').forEach(button=>button.addEventListener('click',()=>addNewFrame(Number(button.dataset.galleryAdd))));
+document.querySelectorAll('[data-gallery-add]').forEach(button=>
+ button.addEventListener('click',()=>addNewFrame(Number(button.dataset.galleryAdd))));
+$('galleryInput').addEventListener('cancel',()=>{
+ pendingNew=null;
+ // A cancelled native picker must never reset captured work.
+ if(current())current().replacementApproved=false;
+});
 $('galleryInput').addEventListener('change',e=>{
- const file=e.target.files?.[0];e.target.value='';if(!file){pendingNew=null;return}
+ const file=e.target.files?.[0];e.target.value='';
+ if(!file){pendingNew=null;if(current())current().replacementApproved=false;return;}
  if(pendingNew){
-  const {plane,category,name}=pendingNew;const v=makeView(plane,category,name||`${viewNames[plane][0]}${viewNames[plane].slice(1).toLowerCase()} ${category}`);
+  const {plane}=pendingNew;
+  const num=views.filter(v=>v.plane===plane&&v.frameSrc).length+1;
+  const v=makeView(plane,'Other',viewNames[plane][0]+viewNames[plane].slice(1).toLowerCase()+' Frame '+num);
   views.push(v);switchDocument(views.length-1);pendingNew=null;
  }
  loadMedia(file);
