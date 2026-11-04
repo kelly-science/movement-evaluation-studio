@@ -571,6 +571,42 @@ body.rom-mode #galleryHeadingText{font-size:12px}
   body.rom-mode.rom-page-enter-back .workbench{animation:260ms cubic-bezier(.20,.74,.19,1) both kineticaRomEnterLeft}
 }
 
+
+/* Kinetica Studio v27 — animated menus and consistent mobile chrome. */
+body.rom-mode #viewMenuWrap{display:none!important}
+@keyframes kineticaMenuReveal{
+  from{opacity:0;transform:translate3d(0,-5px,0)}
+  to{opacity:1;transform:translate3d(0,0,0)}
+}
+@keyframes kineticaMenuDismiss{
+  from{opacity:1;transform:translate3d(0,0,0)}
+  to{opacity:0;transform:translate3d(0,-3px,0)}
+}
+.menu-dropdown.menu-is-opening,
+.project-type-submenu.menu-is-opening,
+.rom-select-submenu.menu-is-opening{
+  animation:kineticaMenuReveal 155ms ease-out both;
+  transform-origin:top left;
+}
+.menu-dropdown.menu-is-closing,
+.project-type-submenu.menu-is-closing,
+.rom-select-submenu.menu-is-closing{
+  animation:kineticaMenuDismiss 125ms ease-in both;
+  pointer-events:none;
+}
+@media(prefers-reduced-motion:reduce){
+ .menu-dropdown.menu-is-opening,.project-type-submenu.menu-is-opening,.rom-select-submenu.menu-is-opening,
+ .menu-dropdown.menu-is-closing,.project-type-submenu.menu-is-closing,.rom-select-submenu.menu-is-closing{animation:none!important}
+}
+/* Both chrome rows must use exactly the same horizontal bounds on phones.
+   The existing margins differ by two pixels on each side below 450px. */
+@media(max-width:450px){
+ .menu-bar,.studio-toolbar{margin-left:-4px!important;margin-right:-4px!important}
+}
+@media (min-width:451px) and (max-width:600px){
+ body.rom-mode .menu-bar,body.rom-mode .studio-toolbar{margin-left:-4px;margin-right:-4px}
+}
+
 </style>
 </head>
 <body>
@@ -639,7 +675,7 @@ body.rom-mode #galleryHeadingText{font-size:12px}
           <button type="button" class="menu-action" data-click="clearBtn" data-mirror="clearBtn">Clear Current Plane…</button>
         </div>
       </div>
-      <div class="menu-wrap">
+      <div class="menu-wrap" id="viewMenuWrap">
         <button type="button" class="menu-trigger" id="viewMenuButton" aria-expanded="false" aria-haspopup="true" aria-controls="viewMenu">View</button>
         <div class="menu-dropdown" id="viewMenu" role="group" aria-label="View actions" hidden>
           <button type="button" class="menu-action" data-plane-menu="0">Frontal Plane <span class="menu-selected" aria-hidden="true">✓</span></button>
@@ -1794,9 +1830,9 @@ function positionProjectSubmenu(){
 function showProjectSubmenu(show){
   clearTimeout(projectSubmenuCloseTimer);
   if(show&&$('fileMenuButton').getAttribute('aria-expanded')!=='true')return;
-  projectSubmenu.hidden=!show;
   projectTrigger.setAttribute('aria-expanded',String(show));
-  if(show)positionProjectSubmenu();
+  if(show){revealMenu(projectSubmenu);positionProjectSubmenu()}
+  else dismissMenu(projectSubmenu);
 }
 function scheduleProjectSubmenuClose(){
   clearTimeout(projectSubmenuCloseTimer);
@@ -1888,8 +1924,9 @@ function positionROMSubmenu(){
 function showROMSubmenu(show){
  clearTimeout(romSelectCloseTimer);
  if(show&&(projectType!=='rom'||$('editMenuButton').getAttribute('aria-expanded')!=='true'))return;
- romSelectSubmenu.hidden=!show;romSelectTrigger.setAttribute('aria-expanded',String(show));
- if(show){refreshROMSelections();positionROMSubmenu()}
+ romSelectTrigger.setAttribute('aria-expanded',String(show));
+ if(show){revealMenu(romSelectSubmenu);refreshROMSelections();positionROMSubmenu()}
+ else dismissMenu(romSelectSubmenu);
 }
 function scheduleROMSubmenuClose(){clearTimeout(romSelectCloseTimer);romSelectCloseTimer=setTimeout(()=>showROMSubmenu(false),300)}
 romSelectWrap.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'||e.pointerType==='pen')showROMSubmenu(true)});
@@ -1904,11 +1941,37 @@ romSelectSubmenu.addEventListener('keydown',e=>{
 window.addEventListener('resize',()=>{if(!romSelectSubmenu.hidden)positionROMSubmenu()});
 window.addEventListener('scroll',e=>{if(e.target===romSelectSubmenu||romSelectSubmenu.contains(e.target))return;if(!romSelectSubmenu.hidden)positionROMSubmenu()},true);
 buildROMOptions();
-function closeMenus(){showProjectSubmenu(false);showROMSubmenu(false);menuButtons.forEach(button=>{button.setAttribute('aria-expanded','false');$(button.getAttribute('aria-controls')).hidden=true})}
+// Animate opening AND closing without leaving a submenu in an unclickable state.
+// Hidden menus are removed only after the short exit animation completes.
+const menuAnimationTimers=new WeakMap();
+function revealMenu(panel){
+ clearTimeout(menuAnimationTimers.get(panel));
+ panel.classList.remove('menu-is-closing','menu-is-opening');
+ panel.hidden=false;
+ // Restart the CSS animation when rapidly switching between File / Edit / Help.
+ void panel.offsetWidth;
+ panel.classList.add('menu-is-opening');
+}
+function dismissMenu(panel){
+ clearTimeout(menuAnimationTimers.get(panel));
+ if(panel.hidden){panel.classList.remove('menu-is-opening','menu-is-closing');return}
+ panel.classList.remove('menu-is-opening');
+ panel.classList.add('menu-is-closing');
+ if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  panel.hidden=true;panel.classList.remove('menu-is-closing');return;
+ }
+ menuAnimationTimers.set(panel,setTimeout(()=>{
+  panel.hidden=true;panel.classList.remove('menu-is-closing');
+ },130));
+}
+function closeMenus(){
+ showProjectSubmenu(false);showROMSubmenu(false);
+ menuButtons.forEach(button=>{button.setAttribute('aria-expanded','false');dismissMenu($(button.getAttribute('aria-controls')))});
+}
 menuButtons.forEach(button=>button.addEventListener('click',()=>{
-  const open=button.getAttribute('aria-expanded')==='true';
-  closeMenus();
-  if(!open){button.setAttribute('aria-expanded','true');$(button.getAttribute('aria-controls')).hidden=false}
+ const wasOpen=button.getAttribute('aria-expanded')==='true';
+ closeMenus();
+ if(!wasOpen){button.setAttribute('aria-expanded','true');revealMenu($(button.getAttribute('aria-controls')))}
 }));
 document.querySelectorAll('[data-click]').forEach(button=>button.addEventListener('click',()=>{
   if(button.disabled)return;
