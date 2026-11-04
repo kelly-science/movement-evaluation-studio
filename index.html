@@ -445,6 +445,37 @@ body{padding:0;background:#30343b;color:var(--text)}
 @media(max-width:920px){.header-toast-slot{flex:none;max-width:none;width:min(540px,calc(100vw - 18px))}}
 @media(max-width:750px){.header-toast-slot{flex:none;min-width:0;max-width:none;width:min(540px,calc(100vw - 18px))}}
 @media(max-width:450px){.document-header{padding-bottom:36px}.header-toast-slot{flex:none;max-width:none;width:min(540px,calc(100vw - 18px))}.header-toast-text{right:7px}}
+
+/* Kinetica v21 — two project types and dedicated ROM measurement gallery */
+.project-type-wrap{position:relative}
+.project-type-submenu{position:absolute;top:-7px;left:calc(100% + 7px);min-width:215px;padding:7px;background:#39414a;border:1px solid #667887;border-radius:10px;box-shadow:0 15px 30px #0008;z-index:190;display:grid;gap:3px}
+.project-type-submenu[hidden]{display:none!important}
+.project-type-trigger{justify-content:space-between}
+.submenu-caret{font-size:14px;color:#c0cfdb}
+.project-type-submenu button[aria-checked=true]{background:#526b88;color:#eef6ff}
+.rom-gallery{max-height:calc(100vh - 195px);overflow:auto;overscroll-behavior:contain;padding-right:4px}
+.rom-gallery[hidden]{display:none!important}
+.rom-group{border-top:1px solid #ffffff20;padding:13px 2px 17px}
+.rom-group-heading{font-size:11px;font-weight:780;color:#dce7f1;margin:0 0 10px;line-height:1.45}
+.rom-slot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.rom-slot{width:100%;min-width:0;padding:0;border:1px dashed #71808e;background:#3a424a;border-radius:9px;overflow:hidden;text-align:left;cursor:pointer;color:#e1eaf1;position:relative;box-shadow:none}
+.rom-slot:hover{border-color:#b4d5f3;background:#47515b}
+.rom-slot.is-active{border:2px solid #a9d1ff;background:#435265}
+.rom-slot-media{position:relative;display:flex;align-items:center;justify-content:center;height:68px;background:#20262d;overflow:hidden}
+.rom-slot-media img{width:100%;height:100%;object-fit:contain}
+.rom-slot-plus{font-size:24px;color:#bcd4ea}
+.rom-slot-check{position:absolute;top:4px;right:4px;border-radius:50%;height:21px;width:21px;background:#4ade80;color:#0b2716;display:grid;place-items:center;font-size:14px;font-weight:900;box-shadow:0 2px 5px #0008}
+.rom-slot-caption{display:block;padding:7px 5px;font-size:9px;font-weight:650;min-height:33px;line-height:1.25;overflow-wrap:anywhere}
+.rom-slot-edit{position:absolute;top:4px;left:4px;background:#263444e8;color:#ebf4ff;border:1px solid #ffffff65;border-radius:6px;padding:3px;min-width:24px;min-height:24px;display:grid;place-items:center;font-size:12px}
+.rom-slot-edit:hover{background:#4d6683}
+body.rom-mode .movement-only{display:none!important}
+body.rom-mode [data-tool]:not([data-tool="text"]):not([data-tool="rom"]){display:none!important}
+body.rom-mode .rom-gallery{display:block}
+body.rom-mode #frameCategory{pointer-events:none}
+body.rom-mode .frame-properties{display:none!important}
+body.rom-mode .gallery-heading p{display:none}
+body.rom-mode #galleryHeadingText{font-size:12px}
+@media(max-width:750px){.rom-gallery{max-height:none;overflow:visible}.rom-slot-media{height:76px}.rom-slot-caption{font-size:10px}.project-type-submenu{left:15px;top:calc(100% + 6px)}}
 </style>
 </head>
 <body>
@@ -480,6 +511,14 @@ body{padding:0;background:#30343b;color:var(--text)}
           <button type="button" class="menu-action" id="menuOpenProject">Open Project…</button>
           <button type="button" class="menu-action" id="menuSaveLocal">Save <span class="menu-shortcut">⌘/Ctrl S</span></button>
           <button type="button" class="menu-action" id="menuSaveProject">Download Project Backup (.json)</button>
+          <div class="menu-separator" role="separator"></div>
+          <div class="project-type-wrap" id="projectTypeWrap">
+            <button type="button" class="menu-action project-type-trigger" id="projectTypeTrigger" aria-haspopup="true" aria-expanded="false" aria-controls="projectTypeSubmenu">Project Type <span class="submenu-caret" aria-hidden="true">›</span></button>
+            <div class="project-type-submenu" id="projectTypeSubmenu" role="group" aria-label="Choose project type" hidden>
+              <button type="button" class="menu-action" data-project-type="movement" role="menuitemradio" aria-checked="true">Movement Eval <span>✓</span></button>
+              <button type="button" class="menu-action" data-project-type="rom" role="menuitemradio" aria-checked="false">ROM Lab <span> </span></button>
+            </div>
+          </div>
           <div class="menu-separator" role="separator"></div>
           <button type="button" class="menu-action" id="menuExportPoster">Export All Frames (PNG)</button>
           <button type="button" class="menu-action" id="menuExportPlane">Export Current Plane (PNG)</button>
@@ -539,18 +578,19 @@ body{padding:0;background:#30343b;color:var(--text)}
 <div class="workbench">
   <aside class="plane-gallery" aria-label="Plane gallery">
     <div class="gallery-heading">
-      <div class="gallery-heading-title">Plane gallery</div>
+      <div class="gallery-heading-title" id="galleryHeadingText">Plane gallery</div>
     </div>
-    <section class="gallery-group" aria-labelledby="frontalGalleryTitle">
+    <section class="gallery-group movement-only" aria-labelledby="frontalGalleryTitle">
       <div class="gallery-section-header"><h2 id="frontalGalleryTitle">Frontal plane</h2><span class="gallery-state" id="galleryStatus0">EMPTY</span></div>
       <div class="gallery-documents" id="galleryDocuments0"></div>
       <button type="button" class="gallery-add" data-gallery-add="0" aria-label="Add a frontal plane image or video"><span class="gallery-plus" aria-hidden="true">+</span><span>Add frontal frame</span></button>
     </section>
-    <section class="gallery-group" aria-labelledby="sagittalGalleryTitle">
+    <section class="gallery-group movement-only" aria-labelledby="sagittalGalleryTitle">
       <div class="gallery-section-header"><h2 id="sagittalGalleryTitle">Sagittal plane</h2><span class="gallery-state" id="galleryStatus1">EMPTY</span></div>
       <div class="gallery-documents" id="galleryDocuments1"></div>
       <button type="button" class="gallery-add" data-gallery-add="1" aria-label="Add a sagittal plane image or video"><span class="gallery-plus" aria-hidden="true">+</span><span>Add sagittal frame</span></button>
     </section>
+    <div class="rom-gallery" id="romGallery" hidden aria-label="ROM Lab measurement gallery"></div>
   </aside>
 <section class="center" aria-label="Movement canvas">
   <div class="bezel"><div class="oled"><div class="screen-head"><span id="screenTitle">FRONTAL PLANE · NO FRAME</span><span class="screen-tag" id="screenTag">STANDBY</span></div><div id="stage" class="stage empty-screen"><div class="empty" id="empty"><div class="empty-symbol">⌁</div><h3>CAPTURE YOUR PEAK MOVEMENT</h3><p>Upload a frontal- or sagittal-plane screenshot, or scrub a slow-motion video and choose the exact peak frame.</p></div><div id="pictureFrame" class="picture-frame hidden"><canvas id="canvas" aria-label="Movement photo and interactive anatomical annotations"></canvas><div id="overlayNotice" class="screen-overlay hidden"></div></div></div></div></div>
@@ -646,6 +686,90 @@ let documentCounter=0;
 const newDocId=()=>`frame_${Date.now().toString(36)}_${(++documentCounter).toString(36)}_${Math.random().toString(36).slice(2,7)}`;
 const help={select:'Tap any existing annotation or its label to edit or move it. You can do this with any drawing tool active.',joint:'Enter the joint name and select its synovial type, then tap the joint location.',bone:'Enter the bone name, then draw in empty space. Tap any existing annotation to edit or drag it.',muscle:'Enter a visible Set 1 or 2 muscle, then draw in empty space. Tap an existing trace to edit or move it.',arrow:'Choose a movement type, then drag an arrow on empty space. Tap an existing arrow to edit or move it.',text:'Enter a label, then tap the photo where you want it.',rom:'Place the fulcrum, stationary arm and moving arm. Drag the colored markers to adjust. Angles update live.'};
 let views=[makeView(0),makeView(1)],active=0,tool='select',selected=-1,drag=null,draft=null;
+
+// Measurement slots reproduce the exercise/side/motion organization on pages 1–2
+// of the teacher-supplied Joint Range of Motion Lab, without worksheet questions.
+const romGroups=[
+ ['Back Extension and Flexion',['Extension','Flexion']],
+ ['Side Flexion',['Left','Right']],
+ ['Neck Extension and Flexion',['Extension','Flexion']],
+ ['Neck Lateral (Side) Bending',['Left','Right']],
+ ['Neck Rotation',['Left','Right']],
+ ['Hip Backward Extension',['Left','Right']],
+ ['Elbow Extension and Flexion',['Left Extension','Left Flexion','Right Extension','Right Flexion']],
+ ['Forearm Pronation and Supination',['Left Pronation','Left Supination','Right Pronation','Right Supination']],
+ ['Ankle Inversion and Eversion',['Left Inversion','Left Eversion','Right Inversion','Right Eversion']],
+ ['Ankle Plantarflexion and Dorsiflexion',['Left Plantarflexion','Left Dorsiflexion','Right Plantarflexion','Right Dorsiflexion']]
+];
+const romDefinitions=romGroups.flatMap((group,groupIndex)=>group[1].map((slot,slotIndex)=>({
+ key:`rom-${groupIndex}-${slotIndex}`,group:group[0],slot,groupIndex,label:`${group[0]} — ${slot}`
+})));
+let projectType='movement';
+let movementTitle='Untitled Exercise';
+function romDocument(def){const v=makeView(0,'ROM',def.label);v.romKey=def.key;return v}
+function ensureROMDocuments(){for(const def of romDefinitions)if(!views.some(v=>v.romKey===def.key))views.push(romDocument(def))}
+function isROMView(v){return !!v.romKey}
+function movementViews(){return views.filter(v=>!isROMView(v))}
+function romViewFor(key){return views.find(v=>v.romKey===key)}
+function romSlotComplete(v){return !!(v?.frameSrc&&v.annotations.some(a=>a.type==='rom'&&a.points?.length===3&&a.points.every(Boolean)))}
+function romSlotAnnotated(v){return !!(v?.frameSrc&&v.annotations.length)}
+function updateModeUI(){
+ document.body.classList.toggle('rom-mode',projectType==='rom');
+ $('romGallery').hidden=projectType!=='rom';
+ $('galleryHeadingText').textContent=projectType==='rom'?'ROM Measurements':'Plane Gallery';
+ document.querySelectorAll('[data-project-type]').forEach(b=>{const on=b.dataset.projectType===projectType;b.setAttribute('aria-checked',String(on));b.lastElementChild.textContent=on?'✓':''});
+ document.querySelectorAll('[data-plane-menu]').forEach(b=>b.classList.toggle('hidden',projectType==='rom'));
+ $('menuExportPoster').textContent=projectType==='rom'?'Export ROM Lab (Two-Column PNG)':'Export All Frames (PNG)';
+ $('menuExportPlane').textContent=projectType==='rom'?'Export Current Measurement (PNG)':'Export Current Plane (PNG)';
+}
+function setProjectType(next,quiet=false){
+ if(!['rom','movement'].includes(next)||next===projectType)return;
+ if(projectType==='movement')movementTitle=$('exercise').value||'Untitled Exercise';
+ projectType=next;
+ if(next==='rom'){
+  ensureROMDocuments();$('exercise').value='ROM Lab';$('exercise').readOnly=true;
+  const first=views.findIndex(v=>v.romKey&&v.frameSrc);const fallback=views.findIndex(v=>v.romKey);
+  updateModeUI();switchDocument(first>=0?first:fallback);setTool('rom');
+ }else{
+  $('exercise').value=movementTitle||'Untitled Exercise';$('exercise').readOnly=false;
+  let ix=views.findIndex(v=>!v.romKey&&v.frameSrc);if(ix<0)ix=views.findIndex(v=>!v.romKey);
+  if(ix<0){views.unshift(makeView(0));ix=0}
+  updateModeUI();switchDocument(ix);setTool('select');
+ }
+ updateDocumentTitle();updateGallery();queueAutosave(true);
+ if(!quiet)toast(next==='rom'?'ROM Lab workspace opened.':'Movement Evaluation workspace opened.');
+}
+function renderROMGallery(){
+ if(projectType!=='rom')return;
+ const container=$('romGallery');const previousScroll=container.scrollTop;
+ const fragment=document.createDocumentFragment();
+ for(const [groupIndex,group] of romGroups.entries()){
+  const section=document.createElement('section');section.className='rom-group';
+  const heading=document.createElement('h3');heading.className='rom-group-heading';heading.textContent=group[0];
+  const grid=document.createElement('div');grid.className='rom-slot-grid';
+  for(let slotIndex=0;slotIndex<group[1].length;slotIndex++){
+   const def=romDefinitions.find(d=>d.groupIndex===groupIndex&&d.slot===group[1][slotIndex]);const v=romViewFor(def.key);if(!v)continue;
+   const b=document.createElement('button');b.type='button';b.className='rom-slot'+(current().uid===v.uid?' is-active':'');
+   b.setAttribute('aria-label',(v.frameSrc?'Open ':'Add ')+def.label);
+   const media=document.createElement('span');media.className='rom-slot-media';
+   if(v.frameSrc){const img=document.createElement('img');img.src=v.frameSrc;img.alt=def.label+' captured frame';media.appendChild(img)}
+   else {const plus=document.createElement('span');plus.className='rom-slot-plus';plus.textContent='+';media.appendChild(plus)}
+   if(romSlotAnnotated(v)){const check=document.createElement('span');check.className='rom-slot-check';check.setAttribute('aria-label','Annotated');check.textContent='✓';media.appendChild(check)}
+   const caption=document.createElement('span');caption.className='rom-slot-caption';caption.textContent=def.slot;
+   b.append(media,caption);
+   b.addEventListener('click',()=>{const ix=views.indexOf(v);switchDocument(ix);if(!v.frameSrc&&!v.preview){pendingNew={romKey:def.key};$('galleryInput').accept='image/*,video/*';$('galleryInput').click()}});
+   const wrap=document.createElement('div');wrap.style.position='relative';wrap.appendChild(b);
+   if(v.frameSrc&&!v.preview){
+    const edit=document.createElement('button');edit.type='button';edit.className='rom-slot-edit';edit.title='Crop or replace this capture';edit.setAttribute('aria-label','Edit '+def.label);edit.textContent='✎';
+    edit.addEventListener('click',e=>{e.stopPropagation();openFrameEditMenu(v.uid,edit)});wrap.appendChild(edit)
+   }
+   grid.appendChild(wrap)
+  }
+  section.append(heading,grid);fragment.appendChild(section)
+ }
+ container.replaceChildren(fragment);container.scrollTop=previousScroll;
+}
+
 let undo=[],redo=[],chosenColor=colors[0],nextID=1;
 let romDraft=null,romPointActive=0,romMode='included',romReposition=false;
 let inspectorEditSession=0;
@@ -1272,6 +1396,7 @@ if(isSelected&&a.type!=='bone'&&a.type!=='muscle'){const p=annotationAnchor(a);c
 c.restore()}
 function draw(){const v=current(),src=visibleSource(v),r=canvas.getBoundingClientRect();if(!src||!r.width||!r.height)return;ctx.setTransform(canvas.width/r.width,0,0,canvas.height/r.height,0,0);ctx.clearRect(0,0,r.width,r.height);ctx.fillStyle='#06080c';ctx.fillRect(0,0,r.width,r.height);try{ctx.drawImage(src,0,0,r.width,r.height)}catch(e){}if(v.preview)return;v.annotations.forEach((a,i)=>drawOne(ctx,a,r.width,r.height,{selected:i===selected}));if(draft)drawOne(ctx,draft,r.width,r.height);if(romDraft)drawOne(ctx,romDraft,r.width,r.height)}
 function setTool(t){
+ if(projectType==='rom'&&!['text','rom'].includes(t))t='rom';
  rememberCreationFields();
  tool=t;selected=-1;romReposition=false;romDraft=null;romPointActive=0;
  document.querySelectorAll('[data-tool]').forEach(b=>{const on=b.dataset.tool===t;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on))});
@@ -1321,12 +1446,12 @@ function inferredJointRegion(a){
  // Prior projects may have stored this classification explicitly.
  return a.region==='upper'||a.region==='lower'?a.region:null;
 }
-function updateUI(){const v=current(),s=v.source,canAnnotate=!!v.frameSrc&&!v.preview;const source=visibleSource(v);$('screenTitle').textContent=viewNames[v.plane]+' PLANE · '+(v.preview?'VIDEO PREVIEW':v.frameLabel||'NO FRAME');$('screenTag').textContent=v.preview?'VIDEO':v.frameSrc?'CAPTURED':'STANDBY';$('sourceStatus').textContent=v.preview?'Scrub to the peak position and choose USE THIS FRAME.':v.frameSrc?'Frame captured. Add joint types, trace bones/muscles and draw movement arrows.':'No '+viewNames[v.plane].toLowerCase()+' frame captured yet. Upload a screenshot or video.';
+function updateUI(){const v=current(),s=v.source,canAnnotate=!!v.frameSrc&&!v.preview;const source=visibleSource(v);$('screenTitle').textContent=projectType==='rom'?(v.name||'ROM MEASUREMENT')+' · '+(v.preview?'VIDEO PREVIEW':v.frameSrc?'CAPTURED':'NO FRAME'):viewNames[v.plane]+' PLANE · '+(v.preview?'VIDEO PREVIEW':v.frameLabel||'NO FRAME');$('screenTag').textContent=v.preview?'VIDEO':v.frameSrc?'CAPTURED':'STANDBY';$('sourceStatus').textContent=v.preview?'Scrub to the peak position and choose USE THIS FRAME.':v.frameSrc?'Frame captured. Add joint types, trace bones/muscles and draw movement arrows.':'No '+viewNames[v.plane].toLowerCase()+' frame captured yet. Upload a screenshot or video.';
 $('captureBtn').disabled=!v.preview||!s||!s.ready||s.seeking||s.video.seeking;
 $('videoControls').classList.toggle('hidden',!(s&&v.preview));$('cancelFrameBtn').classList.toggle('hidden',!(v.preview&&v.frameSrc));if(s){$('timeline').max=String(s.duration||1);$('timeline').value=String(s.video.currentTime||0);$('timeNow').textContent=time(s.video.currentTime);$('timeEnd').textContent=time(s.duration)}
 $('overlayNotice').classList.toggle('hidden',!v.preview);$('overlayNotice').textContent=v.preview?'VIDEO PREVIEW · CAPTURE FRAME BEFORE ANNOTATING':'';
 updateGallery();
-$('clearBtn').disabled=!v.annotations.length;$('deleteBtn').disabled=selected<0;$('undoBtn').disabled=!undo.length;$('redoBtn').disabled=!redo.length;$('menuExportPlane').disabled=!v.frameSrc;$('menuExportPoster').disabled=!views.some(z=>z.frameSrc);
+$('clearBtn').disabled=!v.annotations.length;$('deleteBtn').disabled=selected<0;$('undoBtn').disabled=!undo.length;$('redoBtn').disabled=!redo.length;$('menuExportPlane').disabled=!v.frameSrc;$('menuExportPoster').disabled=projectType==='rom'?!views.some(z=>z.romKey&&romSlotComplete(z)):!movementViews().some(z=>z.frameSrc);
 const list=$('annotationList');list.replaceChildren();if(v.annotations.length===0){const p=document.createElement('p');p.className='hint';p.textContent='No annotations yet.';list.appendChild(p)}v.annotations.forEach((a,i)=>{const b=document.createElement('button');b.className='annotation-chip'+(selected===i?' active':'');const dot=document.createElement('span');dot.className='led on';dot.style.color=a.color;const label=document.createElement('span');label.className='name';label.textContent=a.label+(a.type==='joint'?' · '+a.jointType:'');const typ=document.createElement('small');typ.textContent=a.type.toUpperCase();b.append(dot,label,typ);b.onclick=()=>{rememberCreationFields();chooseSelected(i);if(annotationsDialog.open)closeAnnotations()};list.appendChild(b)});
 syncMenuActions();
 $('canvasHelp').textContent=canAnnotate?help[tool]:v.preview?'Select USE THIS FRAME to freeze the video before drawing.':'Choose a photo or video for the active plane.';updateROMInspector();queueAutosave()}
@@ -1335,7 +1460,7 @@ function download(blob,name){const u=URL.createObjectURL(blob),a=document.create
 async function downloadCanvas(c,name){if(!c)return;const blob=await new Promise((ok,no)=>c.toBlob(b=>b?ok(b):no(new Error('PNG export failed')),'image/png'));download(blob,name)}
 // Combined submission export: each saved frame stays independent and is placed under its plane.
 function board(page=0){
- const limit=8, frontal=views.filter(v=>v.plane===0&&v.frameImg),sagittal=views.filter(v=>v.plane===1&&v.frameImg);
+ const limit=8, frontal=movementViews().filter(v=>v.plane===0&&v.frameImg),sagittal=movementViews().filter(v=>v.plane===1&&v.frameImg);
  const columns=[frontal.slice(page*limit,(page+1)*limit),sagittal.slice(page*limit,(page+1)*limit)];
  const all=allAnnotations(),muscles=new Map();
  all.filter(a=>a.type==='muscle').forEach(a=>{if(!muscles.has((a.label||'').toLowerCase()))muscles.set((a.label||'').toLowerCase(),a)});
@@ -1368,8 +1493,45 @@ function board(page=0){
  }
  return c;
 }
-function exportPageCount(){const counts=[0,1].map(p=>views.filter(v=>v.plane===p&&v.frameImg).length);return Math.max(1,Math.ceil(Math.max(...counts)/8))}
-function serializeProject(){return{schema:'movement-evaluation-studio',version:2,exercise:$('exercise').value,student:$('student').value,activeId:current().uid,views:views.map(v=>({uid:v.uid,plane:viewNames[v.plane],category:v.category||'Other',name:v.name||'',frameSrc:v.frameSrc,frameLabel:v.frameLabel,cropBaseSrc:v.cropBaseSrc,cropBounds:v.cropBounds,annotations:v.annotations}))}}
+
+function romCompleteDocs(){return romDefinitions.map(def=>({def,v:romViewFor(def.key)})).filter(({v})=>v?.frameImg&&romSlotComplete(v))}
+function romAngleForView(v,a){
+ if(!a||a.type!=='rom'||!a.points?.every(Boolean))return null;
+ const [f,s,m]=a.points,im=v.frameImg;
+ const sw=(s.x-f.x)*im.naturalWidth,sh=(s.y-f.y)*im.naturalHeight;
+ const mw=(m.x-f.x)*im.naturalWidth,mh=(m.y-f.y)*im.naturalHeight;
+ const size=Math.hypot(sw,sh)*Math.hypot(mw,mh);if(size<1)return null;
+ const included=Math.acos(clamp((sw*mw+sh*mh)/size,-1,1))*180/Math.PI;
+ return a.angleMode==='straight'?180-included:included;
+}
+function romBoard(page=0){
+ const docs=romCompleteDocs().slice(page*8,(page+1)*8),W=2200,pad=58,gap=40,cardW=(W-2*pad-gap)/2;
+ const rows=Math.max(1,Math.ceil(docs.length/2)),cardH=780,head=190,H=head+rows*cardH+52;
+ const cvs=document.createElement('canvas');cvs.width=W;cvs.height=H;const q=cvs.getContext('2d');
+ q.fillStyle='#f4f6f9';q.fillRect(0,0,W,H);q.fillStyle='#283543';q.fillRect(0,0,W,155);
+ q.fillStyle='#eaf3fe';q.font='bold 65px system-ui';q.fillText('ROM LAB',pad,84);
+ q.fillStyle='#c9d8e9';q.font='26px system-ui';q.fillText(($('student').value||'Student').slice(0,68)+'  ·  '+docs.length+' measurement'+(docs.length===1?'':'s')+' on this page',pad,130);
+ docs.forEach(({def,v},i)=>{
+  const col=i%2,row=Math.floor(i/2),x=pad+col*(cardW+gap),y=head+row*cardH;
+  q.fillStyle='#fff';q.fillRect(x,y,cardW,cardH-15);
+  q.strokeStyle='#d1dce7';q.lineWidth=3;q.strokeRect(x,y,cardW,cardH-15);
+  q.fillStyle='#344b65';q.fillRect(x,y,cardW,85);
+  q.fillStyle='#fff';q.font='bold 28px system-ui';
+  const lines=[def.group,def.slot];q.fillText(lines[0].slice(0,54),x+23,y+36,cardW-46);
+  q.font='24px system-ui';q.fillText(lines[1],x+23,y+71,cardW-46);
+  const box={x:x+20,y:y+110,w:cardW-40,h:cardH-195},im=v.frameImg;
+  const scale=Math.min(box.w/im.naturalWidth,box.h/im.naturalHeight);
+  const w=im.naturalWidth*scale,h=im.naturalHeight*scale,ix=box.x+(box.w-w)/2,iy=box.y+(box.h-h)/2;
+  q.drawImage(im,ix,iy,w,h);q.save();q.translate(ix,iy);v.annotations.filter(a=>['rom','text'].includes(a.type)).forEach(a=>drawOne(q,a,w,h,{scale:Math.max(.8,w/850)}));q.restore();
+  const angles=v.annotations.filter(a=>a.type==='rom').map(a=>romAngleForView(v,a)).filter(a=>a!==null);
+  q.fillStyle='#344b65';q.font='bold 26px system-ui';q.fillText(def.slot+'  ·  '+angles.map(n=>n.toFixed(1)+'°').join(' / '),x+22,y+cardH-47,cardW-44);
+ });
+ return cvs;
+}
+function romPageCount(){return Math.max(1,Math.ceil(romCompleteDocs().length/8))}
+
+function exportPageCount(){const counts=[0,1].map(p=>movementViews().filter(v=>v.plane===p&&v.frameImg).length);return Math.max(1,Math.ceil(Math.max(...counts)/8))}
+function serializeProject(){return{schema:'movement-evaluation-studio',version:2,projectType,movementTitle,exercise:$('exercise').value,student:$('student').value,activeId:current().uid,views:views.map(v=>({uid:v.uid,romKey:v.romKey||null,plane:viewNames[v.plane],category:v.category||'Other',name:v.name||'',frameSrc:v.frameSrc,frameLabel:v.frameLabel,cropBaseSrc:v.cropBaseSrc,cropBounds:v.cropBounds,annotations:v.annotations}))}}
 function saveProject(){download(new Blob([JSON.stringify(serializeProject())],{type:'application/json'}),safeName()+'-movement-project.json');toast('Editable multi-frame project backup downloaded.');}
 function hydrateProject(d){
  if(d?.schema!=='movement-evaluation-studio'||![1,2].includes(d.version)||!Array.isArray(d.views))throw Error('Not a Movement Evaluation project');
@@ -1377,7 +1539,7 @@ function hydrateProject(d){
  views=d.views.map((src,i)=>{
   const plane=(src.plane==='SAGITTAL'||src.plane===1||src.plane==='Sagittal')?1:0;
   const category=frameCategories.includes(src.category)?src.category:'Other';
-  const v=makeView(plane,category,String(src.name||'').slice(0,75));v.uid=String(src.uid||newDocId());
+  const v=makeView(plane,category,String(src.name||'').slice(0,75));v.uid=String(src.uid||newDocId());if(romDefinitions.some(def=>def.key===src.romKey))v.romKey=src.romKey;
   v.annotations=Array.isArray(src.annotations)?src.annotations:[];
   v.frameLabel=String(src.frameLabel||'Captured frame');
   if(typeof src.cropBaseSrc==='string'&&/^data:image\/(jpeg|png|webp);base64,/i.test(src.cropBaseSrc))v.cropBaseSrc=src.cropBaseSrc;
@@ -1385,17 +1547,25 @@ function hydrateProject(d){
   if(src.frameSrc&&/^data:image\/(jpeg|png|webp);base64,/i.test(src.frameSrc))addImageToView(v,src.frameSrc,v.frameLabel);
   return v;
  });
- for(let plane=0;plane<2;plane++)if(!views.some(v=>v.plane===plane))views.push(makeView(plane));
+ for(let plane=0;plane<2;plane++)if(!views.some(v=>v.plane===plane&&!v.romKey))views.push(makeView(plane));
  if(!views.length)views=[makeView(0),makeView(1)];
- $('exercise').value=String(d.exercise||'Untitled Exercise');$('student').value=String(d.student||'');updateDocumentTitle();
+ projectType=d.projectType==='rom'?'rom':'movement';movementTitle=String(d.movementTitle||(projectType==='movement'?d.exercise:'Untitled Exercise')||'Untitled Exercise');if(projectType==='rom')ensureROMDocuments();$('exercise').value=projectType==='rom'?'ROM Lab':String(d.exercise||'Untitled Exercise');$('exercise').readOnly=projectType==='rom';$('student').value=String(d.student||'');updateModeUI();updateDocumentTitle();
  selected=-1;undo=[];redo=[];draft=null;drag=null;romDraft=null;
- const wanted=views.findIndex(v=>v.uid===d.activeId);switchDocument(wanted>=0?wanted:0);
+ const wanted=views.findIndex(v=>v.uid===d.activeId);const fallback=projectType==='rom'?views.findIndex(v=>v.romKey):views.findIndex(v=>!v.romKey);switchDocument(wanted>=0&&((projectType==='rom')===!!views[wanted].romKey)?wanted:fallback>=0?fallback:0);setTool(projectType==='rom'?'rom':'select');
 }
 function openProject(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!confirm('Open project and replace the current work? Your current project is autosaved locally, but please download a backup first if needed.'))return;hydrateProject(d);queueAutosave(true);toast('Project restored with '+views.filter(v=>v.frameSrc).length+' frame(s).')}catch(e){console.error(e);toast('Could not open project: '+e.message)}};r.onerror=()=>toast('File could not be read');r.readAsText(file)}
 
 // Top menu bar: use the existing application actions rather than duplicating logic.
 const menuButtons=[...document.querySelectorAll('.menu-trigger')];
-function closeMenus(){menuButtons.forEach(button=>{button.setAttribute('aria-expanded','false');$(button.getAttribute('aria-controls')).hidden=true})}
+const projectSubmenu=$('projectTypeSubmenu'),projectTrigger=$('projectTypeTrigger'),projectWrap=$('projectTypeWrap');
+function showProjectSubmenu(show){projectSubmenu.hidden=!show;projectTrigger.setAttribute('aria-expanded',String(show))}
+projectWrap.addEventListener('pointerenter',()=>showProjectSubmenu(true));
+projectWrap.addEventListener('pointerleave',()=>showProjectSubmenu(false));
+projectTrigger.addEventListener('click',e=>{e.stopPropagation();showProjectSubmenu(projectSubmenu.hidden)});
+projectTrigger.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='Enter'){e.preventDefault();showProjectSubmenu(true);projectSubmenu.querySelector('button').focus()}});
+document.querySelectorAll('[data-project-type]').forEach(b=>b.addEventListener('click',()=>{setProjectType(b.dataset.projectType);closeMenus()}));
+
+function closeMenus(){showProjectSubmenu(false);menuButtons.forEach(button=>{button.setAttribute('aria-expanded','false');$(button.getAttribute('aria-controls')).hidden=true})}
 menuButtons.forEach(button=>button.addEventListener('click',()=>{
   const open=button.getAttribute('aria-expanded')==='true';
   closeMenus();
@@ -1407,6 +1577,7 @@ document.querySelectorAll('[data-click]').forEach(button=>button.addEventListene
   $(button.dataset.click).click();
 }));
 document.querySelectorAll('[data-plane-menu]').forEach(button=>button.addEventListener('click',()=>{
+  if(projectType==='rom')return;
   switchPlane(Number(button.dataset.planeMenu));
   closeMenus();
 }));
@@ -1433,10 +1604,10 @@ function syncMenuActions(){
 $('menuNew').addEventListener('click',()=>{
  closeMenus();const hasWork=views.some(v=>v.frameSrc||v.source||v.annotations.length)||$('exercise').value.trim()!=='Untitled Exercise'||$('student').value.trim();
  if(hasWork&&!confirm('Start a new project? The current project will be replaced in local autosave. Download a project backup first if you need to keep it.'))return;
- views.forEach(disposeSource);views=[makeView(0),makeView(1)];
- $('exercise').value='Untitled Exercise';$('student').value='';updateDocumentTitle();
+ views.forEach(disposeSource);views=[makeView(0),makeView(1)];if(projectType==='rom')ensureROMDocuments();
+ $('exercise').value=projectType==='rom'?'ROM Lab':'Untitled Exercise';movementTitle='Untitled Exercise';$('student').value='';updateDocumentTitle();
  undo=[];redo=[];selected=-1;draft=null;drag=null;romDraft=null;romReposition=false;
- switchDocument(0);setTool('select');queueAutosave(true);toast('New empty project created.');
+ updateModeUI();const first=projectType==='rom'?views.findIndex(v=>v.romKey):0;switchDocument(first);setTool(projectType==='rom'?'rom':'select');queueAutosave(true);toast('New empty project created.');
 });
 
 const annotationsDialog=$('annotationsDialog');
@@ -1477,7 +1648,7 @@ $('menuSaveLocal').onclick=()=>{closeMenus();saveNow()};
 $('menuSaveProject').onclick=()=>{closeMenus();saveProject()};
 $('projectInput').onchange=e=>{openProject(e.target.files?.[0]);e.target.value=''};
 $('menuExportPlane').onclick=async()=>{closeMenus();try{await downloadCanvas(canvasPNG(current()),safeName()+'-'+viewNames[current().plane].toLowerCase()+'-'+(current().category||'frame').toLowerCase()+'-annotated.png');toast('Annotated plane picture saved.')}catch(e){toast('Could not export current plane.')}};
-$('menuExportPoster').onclick=async()=>{closeMenus();try{const count=exportPageCount();for(let i=0;i<count;i++){await downloadCanvas(board(i),safeName()+'-exercise-evaluation'+(count>1?'-page-'+(i+1):'')+'.png');}toast('Exported all '+views.filter(v=>v.frameImg).length+' saved frames'+(count>1?' across '+count+' PNG pages.':'.'));}catch(e){console.error(e);toast('Unable to export all frames.')}};
+$('menuExportPoster').onclick=async()=>{closeMenus();try{if(projectType==='rom'){const count=romPageCount();for(let i=0;i<count;i++)await downloadCanvas(romBoard(i),'ROM-Lab'+(count>1?'-page-'+(i+1):'')+'.png');toast('Exported '+romCompleteDocs().length+' ROM measurements in two-column format.')}else{const count=exportPageCount();for(let i=0;i<count;i++)await downloadCanvas(board(i),safeName()+'-exercise-evaluation'+(count>1?'-page-'+(i+1):'')+'.png');toast('Exported all '+movementViews().filter(v=>v.frameImg).length+' saved frames'+(count>1?' across '+count+' PNG pages.':'.'))}}catch(e){console.error(e);toast('Unable to export project.')}};
 
 const stage=$('stage');stage.addEventListener('dragover',e=>{e.preventDefault();stage.classList.add('dragover')});stage.addEventListener('dragleave',e=>{if(!stage.contains(e.relatedTarget))stage.classList.remove('dragover')});stage.addEventListener('drop',e=>{e.preventDefault();stage.classList.remove('dragover');loadMedia(e.dataTransfer?.files?.[0])});
 window.addEventListener('keydown',e=>{
@@ -1590,10 +1761,11 @@ function createGalleryNode(v){
  return{wrap,card,image,placeholder,name,category,edit,lastSrc:undefined};
 }
 function updateGallery(){
- const ids=new Set(views.filter(v=>v.frameSrc||v.preview).map(v=>v.uid));
+ if(projectType==='rom'){renderROMGallery();return}
+ const ids=new Set(movementViews().filter(v=>v.frameSrc||v.preview).map(v=>v.uid));
  for(const [id,node] of galleryNodes)if(!ids.has(id)){node.wrap.remove();galleryNodes.delete(id)}
  [0,1].forEach(plane=>{
-  const host=$('galleryDocuments'+plane),docs=views.filter(v=>v.plane===plane&&(v.frameSrc||v.preview));
+  const host=$('galleryDocuments'+plane),docs=movementViews().filter(v=>v.plane===plane&&(v.frameSrc||v.preview));
   const count=docs.filter(v=>v.frameSrc).length;
   $('galleryStatus'+plane).textContent=docs.length?count+' FRAME'+(count===1?'':'S'):'EMPTY';
   $('galleryStatus'+plane).classList.toggle('is-ready',count>0);
@@ -1641,7 +1813,11 @@ $('galleryInput').addEventListener('cancel',()=>{
 $('galleryInput').addEventListener('change',e=>{
  const file=e.target.files?.[0];e.target.value='';
  if(!file){pendingNew=null;if(current())current().replacementApproved=false;return;}
- if(pendingNew){
+ if(pendingNew?.romKey){
+  const v=romViewFor(pendingNew.romKey);pendingNew=null;
+  if(!v){toast('ROM measurement slot unavailable.');return}
+  switchDocument(views.indexOf(v));
+ }else if(pendingNew){
   const {plane}=pendingNew;
   const num=views.filter(v=>v.plane===plane&&v.frameSrc).length+1;
   const v=makeView(plane,'Other',viewNames[plane][0]+viewNames[plane].slice(1).toLowerCase()+' Frame '+num);
@@ -1728,7 +1904,7 @@ if('serviceWorker' in navigator && (location.protocol==='https:' || location.hos
  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{scope:'./'})
    .catch(error=>console.warn('Kinetica Studio offline worker unavailable',error)));
 }
-updateDocumentTitle();updateGallery();requestAnimationFrame(updateStickyOffsets);
+updateModeUI();updateDocumentTitle();updateGallery();requestAnimationFrame(updateStickyOffsets);
 
 renderPalette();setTool('select');switchDocument(0);restoreCached();})();
 </script>
