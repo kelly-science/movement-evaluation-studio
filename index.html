@@ -554,26 +554,23 @@ body.rom-mode #galleryHeadingText{font-size:12px}
 
 /* Kinetica v25 — Phone ROM navigation; desktop, tablet and Movement Eval unchanged. */
 @media(max-width:600px), (max-height:500px) and (pointer:coarse){
-  body.rom-mode.rom-phone-editor .document-identity{justify-content:flex-end;align-items:center;min-height:39px}
+  body.rom-mode.rom-phone-editor .document-identity{justify-content:flex-start;align-items:center;min-height:39px;flex:1 1 auto}
   body.rom-mode.rom-phone-editor .document-identity .document-icon,
   body.rom-mode.rom-phone-editor .document-identity .document-titles{display:none!important}
-  body.rom-mode.rom-phone-editor #romMobileBack{display:inline-flex!important;margin:0;flex:none}
+  body.rom-mode.rom-phone-editor #romMobileBack{display:inline-flex!important;margin:0 auto 0 0;flex:0 0 41px}
   body.rom-mode.rom-phone-editor .document-student{align-self:center}
   body.rom-mode.rom-phone-editor .document-student .local-save-status{margin:0}
-  body.rom-mode .workbench{view-transition-name:kinetica-rom-page}
+  body.rom-mode .workbench{isolation:isolate}
 }
+/* Kinetica v26 — Single-layer mobile page motion. Only the destination
+   exists while animating; no two-page View Transition snapshots or opacity fades. */
 @media(prefers-reduced-motion:no-preference){
-  @keyframes kineticaRomExitLeft{from{transform:translateX(0);opacity:1}to{transform:translateX(-28%);opacity:.55}}
-  @keyframes kineticaRomEnterRight{from{transform:translateX(90%);opacity:.75}to{transform:translateX(0);opacity:1}}
-  @keyframes kineticaRomExitRight{from{transform:translateX(0);opacity:1}to{transform:translateX(28%);opacity:.55}}
-  @keyframes kineticaRomEnterLeft{from{transform:translateX(-90%);opacity:.75}to{transform:translateX(0);opacity:1}}
-  html.rom-slide-forward::view-transition-old(kinetica-rom-page){animation:230ms cubic-bezier(.38,0,.75,.45) both kineticaRomExitLeft}
-  html.rom-slide-forward::view-transition-new(kinetica-rom-page){animation:290ms cubic-bezier(.20,.65,.20,1) both kineticaRomEnterRight}
-  html.rom-slide-back::view-transition-old(kinetica-rom-page){animation:230ms cubic-bezier(.38,0,.75,.45) both kineticaRomExitRight}
-  html.rom-slide-back::view-transition-new(kinetica-rom-page){animation:290ms cubic-bezier(.20,.65,.20,1) both kineticaRomEnterLeft}
-  body.rom-page-enter-forward .workbench{animation:290ms cubic-bezier(.20,.65,.20,1) both kineticaRomEnterRight}
-  body.rom-page-enter-back .workbench{animation:290ms cubic-bezier(.20,.65,.20,1) both kineticaRomEnterLeft}
+  @keyframes kineticaRomEnterRight{from{transform:translate3d(44vw,0,0)}to{transform:translate3d(0,0,0)}}
+  @keyframes kineticaRomEnterLeft{from{transform:translate3d(-44vw,0,0)}to{transform:translate3d(0,0,0)}}
+  body.rom-mode.rom-page-enter-forward .workbench{animation:260ms cubic-bezier(.20,.74,.19,1) both kineticaRomEnterRight}
+  body.rom-mode.rom-page-enter-back .workbench{animation:260ms cubic-bezier(.20,.74,.19,1) both kineticaRomEnterLeft}
 }
+
 </style>
 </head>
 <body>
@@ -846,31 +843,26 @@ function syncROMPhonePage(){
  });
 }
 function renderROMPhonePage(next,{index=null,direction='forward'}={}){
+ const changing=romPhonePage!==next;
+ // Always finish/cancel the previous animation before choosing another page.
+ clearTimeout(romFallbackTimer);
+ document.body.classList.remove('rom-page-enter-back','rom-page-enter-forward');
  const apply=()=>{
   if(Number.isInteger(index)&&index>=0&&index<views.length)switchDocument(index);
   romPhonePage=next;
   syncROMPhonePage();
   window.scrollTo({top:0,behavior:'instant'});
  };
- if(!isROMPhone()){apply();return}
- const changing=romPhonePage!==next;
- if(!changing||window.matchMedia('(prefers-reduced-motion: reduce)').matches){apply();return}
- const klass=direction==='back'?'rom-slide-back':'rom-slide-forward';
- if(typeof document.startViewTransition==='function'){
-  document.documentElement.classList.add(klass);
-  try{
-   const transition=document.startViewTransition(apply);
-   transition.finished.catch(()=>{}).finally(()=>document.documentElement.classList.remove(klass));
-  }catch(err){document.documentElement.classList.remove(klass);apply()}
- }else{
-  apply();
-  const className=direction==='back'?'rom-page-enter-back':'rom-page-enter-forward';
-  document.body.classList.remove('rom-page-enter-back','rom-page-enter-forward');
-  void document.body.offsetWidth;
-  document.body.classList.add(className);
-  clearTimeout(romFallbackTimer);
-  romFallbackTimer=setTimeout(()=>document.body.classList.remove(className),340);
- }
+ // An outgoing snapshot used to overlap the incoming page. Instead render only
+ // the destination page, then translate that single opaque page into place.
+ apply();
+ if(!isROMPhone()||!changing||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ const className=direction==='back'?'rom-page-enter-back':'rom-page-enter-forward';
+ const pane=document.querySelector('.workbench');
+ if(!pane)return;
+ void pane.offsetWidth;
+ document.body.classList.add(className);
+ romFallbackTimer=setTimeout(()=>document.body.classList.remove(className),310);
 }
 function showROMPhonePage(page,{index=null,fromHistory=false}={}){
  if(!isROMPhone()){
