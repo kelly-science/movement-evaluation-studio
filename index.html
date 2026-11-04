@@ -424,6 +424,27 @@ body{padding:0;background:#30343b;color:var(--text)}
 .crop-dialog-footer .crop-apply{background:#526b88;border-color:#a7c8ec80}
 .crop-dialog-footer button:hover{background:#5c7693}
 @media(max-width:600px){.crop-dialog{padding:13px}.crop-dialog-footer button{flex:1}.crop-stage{max-height:54vh}.crop-stage canvas{max-height:52vh}}
+
+/* Kinetica Studio v20 — viewport-centered header notifications and precise pill spacing.
+   The toast is fixed to the viewport center on X, while JS aligns Y to the
+   sticky header's actual on-screen center (including wrapped mobile headers). */
+.header-toast-slot{
+  position:fixed;
+  left:50%;
+  top:34px;
+  transform:translate(-50%,-50%);
+  z-index:170;
+  flex:none;
+  width:min(540px,calc(100vw - 18px));
+  min-width:0;
+  max-width:none;
+  margin:0;
+  pointer-events:none;
+}
+.header-toast-text{left:31px;right:7px}
+@media(max-width:920px){.header-toast-slot{flex:none;max-width:none;width:min(540px,calc(100vw - 18px))}}
+@media(max-width:750px){.header-toast-slot{flex:none;min-width:0;max-width:none;width:min(540px,calc(100vw - 18px))}}
+@media(max-width:450px){.document-header{padding-bottom:36px}.header-toast-slot{flex:none;max-width:none;width:min(540px,calc(100vw - 18px))}.header-toast-text{right:7px}}
 </style>
 </head>
 <body>
@@ -681,7 +702,31 @@ function makeView(plane=0,category='Other',name=''){return{uid:newDocId(),plane,
 function current(){return views[active]}
 function clamp(v,a=0,b=1){return Math.max(a,Math.min(b,v))}
 function id(){return 'm'+(nextID++)+'_'+Math.random().toString(36).slice(2,7)}
-// Kinetica v17: B Cell Defender-style circle → expanding pill → circle → vanish.
+// Kinetica v20: pin notifications to the true horizontal viewport center,
+// not the center of a flex slot whose width changes with the title/student name.
+// The vertical center follows the sticky header, even when its height wraps.
+const toastSlot=$('headerToastSlot');
+let toastPositionQueued=false;
+function placeHeaderToast(){
+ toastPositionQueued=false;
+ const header=$('documentHeader');
+ if(!header||!toastSlot)return;
+ const r=header.getBoundingClientRect();
+ // On narrow screens, reserve a third header row to avoid covering the title/save line.
+ const y=window.innerWidth<=450 ? r.bottom-18 : r.top+r.height/2;
+ toastSlot.style.top=y+'px';
+}
+function scheduleHeaderToastPosition(){
+ if(toastPositionQueued)return;
+ toastPositionQueued=true;
+ requestAnimationFrame(placeHeaderToast);
+}
+window.addEventListener('resize',scheduleHeaderToastPosition);
+window.addEventListener('scroll',scheduleHeaderToastPosition,{passive:true});
+if(window.visualViewport)window.visualViewport.addEventListener('resize',scheduleHeaderToastPosition);
+if('ResizeObserver' in window)new ResizeObserver(scheduleHeaderToastPosition).observe($('documentHeader'));
+scheduleHeaderToastPosition();
+// B Cell Defender-style circle → expanding pill → circle → vanish.
 // A short FIFO queue protects messages from being overwritten by consecutive actions.
 const toastQueue=[];
 let toastPlaying=false,toastLastMessage='',toastTimers=[];
@@ -706,8 +751,13 @@ function playNextToast(){
  // The compact information circle is visible first.
  requestAnimationFrame(()=>node.classList.add('is-visible'));
  toastLater(220,()=>{
-  // The message pill is constrained to the available space between title and save state.
-  const fullWidth=Math.ceil(label.scrollWidth)+66;
+  // Measure the glyphs, not the scroll-width of an absolutely positioned
+  // label, which previously overestimated the pill's trailing blank space.
+  const metric=document.createElement('canvas').getContext('2d');
+  metric.font=getComputedStyle(label).font;
+  const contentWidth=Math.ceil(metric.measureText(message).width);
+  // 31px for the icon/left offset, 7px trailing, 2px for the pill border.
+  const fullWidth=contentWidth+40;
   node.style.width=Math.max(28,Math.min(fullWidth,Math.max(28,slot.clientWidth-4)))+'px';
   node.classList.add('is-expanded');
  });
