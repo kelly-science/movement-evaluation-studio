@@ -446,9 +446,10 @@ body{padding:0;background:#30343b;color:var(--text)}
 @media(max-width:750px){.header-toast-slot{flex:none;min-width:0;max-width:none;width:min(540px,calc(100vw - 18px))}}
 @media(max-width:450px){.document-header{padding-bottom:36px}.header-toast-slot{flex:none;max-width:none;width:min(540px,calc(100vw - 18px))}.header-toast-text{right:7px}}
 
-/* Kinetica v21 — two project types and dedicated ROM measurement gallery */
+/* Kinetica v22 — fix clipped project-type submenu; retain the v21 ROM gallery */
+/* v22: Submenu is portaled to body so the scrollable File menu cannot clip it. */
 .project-type-wrap{position:relative}
-.project-type-submenu{position:absolute;top:-7px;left:calc(100% + 7px);min-width:215px;padding:7px;background:#39414a;border:1px solid #667887;border-radius:10px;box-shadow:0 15px 30px #0008;z-index:190;display:grid;gap:3px}
+.project-type-submenu{position:fixed;top:0;left:0;min-width:215px;max-width:calc(100vw - 16px);max-height:calc(100dvh - 16px);overflow-y:auto;padding:7px;background:#39414a;border:1px solid #667887;border-radius:10px;box-shadow:0 15px 30px #0008;z-index:1000;display:grid;gap:3px}
 .project-type-submenu[hidden]{display:none!important}
 .project-type-trigger{justify-content:space-between}
 .submenu-caret{font-size:14px;color:#c0cfdb}
@@ -475,7 +476,7 @@ body.rom-mode #frameCategory{pointer-events:none}
 body.rom-mode .frame-properties{display:none!important}
 body.rom-mode .gallery-heading p{display:none}
 body.rom-mode #galleryHeadingText{font-size:12px}
-@media(max-width:750px){.rom-gallery{max-height:none;overflow:visible}.rom-slot-media{height:76px}.rom-slot-caption{font-size:10px}.project-type-submenu{left:15px;top:calc(100% + 6px)}}
+@media(max-width:750px){.rom-gallery{max-height:none;overflow:visible}.rom-slot-media{height:76px}.rom-slot-caption{font-size:10px}}
 </style>
 </head>
 <body>
@@ -1558,11 +1559,55 @@ function openProject(file){if(!file)return;const r=new FileReader();r.onload=()=
 // Top menu bar: use the existing application actions rather than duplicating logic.
 const menuButtons=[...document.querySelectorAll('.menu-trigger')];
 const projectSubmenu=$('projectTypeSubmenu'),projectTrigger=$('projectTypeTrigger'),projectWrap=$('projectTypeWrap');
-function showProjectSubmenu(show){projectSubmenu.hidden=!show;projectTrigger.setAttribute('aria-expanded',String(show))}
-projectWrap.addEventListener('pointerenter',()=>showProjectSubmenu(true));
-projectWrap.addEventListener('pointerleave',()=>showProjectSubmenu(false));
-projectTrigger.addEventListener('click',e=>{e.stopPropagation();showProjectSubmenu(projectSubmenu.hidden)});
-projectTrigger.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='Enter'){e.preventDefault();showProjectSubmenu(true);projectSubmenu.querySelector('button').focus()}});
+// The File dropdown scrolls (overflow-y:auto). Leaving its nested submenu inside
+// it clips the panel; move the panel outside that scroll container instead.
+document.body.appendChild(projectSubmenu);
+let projectSubmenuCloseTimer=null;
+function positionProjectSubmenu(){
+  if(projectSubmenu.hidden)return;
+  const trigger=projectTrigger.getBoundingClientRect();
+  const width=projectSubmenu.offsetWidth, height=projectSubmenu.offsetHeight;
+  const viewportWidth=document.documentElement.clientWidth, viewportHeight=window.innerHeight;
+  const margin=8, gap=6;
+  // Prefer a side-by-side nested menu. If there is not room, place it on the
+  // other side; on narrow devices place it beneath the Project Type row.
+  let x=trigger.right+gap, y=trigger.top-7;
+  if(x+width>viewportWidth-margin)x=trigger.left-width-gap;
+  if(x<margin){x=Math.max(margin,Math.min(trigger.left,viewportWidth-width-margin));y=trigger.bottom+gap}
+  y=Math.max(margin,Math.min(y,viewportHeight-height-margin));
+  projectSubmenu.style.left=Math.round(x)+'px';
+  projectSubmenu.style.top=Math.round(y)+'px';
+}
+function showProjectSubmenu(show){
+  clearTimeout(projectSubmenuCloseTimer);
+  if(show&&$('fileMenuButton').getAttribute('aria-expanded')!=='true')return;
+  projectSubmenu.hidden=!show;
+  projectTrigger.setAttribute('aria-expanded',String(show));
+  if(show)positionProjectSubmenu();
+}
+function scheduleProjectSubmenuClose(){
+  clearTimeout(projectSubmenuCloseTimer);
+  projectSubmenuCloseTimer=setTimeout(()=>showProjectSubmenu(false),250);
+}
+// Mouse hover and explicit click/tap both work; delay closing while the pointer
+// crosses the small gap between the File menu and the detached submenu.
+projectWrap.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'||e.pointerType==='pen')showProjectSubmenu(true)});
+projectWrap.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'||e.pointerType==='pen')scheduleProjectSubmenuClose()});
+projectSubmenu.addEventListener('pointerenter',()=>clearTimeout(projectSubmenuCloseTimer));
+projectSubmenu.addEventListener('pointerleave',scheduleProjectSubmenuClose);
+projectTrigger.addEventListener('click',e=>{e.stopPropagation();showProjectSubmenu(true)});
+projectTrigger.addEventListener('keydown',e=>{
+  if(['ArrowRight','Enter',' '].includes(e.key)){
+    e.preventDefault();showProjectSubmenu(true);projectSubmenu.querySelector('button').focus();
+  }
+});
+projectSubmenu.addEventListener('keydown',e=>{
+  if(e.key==='ArrowLeft'||e.key==='Escape'){
+    e.preventDefault();e.stopPropagation();showProjectSubmenu(false);projectTrigger.focus();
+  }
+});
+window.addEventListener('resize',()=>{if(!projectSubmenu.hidden)positionProjectSubmenu()});
+window.addEventListener('scroll',()=>{if(!projectSubmenu.hidden)positionProjectSubmenu()},true);
 document.querySelectorAll('[data-project-type]').forEach(b=>b.addEventListener('click',()=>{setProjectType(b.dataset.projectType);closeMenus()}));
 
 function closeMenus(){showProjectSubmenu(false);menuButtons.forEach(button=>{button.setAttribute('aria-expanded','false');$(button.getAttribute('aria-controls')).hidden=true})}
@@ -1581,7 +1626,7 @@ document.querySelectorAll('[data-plane-menu]').forEach(button=>button.addEventLi
   switchPlane(Number(button.dataset.planeMenu));
   closeMenus();
 }));
-document.addEventListener('pointerdown',event=>{if(!event.target.closest('.menu-bar'))closeMenus()});
+document.addEventListener('pointerdown',event=>{if(!event.target.closest('.menu-bar')&&!projectSubmenu.contains(event.target))closeMenus()});
 const shortcutsDialog=$('shortcutsDialog');
 $('menuKeyboardShortcuts').addEventListener('click',()=>{
   closeMenus();shortcutsDialog.showModal();
