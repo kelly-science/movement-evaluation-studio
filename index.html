@@ -228,6 +228,16 @@ body{padding:0;background:#30343b;color:var(--text)}
 @media(max-width:750px){.document-header{padding:9px 8px;gap:10px;min-height:62px}.document-title-input{font-size:17px}.document-subtitle{font-size:9px}.document-icon{width:29px;height:35px}.document-icon svg{width:18px}.document-student{gap:5px}.document-student label{display:none}.document-student input{width:112px;font-size:11px;padding:7px 8px}.menu-bar{padding:3px 4px}.studio-toolbar{margin-bottom:12px}.workbench{display:flex;flex-direction:column;gap:15px}.plane-gallery{position:static;order:1;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:0 12px;padding:0 0 4px}.gallery-heading{grid-column:1/-1;padding-bottom:8px}.gallery-heading p{margin-top:3px}.gallery-group{border-top:1px solid #ffffff23;padding:12px 2px}.gallery-note{display:none}.gallery-add,.gallery-photo-card{min-height:90px}.gallery-photo-card{min-height:unset}.gallery-photo-surface{height:96px}.center{order:2;width:100%}.right{order:3;display:block;width:100%}.right .tool-fields{display:block}.stage{min-height:250px;padding:7px}.picture-frame{width:min(100%,calc(51svh * var(--aspect,1.7778)))}}
 @media(max-width:450px){.device{padding:0 9px 24px}.document-header{margin:0 -2px;padding:8px 5px}.document-identity{gap:7px}.document-title-input{font-size:15px}.document-subtitle{display:none}.document-student input{width:97px}.menu-bar{margin:0 -2px;padding:3px 1px}.studio-toolbar{margin:0 -2px 10px}.studio-toolbar-scroll{padding:5px 6px 6px}.toolbar-section-label{display:none}.toolbar-cluster{gap:1px}.toolbar-button{height:33px;width:34px;min-width:34px}.toolbar-button svg{width:18px;height:18px}.gallery-photo-surface{height:76px}.gallery-add{min-height:101px}.gallery-heading-title{font-size:12px}}
 
+
+/* MES V12 — Gallery-owned media actions and protected video-frame editing */
+.gallery-group,.gallery-heading{min-width:0}.gallery-card-wrap{position:relative;min-width:0;max-width:100%}
+.gallery-edit{position:absolute;right:7px;top:7px;z-index:3;display:grid;place-items:center;width:34px;height:34px;padding:0;border:1px solid #c3d8ec75;border-radius:9px;background:#25303de8;color:#e4f0fc;box-shadow:0 2px 9px #0009;cursor:pointer;touch-action:manipulation}
+.gallery-edit:hover{background:#49617a;border-color:#d4e5f4}
+.gallery-edit:focus-visible{outline:2px solid #dbe9ff;outline-offset:2px}
+.frame-cancel-row{display:flex;justify-content:flex-end;margin:8px 0 2px}
+.frame-cancel{border:0;background:transparent;box-shadow:none;color:#cfdfec;font-size:11px;font-weight:600;padding:7px 9px;border-radius:5px;cursor:pointer}
+.frame-cancel:hover{background:#46525e;color:white}
+@media(max-width:750px){.gallery-edit{width:34px;height:34px;right:5px;top:5px}}
 </style>
 </head>
 <body>
@@ -283,17 +293,10 @@ body{padding:0;background:#30343b;color:var(--text)}
       </div>
     </div>
   </nav>
-<!-- MES V10 TOP TOOLBAR -->
+<!-- MES V12 CLEAN TOOLBAR -->
   <nav class="studio-toolbar" id="studioToolbar" aria-label="Movement Evaluation tools">
     <div class="studio-toolbar-scroll" id="studioToolbarScroll" role="toolbar" aria-label="Movement Evaluation controls">
-      <div class="toolbar-cluster" role="group" aria-label="Import media">
-        <span class="toolbar-section-label">IMPORT</span>
-        <button type="button" class="toolbar-button" id="photoBtn" title="Upload Photo" aria-label="Upload Photo" data-tooltip="Upload Photo"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></button>
-        <button type="button" class="toolbar-button" id="videoBtn" title="Upload Video" aria-label="Upload Video" data-tooltip="Upload Video"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="13" height="14" rx="2"/><path d="m16 10 5-3v10l-5-3z"/></svg></button>
-      </div>
-      <span class="toolbar-divider" role="separator" aria-hidden="true"></span>
-      <div class="toolbar-cluster" id="toolGrid" role="group" aria-label="Annotation tools">
-        <span class="toolbar-section-label">ANNOTATE</span>
+<div class="toolbar-cluster" id="toolGrid" role="group" aria-label="Annotation tools">
         <button type="button" class="toolbar-button active" data-tool="select" title="Select / Move" aria-label="Select / Move" data-tooltip="Select / Move" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3l7.2 18 2.1-7.4 7.7-2.5L4 3z"/></svg></button>
         <button type="button" class="toolbar-button" data-tool="joint" title="Joint Type" aria-label="Joint Type" data-tooltip="Joint Type" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="16" r="4"/><path d="M11 11l2 2"/></svg></button>
         <button type="button" class="toolbar-button" data-tool="bone" title="Trace Bone" aria-label="Trace Bone" data-tooltip="Trace Bone" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 5a2 2 0 0 1 3 2l8 8a2 2 0 1 1 2 3 2 2 0 1 1-3-2l-8-8a2 2 0 1 1-3-3z"/></svg></button>
@@ -304,7 +307,6 @@ body{padding:0;background:#30343b;color:var(--text)}
       </div>
       <span class="toolbar-divider" role="separator" aria-hidden="true"></span>
       <div class="toolbar-cluster" role="group" aria-label="Edit annotations">
-        <span class="toolbar-section-label">EDIT</span>
         <button type="button" class="toolbar-button" id="undoBtn" title="Undo" aria-label="Undo" data-tooltip="Undo" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6M3 13C6 4 20 5 20 14c0 4-3 7-8 7"/></svg></button>
         <button type="button" class="toolbar-button" id="redoBtn" title="Redo" aria-label="Redo" data-tooltip="Redo" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6M21 13C18 4 4 5 4 14c0 4 3 7 8 7"/></svg></button>
         <button type="button" class="toolbar-button toolbar-danger" id="deleteBtn" title="Delete Selected Annotation" aria-label="Delete Selected Annotation" data-tooltip="Delete Selected Annotation" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 4h4M6 7l1 14h10l1-14M10 11v7M14 11v7"/></svg></button>
@@ -312,8 +314,6 @@ body{padding:0;background:#30343b;color:var(--text)}
       </div>
     </div>
     <div class="toolbar-a11y" aria-live="polite"><span id="sourceStatus">No frontal-plane frame yet.</span><span id="toolHint">Select an annotation.</span></div>
-    <input type="file" id="photoInput" accept="image/*" hidden>
-    <input type="file" id="videoInput" accept="video/*" hidden>
     <input type="file" id="galleryInput" accept="image/*,video/*" hidden aria-label="Upload photo or video for the selected plane">
   </nav>
   <div class="toolbar-tooltip" id="toolbarTooltip" role="tooltip" hidden></div>
@@ -326,28 +326,32 @@ body{padding:0;background:#30343b;color:var(--text)}
     </div>
     <section class="gallery-group" aria-labelledby="frontalGalleryTitle">
       <div class="gallery-section-header"><h2 id="frontalGalleryTitle">Frontal plane</h2><span class="gallery-state" id="galleryStatus0">EMPTY</span></div>
-      <button type="button" class="gallery-photo-card hidden" id="galleryCard0" data-gallery-plane="0" aria-label="Open frontal plane workspace">
+      <div class="gallery-card-wrap hidden" id="galleryWrap0">
+      <button type="button" class="gallery-photo-card" id="galleryCard0" data-gallery-plane="0" aria-label="Open frontal plane workspace">
         <span class="gallery-photo-surface"><img id="galleryImage0" alt="Frontal plane captured frame" class="hidden"><span class="gallery-video-state hidden" id="galleryPreview0">VIDEO<br><small>Choose peak frame</small></span></span>
         <span class="gallery-card-footer"><span class="gallery-card-name" id="galleryName0">Frontal frame</span><span aria-hidden="true">›</span></span>
       </button>
+      <button type="button" class="gallery-edit" id="galleryEdit0" aria-label="Edit frontal plane captured frame" title="Edit frontal plane captured frame" aria-haspopup="false"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L9 17l-4 1 1-4 10.5-10.5Z"/></svg></button>
+      </div>
       <button type="button" class="gallery-add" id="galleryAdd0" data-gallery-add="0" aria-label="Add frontal plane photo or video" title="Add frontal plane photo or video"><span class="gallery-plus" aria-hidden="true">+</span><span>Add image or video</span></button>
     </section>
     <section class="gallery-group" aria-labelledby="sagittalGalleryTitle">
       <div class="gallery-section-header"><h2 id="sagittalGalleryTitle">Sagittal plane</h2><span class="gallery-state" id="galleryStatus1">EMPTY</span></div>
-      <button type="button" class="gallery-photo-card hidden" id="galleryCard1" data-gallery-plane="1" aria-label="Open sagittal plane workspace">
+      <div class="gallery-card-wrap hidden" id="galleryWrap1">
+      <button type="button" class="gallery-photo-card" id="galleryCard1" data-gallery-plane="1" aria-label="Open sagittal plane workspace">
         <span class="gallery-photo-surface"><img id="galleryImage1" alt="Sagittal plane captured frame" class="hidden"><span class="gallery-video-state hidden" id="galleryPreview1">VIDEO<br><small>Choose peak frame</small></span></span>
         <span class="gallery-card-footer"><span class="gallery-card-name" id="galleryName1">Sagittal frame</span><span aria-hidden="true">›</span></span>
       </button>
+      <button type="button" class="gallery-edit" id="galleryEdit1" aria-label="Edit sagittal plane captured frame" title="Edit sagittal plane captured frame" aria-haspopup="false"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L9 17l-4 1 1-4 10.5-10.5Z"/></svg></button>
+      </div>
       <button type="button" class="gallery-add" id="galleryAdd1" data-gallery-add="1" aria-label="Add sagittal plane photo or video" title="Add sagittal plane photo or video"><span class="gallery-plus" aria-hidden="true">+</span><span>Add image or video</span></button>
     </section>
-    <p class="gallery-note">Each plane has one captured frame. Use the photo or video tools above to replace a frame.</p>
   </aside>
 <section class="center" aria-label="Movement canvas">
   <div class="bezel"><div class="oled"><div class="screen-head"><span id="screenTitle">FRONTAL PLANE · NO FRAME</span><span class="screen-tag" id="screenTag">STANDBY</span></div><div id="stage" class="stage empty-screen"><div class="empty" id="empty"><div class="empty-symbol">⌁</div><h3>CAPTURE YOUR PEAK MOVEMENT</h3><p>Upload a frontal- or sagittal-plane screenshot, or scrub a slow-motion video and choose the exact peak frame.</p></div><div id="pictureFrame" class="picture-frame hidden"><canvas id="canvas" aria-label="Movement photo and interactive anatomical annotations"></canvas><div id="overlayNotice" class="screen-overlay hidden"></div></div></div></div></div>
-  <div class="screen-bottom"><div id="videoControls" class="hidden"><div class="timeline-pocket"><div class="timeline-row"><span id="timeNow" class="time">00:00.00</span><input type="range" id="timeline" min="0" max="1" step=".001" value="0" aria-label="Scrub slow-motion video"><span id="timeEnd" class="time">00:00.00</span></div></div><div class="frame-buttons"><button class="tactile" id="previous" type="button">◀ PREV FRAME</button><button class="tactile primary" id="captureBtn" type="button" disabled>◎ USE THIS FRAME</button><button class="tactile" id="next" type="button">NEXT FRAME ▶</button></div><div class="frame-note">Frame stepping is approximately ±1/120 second; the exact displayed frame depends on the video.</div></div><div class="frame-note" id="canvasHelp">Tap to place labels, drag to draw traces or arrows. Switch planes without losing your annotations.</div></div>
+  <div class="screen-bottom"><div id="videoControls" class="hidden"><div class="timeline-pocket"><div class="timeline-row"><span id="timeNow" class="time">00:00.00</span><input type="range" id="timeline" min="0" max="1" step=".001" value="0" aria-label="Scrub slow-motion video"><span id="timeEnd" class="time">00:00.00</span></div></div><div class="frame-buttons"><button class="tactile" id="previous" type="button">◀ PREV FRAME</button><button class="tactile primary" id="captureBtn" type="button" disabled>◎ USE THIS FRAME</button><button class="tactile" id="next" type="button">NEXT FRAME ▶</button></div><div class="frame-cancel-row"><button class="frame-cancel hidden" id="cancelFrameBtn" type="button">Keep original frame &amp; annotations</button></div><div class="frame-note">Frame stepping is approximately ±1/120 second; the exact displayed frame depends on the video.</div></div><div class="frame-note" id="canvasHelp">Tap to place labels, drag to draw traces or arrows. Switch planes without losing your annotations.</div></div>
 </section>
 <aside class="right" aria-label="Advanced annotation settings">
-  <div class="eyebrow">03 / TOOL OPTIONS</div>
   <h2 id="inspectorTitle">SELECT TOOL</h2>
   <p class="hint" id="inspectorHelp">Choose a drawing tool or select an existing annotation to edit its properties.</p>
   <div class="tool-fields" id="toolFields">
@@ -498,8 +502,10 @@ vid.onseeked=()=>{if(v.source?.video!==vid)return;v.source.seeking=false;v.sourc
 vid.onerror=()=>{if(v.source?.video!==vid)return;v.source.ready=false;toast('Cannot decode this video. MP4/H.264 is recommended.');if(v===current())updateUI()};
 vid.src=url;vid.load()}
 syncCanvas();updateUI();draw()}
-function seekVideo(v,t){const s=v.source;if(!s||!s.duration)return;const goal=clamp(t,0,s.duration);v.preview=true;s.seeking=true;if(v===current())updateUI();try{if(Math.abs(s.video.currentTime-goal)<.0003&&s.ready){s.seeking=false;if(v===current()){updateUI();draw()}}else s.video.currentTime=goal}catch(e){s.seeking=false;toast('Unable to show this frame.')}if(v===current()){$('timeline').value=String(goal);$('timeNow').textContent=time(goal)}}
-function captureFrame(){const v=current(),s=v.source;if(!s||!s.ready||s.seeking||s.video.seeking){toast('Choose a fully loaded video frame.');return}try{const src=saveSnapshot(s.video,s.video.videoWidth,s.video.videoHeight);if(replaceFrame(v,src,s.fileName+' · '+time(s.video.currentTime)))toast('Peak frame captured. Start annotating.')}catch(e){toast('Unable to capture this video frame.')}}
+function seekVideo(v,t){const s=v.source;if(!v.preview||!s||!s.duration)return;const goal=clamp(t,0,s.duration);s.seeking=true;if(v===current())updateUI();try{if(Math.abs(s.video.currentTime-goal)<.0003&&s.ready){s.seeking=false;if(v===current()){updateUI();draw()}}else s.video.currentTime=goal}catch(e){s.seeking=false;toast('Unable to show this frame.')}if(v===current()){$('timeline').value=String(goal);$('timeNow').textContent=time(goal)}}
+function captureFrame(){const v=current(),s=v.source;if(!v.preview||!s||!s.ready||s.seeking||s.video.seeking){toast('Choose a fully loaded video frame.');return}try{const src=saveSnapshot(s.video,s.video.videoWidth,s.video.videoHeight);if(replaceFrame(v,src,s.fileName+' · '+time(s.video.currentTime)))toast('Peak frame captured. Start annotating.');else if(v.frameSrc)cancelFrameEdit()}catch(e){toast('Unable to capture this video frame.')}}
+function cancelFrameEdit(){const v=current();if(!v.frameSrc)return;v.preview=false;selected=-1;draft=null;romDraft=null;drag=null;syncCanvas();updateUI();draw();toast('Original frame and annotations preserved.')}
+function reopenCapturedFrame(index){switchPlane(index);const v=current();if(v.source?.ready&&v.frameSrc){v.preview=true;selected=-1;draft=null;romDraft=null;drag=null;syncCanvas();updateUI();draw();toast('Choose a new frame or keep your original annotations.')}else{$('galleryInput').click()}}
 function visibleSource(v){if(v.preview&&v.source?.ready)return v.source.video;if(v.frameImg)return v.frameImg;if(v.source?.ready)return v.source.video;return null}
 function sourceSize(v){const s=visibleSource(v);if(!s)return{w:16,h:9};return s instanceof HTMLVideoElement?{w:s.videoWidth,h:s.videoHeight}:{w:s.naturalWidth,h:s.naturalHeight}}
 function switchPlane(index){active=index;selected=-1;draft=null;romDraft=null;romPointActive=0;romReposition=false;drag=null;document.querySelectorAll('[data-plane]').forEach(b=>{const yes=Number(b.dataset.plane)===active;b.classList.toggle('active',yes);b.setAttribute('aria-pressed',String(yes))});populateInspector();syncCanvas();updateUI();draw()}
@@ -786,8 +792,8 @@ function inferredJointRegion(a){
  return a.region==='upper'||a.region==='lower'?a.region:null;
 }
 function updateUI(){const v=current(),s=v.source,canAnnotate=!!v.frameSrc&&!v.preview;const source=visibleSource(v);$('screenTitle').textContent=viewNames[active]+' PLANE · '+(v.preview?'VIDEO PREVIEW':v.frameLabel||'NO FRAME');$('screenTag').textContent=v.preview?'VIDEO':v.frameSrc?'CAPTURED':'STANDBY';$('sourceStatus').textContent=v.preview?'Scrub to the peak position and choose USE THIS FRAME.':v.frameSrc?'Frame captured. Add joint types, trace bones/muscles and draw movement arrows.':'No '+viewNames[active].toLowerCase()+' frame captured yet. Upload a screenshot or video.';
-$('captureBtn').disabled=!s||!s.ready||s.seeking||s.video.seeking;
-$('videoControls').classList.toggle('hidden',!s);if(s){$('timeline').max=String(s.duration||1);$('timeline').value=String(s.video.currentTime||0);$('timeNow').textContent=time(s.video.currentTime);$('timeEnd').textContent=time(s.duration)}
+$('captureBtn').disabled=!v.preview||!s||!s.ready||s.seeking||s.video.seeking;
+$('videoControls').classList.toggle('hidden',!(s&&v.preview));$('cancelFrameBtn').classList.toggle('hidden',!(v.preview&&v.frameSrc));if(s){$('timeline').max=String(s.duration||1);$('timeline').value=String(s.video.currentTime||0);$('timeNow').textContent=time(s.video.currentTime);$('timeEnd').textContent=time(s.duration)}
 $('overlayNotice').classList.toggle('hidden',!v.preview);$('overlayNotice').textContent=v.preview?'VIDEO PREVIEW · CAPTURE FRAME BEFORE ANNOTATING':'';
 updateGallery();
 $('clearBtn').disabled=!v.annotations.length;$('deleteBtn').disabled=selected<0;$('undoBtn').disabled=!undo.length;$('redoBtn').disabled=!redo.length;$('menuExportPlane').disabled=!v.frameSrc;$('menuExportPoster').disabled=!views.some(z=>z.frameSrc);$('menuExportExcalidraw').disabled=!views.some(z=>z.frameSrc);
@@ -903,10 +909,9 @@ document.querySelectorAll('[data-rom-mode]').forEach(b=>b.addEventListener('clic
  updateROMInspector();draw();
 }));
 $('romNew').addEventListener('click',newROM);
-$('photoBtn').onclick=()=>$('photoInput').click();$('videoBtn').onclick=()=>$('videoInput').click();$('photoInput').onchange=e=>{loadMedia(e.target.files?.[0]);e.target.value=''};$('videoInput').onchange=e=>{loadMedia(e.target.files?.[0]);e.target.value=''};
 document.querySelectorAll('[data-plane]').forEach(b=>b.onclick=()=>switchPlane(Number(b.dataset.plane)));
 document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));$('captureBtn').onclick=captureFrame;
-$('previous').onclick=()=>{const v=current();if(v.source)seekVideo(v,(v.source.video.currentTime||0)-1/120)};$('next').onclick=()=>{const v=current();if(v.source)seekVideo(v,(v.source.video.currentTime||0)+1/120)};$('timeline').oninput=e=>seekVideo(current(),Number(e.target.value));
+$('previous').onclick=()=>{const v=current();if(v.preview&&v.source)seekVideo(v,(v.source.video.currentTime||0)-1/120)};$('next').onclick=()=>{const v=current();if(v.preview&&v.source)seekVideo(v,(v.source.video.currentTime||0)+1/120)};$('timeline').oninput=e=>seekVideo(current(),Number(e.target.value));$('cancelFrameBtn').onclick=cancelFrameEdit;
 // Auto-apply inspector fields without an extra confirmation button.
 // Focus/drag groups let Undo restore the entire edit, not one typed character.
 for(const id of ['labelInput','jointType','movementType','strokeWidth','labelSize']){
@@ -1013,17 +1018,19 @@ if('ResizeObserver' in window){
 window.addEventListener('resize',updateStickyOffsets);
 function updateGallery(){
  views.forEach((v,i)=>{
-  const card=$('galleryCard'+i),add=$('galleryAdd'+i),image=$('galleryImage'+i);
+  const card=$('galleryCard'+i),wrap=$('galleryWrap'+i),edit=$('galleryEdit'+i),add=$('galleryAdd'+i),image=$('galleryImage'+i);
   const preview=$('galleryPreview'+i),status=$('galleryStatus'+i),caption=$('galleryName'+i);
   const hasImage=!!v.frameSrc;
   const showingVideo=!!v.preview && !hasImage;
   const filled=hasImage||showingVideo;
-  card.classList.toggle('hidden',!filled);
+  wrap.classList.toggle('hidden',!filled);
+  edit.classList.toggle('hidden',!hasImage||v.preview);
+  edit.title=v.source?.ready?'Choose a different video frame':'Replace photo or video';
   add.classList.toggle('hidden',filled);
   card.classList.toggle('active',active===i);
   add.classList.toggle('active-plane',active===i);
   card.setAttribute('aria-pressed',String(active===i));
-  status.textContent=hasImage?'CAPTURED':showingVideo?'PREVIEW':'EMPTY';
+  status.textContent=v.preview&&hasImage?'EDITING':hasImage?'CAPTURED':showingVideo?'PREVIEW':'EMPTY';
   status.classList.toggle('is-ready',hasImage);
   preview.classList.toggle('hidden',!showingVideo);
   image.classList.toggle('hidden',!hasImage);
@@ -1034,6 +1041,9 @@ function updateGallery(){
 }
 document.querySelectorAll('[data-gallery-plane]').forEach(button=>{
  button.addEventListener('click',()=>switchPlane(Number(button.dataset.galleryPlane)));
+});
+document.querySelectorAll('.gallery-edit').forEach(button=>{
+ button.addEventListener('click',()=>reopenCapturedFrame(Number(button.id.slice(-1))));
 });
 document.querySelectorAll('[data-gallery-add]').forEach(button=>{
  button.addEventListener('click',()=>{
