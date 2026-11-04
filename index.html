@@ -94,6 +94,36 @@ body{background:var(--device);padding:0}
 /* Keep detached video decoders active on iPadOS/Safari and Chromebook browsers. */
 #videoDecodePool{position:fixed;left:-9999px;top:-9999px;width:2px;height:2px;overflow:hidden;pointer-events:none;opacity:0}
 #videoDecodePool video{width:2px;height:2px;display:block}
+
+/* MES V10 TOP TOOLBAR — managed by installer */
+/* The menu and toolbar remain independent sticky rows. */
+.menu-bar{margin-bottom:0;min-height:56px;box-shadow:none}
+.studio-toolbar{position:sticky;top:56px;z-index:90;margin:0 -2px 20px;background:#30353cf5;border-bottom:1px solid #ffffff20;box-shadow:0 9px 18px #0003;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.studio-toolbar-scroll{display:flex;align-items:center;gap:12px;padding:9px 9px 11px;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;scrollbar-color:#6a747e transparent;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+.studio-toolbar-scroll::-webkit-scrollbar{height:5px}
+.studio-toolbar-scroll::-webkit-scrollbar-thumb{background:#69737d;border-radius:6px}
+.toolbar-cluster{display:flex;align-items:center;gap:7px;flex:none}
+.toolbar-section-label{font-size:9px;font-weight:850;letter-spacing:.11em;color:#aab7c4;margin-right:3px;white-space:nowrap;user-select:none}
+.toolbar-divider{height:30px;flex:none;border-left:1px solid #ffffff2b}
+.toolbar-button{width:43px;height:43px;min-width:43px;flex:none;display:grid;place-items:center;position:relative;border:1px solid #ffffff17;border-radius:12px;background:#394048;color:#e9f0f4;box-shadow:4px 5px 10px #0006,-2px -2px 5px #ffffff0b,inset 1px 1px 2px #ffffff20,inset -1px -1px 2px #0005;padding:0;transition:transform .1s,box-shadow .1s,background .1s,color .1s}
+.toolbar-button svg{width:22px;height:22px;display:block;pointer-events:none}
+.toolbar-button:hover:not(:disabled){background:#46505a;color:#fff}
+.toolbar-button:active:not(:disabled),.toolbar-button.active{transform:translateY(1px);background:#20262d;color:#b9d8b0;box-shadow:inset 4px 4px 9px #0009,inset -3px -3px 7px #ffffff0b,1px 2px 4px #0004;border-color:#afc6aa40}
+.toolbar-button:disabled{opacity:.40;filter:saturate(.5);cursor:not-allowed}
+.toolbar-button.toolbar-danger:not(:disabled){color:#ffd3d0}
+.toolbar-led{position:absolute;bottom:3px;right:3px;width:6px;height:6px;pointer-events:none}
+.studio-toolbar.has-overflow:not(.at-scroll-end)::after{content:"›";position:absolute;right:0;top:10px;bottom:9px;display:grid;place-items:center;width:23px;border-radius:7px;background:linear-gradient(90deg,#30353c00,#20282eef 65%);color:#e8f2ee;font-size:26px;font-weight:500;pointer-events:none}
+.toolbar-tooltip{position:fixed;z-index:150;pointer-events:none;background:#171d23;color:#edf4f6;border:1px solid #ffffff32;border-radius:8px;padding:7px 10px;box-shadow:0 7px 22px #0008;font-weight:650;font-size:12px;line-height:1.25;white-space:nowrap;max-width:min(280px,90vw);text-align:center}
+.toolbar-a11y{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+/* With the old left control rail gone, the canvas receives the width. */
+.workbench{display:grid;grid-template-columns:minmax(0,1fr) 275px;gap:clamp(15px,2vw,25px);align-items:start}
+.center,.right{min-width:0}
+.picture-frame{width:min(100%,calc(69vh * var(--aspect,1.7778)))}
+@media(max-width:1250px){.right{grid-column:auto;max-width:none;display:block}.right .tool-fields{display:block}}
+@media(max-width:1030px){.workbench{display:grid;grid-template-columns:minmax(0,1fr)}.center{grid-column:1;order:1;width:100%}.right{grid-column:1;order:2;width:100%;max-width:none}.right .tool-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}.right .tool-fields #inspectorFootnote{grid-column:1/-1}}
+@media(max-width:790px){.studio-toolbar{margin:0 -4px 14px;top:56px}.studio-toolbar-scroll{padding:8px 7px 10px;gap:10px}.toolbar-button{width:42px;height:42px;min-width:42px}.workbench{display:grid;grid-template-columns:minmax(0,1fr)}.center{order:1}.right{order:2}.right .tool-fields{display:block}}
+@media(max-width:450px){.menu-bar{min-height:52px}.studio-toolbar{top:52px;margin:0 -3px 13px}.toolbar-section-label{display:none}.toolbar-button{width:43px;height:43px;min-width:43px}.studio-toolbar-scroll{gap:9px;padding:7px 4px 10px}.toolbar-cluster{gap:7px}}
+
 </style>
 </head>
 <body>
@@ -134,32 +164,49 @@ body{background:var(--device);padding:0}
       </div>
     </div>
   </nav>
+<!-- MES V10 TOP TOOLBAR -->
+  <nav class="studio-toolbar" id="studioToolbar" aria-label="Movement Evaluation tools">
+    <div class="studio-toolbar-scroll" id="studioToolbarScroll" role="toolbar" aria-label="Movement Evaluation controls">
+      <div class="toolbar-cluster" role="group" aria-label="Viewing plane">
+        <span class="toolbar-section-label">PLANE</span>
+        <button type="button" class="toolbar-button active" data-plane="0" title="Frontal Plane" aria-label="Frontal Plane" data-tooltip="Frontal Plane" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M12 6v13M5 9l7-2 7 2M8 21l4-2 4 2M7 13l-2 5M17 13l2 5"/></svg><span id="frontalLed" class="led green toolbar-led" aria-hidden="true"></span></button>
+        <button type="button" class="toolbar-button" data-plane="1" title="Sagittal Plane" aria-label="Sagittal Plane" data-tooltip="Sagittal Plane" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4" r="2"/><path d="M12 6v12M12 8l5 4-5 1M12 18l-4 4M12 18l5 4M12 9l-4 4"/></svg><span id="sagittalLed" class="led green toolbar-led" aria-hidden="true"></span></button>
+      </div>
+      <span class="toolbar-divider" role="separator" aria-hidden="true"></span>
+      <div class="toolbar-cluster" role="group" aria-label="Import media">
+        <span class="toolbar-section-label">IMPORT</span>
+        <button type="button" class="toolbar-button" id="photoBtn" title="Upload Photo" aria-label="Upload Photo" data-tooltip="Upload Photo"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></button>
+        <button type="button" class="toolbar-button" id="videoBtn" title="Upload Video" aria-label="Upload Video" data-tooltip="Upload Video"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="13" height="14" rx="2"/><path d="m16 10 5-3v10l-5-3z"/></svg></button>
+      </div>
+      <span class="toolbar-divider" role="separator" aria-hidden="true"></span>
+      <div class="toolbar-cluster" id="toolGrid" role="group" aria-label="Annotation tools">
+        <span class="toolbar-section-label">ANNOTATE</span>
+        <button type="button" class="toolbar-button active" data-tool="select" title="Select / Move" aria-label="Select / Move" data-tooltip="Select / Move" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3l7.2 18 2.1-7.4 7.7-2.5L4 3z"/></svg></button>
+        <button type="button" class="toolbar-button" data-tool="joint" title="Joint Type" aria-label="Joint Type" data-tooltip="Joint Type" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="16" r="4"/><path d="M11 11l2 2"/></svg></button>
+        <button type="button" class="toolbar-button" data-tool="bone" title="Trace Bone" aria-label="Trace Bone" data-tooltip="Trace Bone" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 5a2 2 0 0 1 3 2l8 8a2 2 0 1 1 2 3 2 2 0 1 1-3-2l-8-8a2 2 0 1 1-3-3z"/></svg></button>
+        <button type="button" class="toolbar-button" data-tool="muscle" title="Trace Muscle" aria-label="Trace Muscle" data-tooltip="Trace Muscle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8c2-5 5-5 8-1s6 4 10-1M3 16c2-5 5-5 8-1s6 4 10-1M5 6l-2 2 2 2M19 4l2 2-2 2"/></svg></button>
+        <button type="button" class="toolbar-button" data-tool="arrow" title="Movement Arrow" aria-label="Movement Arrow" data-tooltip="Movement Arrow" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18 19 5M11 5h8v8"/></svg></button>
+        <button type="button" class="toolbar-button" data-tool="text" title="Text Label" aria-label="Text Label" data-tooltip="Text Label" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6V4h16v2M12 4v16M8 20h8"/></svg></button>
+        <button type="button" class="toolbar-button" data-tool="rom" title="Range of Motion (ROM)" aria-label="Range of Motion (ROM)" data-tooltip="Range of Motion (ROM)" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20 10 5l11 15H4Z"/><path d="M9 17a5 5 0 0 1 4-4"/><circle cx="10" cy="20" r="1"/></svg></button>
+      </div>
+      <span class="toolbar-divider" role="separator" aria-hidden="true"></span>
+      <div class="toolbar-cluster" role="group" aria-label="Edit annotations">
+        <span class="toolbar-section-label">EDIT</span>
+        <button type="button" class="toolbar-button" id="undoBtn" title="Undo" aria-label="Undo" data-tooltip="Undo" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6M3 13C6 4 20 5 20 14c0 4-3 7-8 7"/></svg></button>
+        <button type="button" class="toolbar-button" id="redoBtn" title="Redo" aria-label="Redo" data-tooltip="Redo" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6M21 13C18 4 4 5 4 14c0 4 3 7 8 7"/></svg></button>
+        <button type="button" class="toolbar-button toolbar-danger" id="deleteBtn" title="Delete Selected Annotation" aria-label="Delete Selected Annotation" data-tooltip="Delete Selected Annotation" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 4h4M6 7l1 14h10l1-14M10 11v7M14 11v7"/></svg></button>
+        <button type="button" class="toolbar-button toolbar-danger" id="clearBtn" title="Clear Current Plane" aria-label="Clear Current Plane" data-tooltip="Clear Current Plane" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 6h14M8 3h8M6 6l1 15h10l1-15M10 11l4 6M14 11l-4 6"/></svg></button>
+      </div>
+    </div>
+    <div class="toolbar-a11y" aria-live="polite"><span id="sourceStatus">No frontal-plane frame yet.</span><span id="toolHint">Select an annotation.</span></div>
+    <input type="file" id="photoInput" accept="image/*" hidden>
+    <input type="file" id="videoInput" accept="video/*" hidden>
+  </nav>
+  <div class="toolbar-tooltip" id="toolbarTooltip" role="tooltip" hidden></div>
 
 <header class="header"><div class="brand"><div class="logo">⌁</div><div><div class="overline">REGULAR ANATOMY · MUSCULAR SYSTEM LAB</div><h1>MOVEMENT <span>EVALUATION STUDIO</span></h1><p>TWO-PLANE EXERCISE ANALYSIS · ANNOTATED EVIDENCE</p></div></div></header>
 <div class="meta-bar"><div><label class="field-name" for="student">STUDENT NAME (OPTIONAL)</label><input class="input-well" id="student" placeholder="Name for the exported project" autocomplete="off"></div><div><label class="field-name" for="exercise">EXERCISE BEING EVALUATED</label><input class="input-well" id="exercise" placeholder="e.g., squat, lunge, push-up"></div></div>
 <div class="workbench">
-<aside class="left">
- <div class="eyebrow">01 / CAPTURE</div><h2>CHOOSE PLANE</h2>
- <div class="plane-tabs"><button class="tactile active" data-plane="0" type="button">FRONTAL <span id="frontalLed" class="led green"></span></button><button class="tactile" data-plane="1" type="button">SAGITTAL <span id="sagittalLed" class="led green"></span></button></div>
- <p class="hint">Film the peak of your exercise from both planes. The subject should be fully framed, camera aligned to the plane of movement.</p>
- <div class="upload-row"><button class="tactile" id="photoBtn">＋ PHOTO</button><button class="tactile" id="videoBtn">▣ VIDEO</button></div>
- <input type="file" id="photoInput" accept="image/*" hidden><input type="file" id="videoInput" accept="video/*" hidden>
- <div class="small-note" id="sourceStatus">No frontal-plane frame yet. Upload a screenshot, or choose a video and capture its peak frame.</div>
-
- <hr class="divider"><div class="eyebrow">02 / ANNOTATE</div>
- <div class="tool-grid" id="toolGrid">
-  <button class="tactile active" data-tool="select"><span class="icon">↖</span>SELECT</button>
-  <button class="tactile" data-tool="joint"><span class="icon">◉</span>JOINT TYPE</button>
-  <button class="tactile" data-tool="bone"><span class="icon">〰</span>TRACE BONE</button>
-  <button class="tactile" data-tool="muscle"><span class="icon">〽</span>TRACE MUSCLE</button>
-  <button class="tactile" data-tool="arrow"><span class="icon">➜</span>MOVEMENT</button>
-  <button class="tactile" data-tool="text"><span class="icon">T</span>TEXT LABEL</button>
-  <button class="tactile" data-tool="rom"><span class="icon">∠</span>ROM</button>
- </div>
- <div class="control-help" id="toolHint">Select an annotation to move it, edit its label, or delete it.</div>
- <div class="two-buttons" style="margin-top:15px"><button class="tactile" id="undoBtn" disabled>↶ UNDO</button><button class="tactile" id="redoBtn" disabled>↷ REDO</button></div>
- <div class="two-buttons" style="margin-top:11px"><button class="tactile danger" id="deleteBtn" disabled>DELETE SELECTED</button><button class="tactile danger" id="clearBtn" disabled>CLEAR PLANE</button></div>
-</aside>
 <section class="center" aria-label="Movement canvas">
   <div class="bezel"><div class="oled"><div class="screen-head"><span id="screenTitle">FRONTAL PLANE · NO FRAME</span><span class="screen-tag" id="screenTag">STANDBY</span></div><div id="stage" class="stage empty-screen"><div class="empty" id="empty"><div class="empty-symbol">⌁</div><h3>CAPTURE YOUR PEAK MOVEMENT</h3><p>Upload a frontal- or sagittal-plane screenshot, or scrub a slow-motion video and choose the exact peak frame.</p></div><div id="pictureFrame" class="picture-frame hidden"><canvas id="canvas" aria-label="Movement photo and interactive anatomical annotations"></canvas><div id="overlayNotice" class="screen-overlay hidden"></div></div></div></div></div>
   <div class="screen-bottom"><div id="videoControls" class="hidden"><div class="timeline-pocket"><div class="timeline-row"><span id="timeNow" class="time">00:00.00</span><input type="range" id="timeline" min="0" max="1" step=".001" value="0" aria-label="Scrub slow-motion video"><span id="timeEnd" class="time">00:00.00</span></div></div><div class="frame-buttons"><button class="tactile" id="previous" type="button">◀ PREV FRAME</button><button class="tactile primary" id="captureBtn" type="button" disabled>◎ USE THIS FRAME</button><button class="tactile" id="next" type="button">NEXT FRAME ▶</button></div><div class="frame-note">Frame stepping is approximately ±1/120 second; the exact displayed frame depends on the video.</div></div><div class="frame-note" id="canvasHelp">Tap to place labels, drag to draw traces or arrows. Switch planes without losing your annotations.</div></div>
@@ -751,6 +798,54 @@ $('menuExportExcalidraw').onclick=()=>{closeMenus();try{exportExcalidraw()}catch
 const stage=$('stage');stage.addEventListener('dragover',e=>{e.preventDefault();stage.classList.add('dragover')});stage.addEventListener('dragleave',e=>{if(!stage.contains(e.relatedTarget))stage.classList.remove('dragover')});stage.addEventListener('drop',e=>{e.preventDefault();stage.classList.remove('dragover');loadMedia(e.dataTransfer?.files?.[0])});
 window.addEventListener('keydown',e=>{if(checklistDialog.open||annotationsDialog.open)return;if(e.key==='Escape'&&menuButtons.some(b=>b.getAttribute('aria-expanded')==='true')){closeMenus();return}const tag=document.activeElement?.tagName||'';if(/INPUT|SELECT|TEXTAREA/.test(tag))return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redoAction():undoAction()}else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelected()}else if(e.key==='Escape'){selected=-1;setTool('select')}});
 window.addEventListener('resize',resizeCanvas);if('ResizeObserver' in window)new ResizeObserver(resizeCanvas).observe($('pictureFrame'));window.addEventListener('beforeunload',()=>views.forEach(disposeSource));
+
+// MES V10 TOP TOOLBAR TOOLTIP — keyboard accessible, independent of scroll clipping.
+const mesToolbar = $('studioToolbar');
+const mesTooltip = $('toolbarTooltip');
+let mesTooltipTarget = null;
+function mesHideTooltip(){mesTooltip.hidden=true;mesTooltipTarget=null}
+function mesShowTooltip(button){
+ if(!button || button.disabled)return mesHideTooltip();
+ mesTooltipTarget=button;
+ mesTooltip.textContent=button.dataset.tooltip || button.getAttribute('aria-label') || '';
+ mesTooltip.hidden=false;
+ const rect=button.getBoundingClientRect(), maxX=window.innerWidth-8;
+ const width=mesTooltip.getBoundingClientRect().width;
+ const left=Math.min(Math.max(8,rect.left+rect.width/2-width/2),Math.max(8,maxX-width));
+ mesTooltip.style.left=left+'px';
+ mesTooltip.style.top=Math.min(window.innerHeight-40,rect.bottom+8)+'px';
+}
+mesToolbar.addEventListener('pointerover',event=>{
+ if(event.pointerType==='touch')return;
+ const button=event.target.closest('.toolbar-button');
+ if(button&&button!==mesTooltipTarget)mesShowTooltip(button);
+});
+mesToolbar.addEventListener('pointerout',event=>{
+ if(mesTooltipTarget&&!mesTooltipTarget.contains(event.relatedTarget))mesHideTooltip();
+});
+mesToolbar.addEventListener('focusin',event=>{
+ const button=event.target.closest('.toolbar-button');
+ if(button)mesShowTooltip(button);
+});
+mesToolbar.addEventListener('focusout',()=>mesHideTooltip());
+const mesScroller=$('studioToolbarScroll');
+function mesUpdateOverflow(){
+ const overflow=mesScroller.scrollWidth>mesScroller.clientWidth+4;
+ mesToolbar.classList.toggle('has-overflow',overflow);
+ mesToolbar.classList.toggle('at-scroll-end',!overflow||mesScroller.scrollLeft+mesScroller.clientWidth>=mesScroller.scrollWidth-6);
+}
+mesScroller.addEventListener('scroll',()=>{mesHideTooltip();mesUpdateOverflow()},{passive:true});
+mesToolbar.addEventListener('click',event=>{
+ const button=event.target.closest('.toolbar-button');
+ if(button&&window.matchMedia('(hover:none)').matches){
+  mesShowTooltip(button);
+  setTimeout(()=>{if(mesTooltipTarget===button)mesHideTooltip()},1300);
+ }
+});
+requestAnimationFrame(mesUpdateOverflow);
+window.addEventListener('scroll',mesHideTooltip,{passive:true});
+window.addEventListener('resize',()=>{mesHideTooltip();mesUpdateOverflow()},{passive:true});
+
 renderPalette();setTool('select');switchPlane(0);})();
 </script>
 </body></html>
