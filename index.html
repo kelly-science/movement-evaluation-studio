@@ -363,6 +363,49 @@ body{padding:0;background:#30343b;color:var(--text)}
 @media(prefers-reduced-motion:reduce){
   .header-toast,.header-toast-text{transition-duration:0ms!important}
 }
+
+/* Kinetica Studio v18 — unified light-blue UI accent */
+:root{
+  --lcd:#b9dcfc;
+  --green:#88bfff; /* legacy theme token: UI status blue, not anatomical category color */
+  --blue:#72bafb;
+}
+/* Remove only the redundant generic inspector hint, not actionable editing guidance. */
+#inspectorHelp:empty{display:none}
+/* Shared component and input accents. */
+.style-heading output,
+.readout-label,.readout-big,.screen-tag,
+.time,.dialog-progress{color:#b9dcfc}
+.style-row input[type=range],.timeline-row input[type=range]{accent-color:#a5d2fb}
+.readout-big{color:#bfdfff;text-shadow:0 0 17px #8dc9f32b}
+.readout-sub{color:#a2c5e6}
+.tactile.primary{color:#e1f1ff;background:#456985;border-color:#78add7}
+.tactile.primary:hover:not(:disabled){background:#537da0}
+.tactile.active{color:#d9ecff}
+#captureBtn{color:#d9ecff}
+.frame-buttons #captureBtn{color:#d9ecff}
+.annotation-chip.active{color:#d3eaff;outline-color:#9cc8f36b}
+.swatch.selected{outline-color:#b8ddff}
+.gallery-state.is-ready{color:#b1d8fc}
+/* Goniometer: blue readouts and a light-blue fulcrum distinct from the darker stationary arm. */
+.rom-reading-title,.rom-reading-sub{color:#a6ccf1}
+.rom-reading-value{color:#c3e2ff;text-shadow:0 0 16px #8ec9fc2a}
+.rom-f,.rom-tick{color:#b9ddff}
+.rom-s{color:#4d9fe5}
+.rom-point.selected,.rom-modes button.active{color:#eff7ff}
+/* Header local-save and notification colors now match the selected-tool blue. */
+.local-save-status,.document-student .local-save-status{color:#b6d9f9}
+.document-student .local-save-status::before{background:#8ec7fa}
+.header-toast{
+  --toast-ink:#17344f;
+  border-color:#9fc9ef;
+  background:#d5eaff;
+  color:var(--toast-ink);
+}
+/* Retain red warning states for storage failures. */
+.local-save-status.error,.document-student .local-save-status.error{color:#ffc7b8}
+.document-student .local-save-status.error::before{background:#ed9d8e}
+
 </style>
 </head>
 <body>
@@ -564,14 +607,14 @@ function rememberCreationFields(){
  };
 }
 
-const toolStyles={joint:{color:'#e7e4a0',width:3,labelScale:1},bone:{color:'#b9dbfa',width:4.4,labelScale:1},muscle:{color:colors[0],width:5.5,labelScale:1},arrow:{color:'#fbc47a',width:4,labelScale:1},text:{color:'#ffffff',width:3,labelScale:1},rom:{color:'#e5f0e4',width:4,labelScale:1}};
+const toolStyles={joint:{color:'#e7e4a0',width:3,labelScale:1},bone:{color:'#b9dbfa',width:4.4,labelScale:1},muscle:{color:colors[0],width:5.5,labelScale:1},arrow:{color:'#fbc47a',width:4,labelScale:1},text:{color:'#ffffff',width:3,labelScale:1},rom:{color:'#b9ddff',width:4,labelScale:1}};
 const inspectorNames={select:'SELECT ANNOTATION',joint:'SYNOVIAL JOINT',bone:'BONE TRACE',muscle:'MUSCLE TRACE',arrow:'MOVEMENT ARROW',text:'TEXT LABEL',rom:'RANGE OF MOTION'};
 function inspectorType(){return current().annotations[selected]?.type||tool}
 function populateInspector(){
  const item=current().annotations[selected],type=item?.type||tool;
  const mode=type==='select'?'none':type;
  $('inspectorTitle').textContent=inspectorNames[type]+' OPTIONS';
- $('inspectorHelp').textContent=item?'Editing selected '+item.type+' annotation. Changes appear immediately.':type==='select'?'Select an annotation on the photo or choose Edit → Manage Annotations.':'Draw in empty space, or tap an existing annotation to edit and move it.';
+ $('inspectorHelp').textContent=item?'Editing selected '+item.type+' annotation. Changes appear immediately.':type==='select'?'Select an annotation on the photo or choose Edit → Manage Annotations.':'';
  ['nameField','jointFields','muscleFields','arrowFields','styleFields','romFields'].forEach(i=>$(i).classList.toggle('hidden',i==='nameField'||i==='styleFields'?mode==='none':(i==='jointFields'&&mode!=='joint'||i==='muscleFields'&&mode!=='muscle'||i==='arrowFields'&&mode!=='arrow'||i==='romFields'&&mode!=='rom')));
  $('strokeField').classList.toggle('hidden',!['bone','muscle','arrow','rom'].includes(type));
  $('inspectorFootnote').textContent=item?'Changes appear immediately and are included in project saves and exports.':'Tip: Drawing controls are saved automatically with each new annotation.';
@@ -978,10 +1021,10 @@ if(a.type==='rom'){
    const display=a.angleMode==='straight'?180-included:included;
    const suffix=a.angleMode==='straight'?' (from straight)':' (included)';
    const mid=va+delta/2;const lx=f.x+Math.cos(mid)*(r+28*scale),ly=f.y+Math.sin(mid)*(r+28*scale);
-   textPill(c,(a.label||'ROM')+' · '+display.toFixed(1)+'°'+suffix,lx,ly,a.color||'#e5f0e4',labelScale,w,h)
+   textPill(c,(a.label||'ROM')+' · '+display.toFixed(1)+'°'+suffix,lx,ly,a.color||'#b9ddff',labelScale,w,h)
   }
  }
- ps.forEach((p,i)=>{if(!p)return;c.beginPath();c.arc(p.x,p.y,10*scale,0,2*Math.PI);c.fillStyle='#030710d9';c.fill();c.beginPath();c.arc(p.x,p.y,7*scale,0,2*Math.PI);c.fillStyle=['#c7e885','#65c9ef','#ffb56e'][i];c.fill();c.lineWidth=1.8*scale;c.strokeStyle='#142432';c.stroke()});
+ ps.forEach((p,i)=>{if(!p)return;c.beginPath();c.arc(p.x,p.y,10*scale,0,2*Math.PI);c.fillStyle='#030710d9';c.fill();c.beginPath();c.arc(p.x,p.y,7*scale,0,2*Math.PI);c.fillStyle=['#b9ddff','#4d9fe5','#ffb56e'][i];c.fill();c.lineWidth=1.8*scale;c.strokeStyle='#142432';c.stroke()});
  if(isSelected&&f){c.beginPath();c.arc(f.x,f.y,17*scale,0,2*Math.PI);c.setLineDash([4*scale,4*scale]);c.strokeStyle='#ffffffb0';c.lineWidth=1.5*scale;c.stroke()}
 }
 if(a.type==='bone'||a.type==='muscle'){if(!a.points?.length){c.restore();return}c.beginPath();a.points.forEach((p,i)=>i?c.lineTo(x(p),y(p)):c.moveTo(x(p),y(p)));if(isSelected){c.strokeStyle='#ffffff';c.lineWidth=8*scale;c.stroke()}c.strokeStyle=a.color;c.lineWidth=(a.strokeWidth||(a.type==='bone'?4.4:5.5))*scale;c.stroke();const p=a.points.at(-1);textPill(c,a.label,x(p),y(p),a.color,labelScale,w,h)}
