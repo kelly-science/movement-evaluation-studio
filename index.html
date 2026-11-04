@@ -406,6 +406,24 @@ body{padding:0;background:#30343b;color:var(--text)}
 .local-save-status.error,.document-student .local-save-status.error{color:#ffc7b8}
 .document-student .local-save-status.error::before{background:#ed9d8e}
 
+
+/* Kinetica Studio v19 — Gallery frame editing and non-destructive crop */
+.frame-edit-menu{position:fixed;z-index:5000;width:min(280px,calc(100vw - 18px));padding:7px;border-radius:11px;background:#3b444e;border:1px solid #8495a83a;box-shadow:0 16px 45px #05080dbb}
+.frame-edit-menu button{display:block;width:100%;text-align:left;padding:11px 12px;min-height:40px;color:#ecf2f8;background:transparent;border:0;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer}
+.frame-edit-menu button:hover,.frame-edit-menu button:focus-visible{background:#526b88;outline:none}
+.frame-edit-menu p{font-size:10px;line-height:1.5;margin:7px 9px 3px;color:#bbcad7}
+.crop-dialog{max-width:min(92vw,880px);width:880px;max-height:94vh;overflow:auto;padding:22px;background:#323a44;color:#eaf1f8;border:1px solid #77899e70;border-radius:14px;box-shadow:0 24px 90px #000a}
+.crop-dialog::backdrop{background:#060c15b8;backdrop-filter:blur(4px)}
+.crop-dialog-head{display:flex;justify-content:space-between;gap:14px;align-items:start;margin-bottom:13px}
+.crop-dialog h2{font-size:18px;margin:2px 0 4px;letter-spacing:0}
+.crop-dialog .crop-description{font-size:12px;color:#becddd;line-height:1.5;margin:0}
+.crop-stage{display:flex;justify-content:center;align-items:center;min-height:180px;max-height:62vh;overflow:hidden;padding:9px;border-radius:10px;background:#151b22}
+.crop-stage canvas{display:block;width:auto;height:auto;max-width:100%;max-height:59vh;touch-action:none;cursor:crosshair}
+.crop-dialog-footer{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:16px}
+.crop-dialog-footer button{border-radius:7px;border:1px solid #ffffff35;background:#45505d;color:#f2f6fa;padding:9px 13px;font-size:12px;min-height:40px}
+.crop-dialog-footer .crop-apply{background:#526b88;border-color:#a7c8ec80}
+.crop-dialog-footer button:hover{background:#5c7693}
+@media(max-width:600px){.crop-dialog{padding:13px}.crop-dialog-footer button{flex:1}.crop-stage{max-height:54vh}.crop-stage canvas{max-height:52vh}}
 </style>
 </head>
 <body>
@@ -577,6 +595,23 @@ body{padding:0;background:#30343b;color:var(--text)}
   </div>
   <div class="dialog-footer"><button type="button" class="tactile primary" id="doneShortcuts">Done</button></div>
 </dialog>
+<div id="frameEditMenu" class="frame-edit-menu hidden" role="menu" aria-label="Frame editing options">
+  <button type="button" id="cropFrameOption" role="menuitem">Crop image…</button>
+  <button type="button" id="replaceFrameOption" role="menuitem">Choose another frame…</button>
+  <p id="frameEditMessage">Choose a crop or select a different frame.</p>
+</div>
+<dialog id="cropDialog" class="crop-dialog" aria-labelledby="cropTitle">
+  <div class="crop-dialog-head">
+    <div><h2 id="cropTitle">Crop captured frame</h2><p class="crop-description">Drag the blue rectangle to move it. Drag its corners or edges to resize. Annotations stay aligned and the original captured image is retained.</p></div>
+    <button type="button" id="cropClose" aria-label="Close crop editor">✕</button>
+  </div>
+  <div class="crop-stage"><canvas id="cropCanvas" aria-label="Adjust crop rectangle for captured image"></canvas></div>
+  <div class="crop-dialog-footer">
+    <button type="button" id="cropReset">Reset to full frame</button>
+    <button type="button" id="cropCancel">Cancel</button>
+    <button type="button" class="crop-apply" id="cropApply">Apply Crop</button>
+  </div>
+</dialog>
 <input type="file" id="projectInput" accept=".json,.movement.json,application/json" hidden>
 </div>
 <div id="videoDecodePool" aria-hidden="true"></div>
@@ -642,7 +677,7 @@ function updateStyleControl(property){
  applySelectedProperty(property);
 }
 
-function makeView(plane=0,category='Other',name=''){return{uid:newDocId(),plane,category,name,frameSrc:null,frameImg:null,annotations:[],source:null,preview:false,frameLabel:''}}
+function makeView(plane=0,category='Other',name=''){return{uid:newDocId(),plane,category,name,frameSrc:null,frameImg:null,cropBaseSrc:null,cropBounds:null,annotations:[],source:null,preview:false,frameLabel:''}}
 function current(){return views[active]}
 function clamp(v,a=0,b=1){return Math.max(a,Math.min(b,v))}
 function id(){return 'm'+(nextID++)+'_'+Math.random().toString(36).slice(2,7)}
@@ -710,7 +745,7 @@ function confirmFrameReplacement(v){
 function replaceFrame(v,src,label){
  if(!confirmFrameReplacement(v))return false;
  v.annotations=[];undo=[];redo=[];if(v===current())selected=-1;
- v.replacementApproved=false;
+ v.cropBaseSrc=null;v.cropBounds=null;v.replacementApproved=false;
  addImageToView(v,src,label);return true;
 }
 function loadMedia(file){
@@ -793,6 +828,158 @@ function reopenCapturedFrame(index){
   $('galleryInput').accept='image/*,video/*';$('galleryInput').click();
  }
 }
+// The gallery pencil owns frame editing. It no longer immediately opens the native file picker.
+let editMenuTargetId=null;
+function closeFrameEditMenu(){editMenuTargetId=null;$('frameEditMenu').classList.add('hidden')}
+function openFrameEditMenu(uid,button){
+ const idx=views.findIndex(v=>v.uid===uid);if(idx<0)return;
+ switchDocument(idx);editMenuTargetId=uid;
+ const v=views[idx],menu=$('frameEditMenu');
+ const rect=button.getBoundingClientRect();
+ menu.classList.remove('hidden');
+ menu.style.left=Math.max(8,Math.min(window.innerWidth-menu.offsetWidth-8,rect.right+9))+'px';
+ const y=rect.top;
+ menu.style.top=Math.max(8,Math.min(window.innerHeight-menu.offsetHeight-8,y))+'px';
+ $('replaceFrameOption').textContent=v.source?.ready?'Choose another video frame…':'Choose another frame…';
+ $('frameEditMessage').textContent=v.source?.ready
+ ?'The original video is still available in this session. Reopen the scrubber to select a new frame.'
+ :'The original video is not stored in project files. To select a different video moment, upload the video again; crop works on this saved still.';
+}
+$('cropFrameOption').addEventListener('click',()=>{
+ const idx=views.findIndex(v=>v.uid===editMenuTargetId);closeFrameEditMenu();if(idx>=0)openCropEditor(idx);
+});
+$('replaceFrameOption').addEventListener('click',()=>{
+ const idx=views.findIndex(v=>v.uid===editMenuTargetId);closeFrameEditMenu();if(idx>=0)reopenCapturedFrame(idx);
+});
+document.addEventListener('pointerdown',e=>{
+ if(!$('frameEditMenu').classList.contains('hidden')&&!e.target.closest('#frameEditMenu')&&!e.target.closest('.gallery-edit'))closeFrameEditMenu();
+});
+// The base image and rectangle are saved with each document. Crop re-edits use the original still.
+const FULL_CROP={x:0,y:0,w:1,h:1};
+let cropDocumentId=null,cropImage=null,cropRect=null,cropInteraction=null;
+const cropDialog=$('cropDialog'),cropCanvas=$('cropCanvas'),cropContext=cropCanvas.getContext('2d');
+function cropView(){return views.find(v=>v.uid===cropDocumentId)}
+function clampCrop(rect){
+ let x=clamp(rect.x,0,.95),y=clamp(rect.y,0,.95);
+ return{x,y,w:clamp(rect.w,.05,1-x),h:clamp(rect.h,.05,1-y)};
+}
+function cropDraw(){
+ if(!cropImage||!cropRect)return;
+ const bounds=cropCanvas.getBoundingClientRect();if(!bounds.width||!bounds.height)return;
+ const dpr=Math.min(devicePixelRatio||1,2),ww=Math.max(1,Math.round(bounds.width*dpr)),hh=Math.max(1,Math.round(bounds.height*dpr));
+ if(cropCanvas.width!==ww||cropCanvas.height!==hh){cropCanvas.width=ww;cropCanvas.height=hh}
+ cropContext.setTransform(ww/bounds.width,0,0,hh/bounds.height,0,0);
+ const c=cropContext,w=bounds.width,h=bounds.height,r=cropRect;
+ c.clearRect(0,0,w,h);c.drawImage(cropImage,0,0,w,h);
+ const x=r.x*w,y=r.y*h,rw=r.w*w,rh=r.h*h;
+ c.fillStyle='rgba(2,8,15,.61)';
+ c.fillRect(0,0,w,y);c.fillRect(0,y,x,rh);c.fillRect(x+rw,y,w-x-rw,rh);c.fillRect(0,y+rh,w,h-y-rh);
+ c.strokeStyle='#a9d4fc';c.lineWidth=2;c.strokeRect(x,y,rw,rh);
+ c.strokeStyle='#ddf0ff9c';c.lineWidth=1;c.beginPath();
+ for(let i=1;i<=2;i++){c.moveTo(x+rw*i/3,y);c.lineTo(x+rw*i/3,y+rh);c.moveTo(x,y+rh*i/3);c.lineTo(x+rw,y+rh*i/3)}c.stroke();
+ c.fillStyle='#c6e5ff';c.strokeStyle='#0a2034';c.lineWidth=1;
+ for(const px of [x,x+rw/2,x+rw])for(const py of [y,y+rh/2,y+rh]){
+  if(px===x+rw/2&&py===y+rh/2)continue;
+  c.fillRect(px-5,py-5,10,10);c.strokeRect(px-5,py-5,10,10);
+ }
+}
+function cropPoint(e){const b=cropCanvas.getBoundingClientRect();return{x:clamp((e.clientX-b.left)/b.width,0,1),y:clamp((e.clientY-b.top)/b.height,0,1)}}
+function cropEdgeHit(p){
+ const r=cropRect,b=cropCanvas.getBoundingClientRect(),dx=Math.min(.035,17/b.width),dy=Math.min(.035,17/b.height);
+ const nearX=p.x>=r.x-dx&&p.x<=r.x+r.w+dx,nearY=p.y>=r.y-dy&&p.y<=r.y+r.h+dy;
+ const l=Math.abs(p.x-r.x)<dx,rt=Math.abs(p.x-(r.x+r.w))<dx,t=Math.abs(p.y-r.y)<dy,bt=Math.abs(p.y-(r.y+r.h))<dy;
+ if(!nearX||!nearY)return'new';
+ if(l&&t)return'nw';if(rt&&t)return'ne';if(l&&bt)return'sw';if(rt&&bt)return'se';
+ if(l)return'w';if(rt)return'e';if(t)return'n';if(bt)return's';
+ if(p.x>=r.x&&p.x<=r.x+r.w&&p.y>=r.y&&p.y<=r.y+r.h)return'move';
+ return'new';
+}
+cropCanvas.addEventListener('pointerdown',e=>{
+ if(!cropRect)return;e.preventDefault();const point=cropPoint(e);
+ cropInteraction={kind:cropEdgeHit(point),start:point,initial:{...cropRect}};
+ cropCanvas.setPointerCapture(e.pointerId);
+ if(cropInteraction.kind==='new')cropRect={x:point.x,y:point.y,w:.05,h:.05};
+ cropDraw();
+});
+cropCanvas.addEventListener('pointermove',e=>{
+ if(!cropInteraction||!cropRect)return;e.preventDefault();const p=cropPoint(e),a=cropInteraction.initial,q=cropInteraction.start,k=cropInteraction.kind;
+ const dx=p.x-q.x,dy=p.y-q.y;
+ if(k==='move'){cropRect={...a,x:clamp(a.x+dx,0,1-a.w),y:clamp(a.y+dy,0,1-a.h)}}
+ else if(k==='new'){
+  let x=Math.min(q.x,p.x),y=Math.min(q.y,p.y);cropRect=clampCrop({x,y,w:Math.max(.05,Math.abs(p.x-q.x)),h:Math.max(.05,Math.abs(p.y-q.y))});
+ }else{
+  const left=k.includes('w'),right=k.includes('e'),top=k.includes('n'),bottom=k.includes('s');
+  const L=left?Math.min(a.x+a.w-.05,a.x+dx):a.x;
+  const T=top?Math.min(a.y+a.h-.05,a.y+dy):a.y;
+  const R=right?Math.max(a.x+.05,a.x+a.w+dx):a.x+a.w;
+  const B=bottom?Math.max(a.y+.05,a.y+a.h+dy):a.y+a.h;
+  cropRect=clampCrop({x:L,y:T,w:R-L,h:B-T});
+ }
+ cropDraw();
+});
+function cropFinish(){cropInteraction=null}
+cropCanvas.addEventListener('pointerup',cropFinish);cropCanvas.addEventListener('pointercancel',cropFinish);
+cropCanvas.addEventListener('lostpointercapture',cropFinish);
+function dismissCrop(){if(cropDialog.open)cropDialog.close();cropDocumentId=null;cropImage=null;cropRect=null;cropInteraction=null}
+$('cropClose').onclick=dismissCrop;$('cropCancel').onclick=dismissCrop;
+$('cropReset').onclick=()=>{cropRect={...FULL_CROP};cropDraw()};
+cropDialog.addEventListener('close',()=>{cropDocumentId=null;cropImage=null;cropRect=null;cropInteraction=null});
+async function openCropEditor(index){
+ const v=views[index];if(!v?.frameSrc){toast('Capture a frame before cropping.');return}
+ switchDocument(index);
+ const img=new Image();cropDocumentId=v.uid;
+ const src=v.cropBaseSrc||v.frameSrc;
+ img.onload=()=>{
+  if(cropDocumentId!==v.uid)return;
+  cropImage=img;
+  cropCanvas.width=img.naturalWidth;cropCanvas.height=img.naturalHeight;
+  cropRect=v.cropBounds?{...v.cropBounds}:{x:.06,y:.06,w:.88,h:.88};
+  cropCanvas.style.aspectRatio=img.naturalWidth+'/'+img.naturalHeight;
+  cropDialog.showModal();requestAnimationFrame(cropDraw);
+ };
+ img.onerror=()=>{toast('Cannot load saved image for cropping.');dismissCrop()};
+ img.src=src;
+}
+const cropObserver=new ResizeObserver(()=>{if(cropDialog.open)cropDraw()});cropObserver.observe(cropCanvas);
+function reframePoint(p,oldRect,newRect){
+ if(!p||typeof p.x!=='number'||typeof p.y!=='number')return p;
+ return{...p,x:(oldRect.x+p.x*oldRect.w-newRect.x)/newRect.w,y:(oldRect.y+p.y*oldRect.h-newRect.y)/newRect.h};
+}
+function reframeAnnotation(a,oldRect,newRect){
+ const out={...a};
+ if(Number.isFinite(a.x)&&Number.isFinite(a.y)){
+  const p=reframePoint(a,oldRect,newRect);out.x=p.x;out.y=p.y;
+ }
+ if(a.from)out.from=reframePoint(a.from,oldRect,newRect);
+ if(a.to)out.to=reframePoint(a.to,oldRect,newRect);
+ if(Array.isArray(a.points))out.points=a.points.map(p=>reframePoint(p,oldRect,newRect));
+ return out;
+}
+$('cropApply').onclick=()=>{
+ const v=cropView();if(!v||!cropImage||!cropRect)return;
+ const r=clampCrop(cropRect);
+ const original=cropImage;
+ const cropW=Math.round(original.naturalWidth*r.w),cropH=Math.round(original.naturalHeight*r.h);
+ if(cropW<50||cropH<50){toast('Choose a larger crop area.');return}
+ const isFull=Math.abs(r.x)<.0001&&Math.abs(r.y)<.0001&&Math.abs(r.w-1)<.0001&&Math.abs(r.h-1)<.0001;
+ const src=v.cropBaseSrc||v.frameSrc;
+ let newSrc;
+ if(isFull)newSrc=src;
+ else{
+  const output=document.createElement('canvas');output.width=cropW;output.height=cropH;
+  output.getContext('2d').drawImage(original,r.x*original.naturalWidth,r.y*original.naturalHeight,r.w*original.naturalWidth,r.h*original.naturalHeight,0,0,cropW,cropH);
+  newSrc=output.toDataURL('image/jpeg',.92);
+ }
+ const previous=v.cropBounds||FULL_CROP;
+ v.annotations=v.annotations.map(a=>reframeAnnotation(a,previous,r));
+ v.cropBaseSrc=isFull?null:src;
+ v.cropBounds=isFull?null:{...r};
+ const croppedCount=v.annotations.length;
+ undo=[];redo=[];selected=-1;draft=null;romDraft=null;
+ const frameLabel=v.frameLabel;
+ dismissCrop();addImageToView(v,newSrc,frameLabel);
+ toast(isFull?'Full frame restored; '+croppedCount+' annotations preserved.':'Crop applied; '+croppedCount+' annotations repositioned.');
+};
 function visibleSource(v){if(v.preview&&v.source?.ready)return v.source.video;if(v.frameImg)return v.frameImg;if(v.source?.ready)return v.source.video;return null}
 function sourceSize(v){const s=visibleSource(v);if(!s)return{w:16,h:9};return s instanceof HTMLVideoElement?{w:s.videoWidth,h:s.videoHeight}:{w:s.naturalWidth,h:s.naturalHeight}}
 function switchDocument(index){
@@ -1132,7 +1319,7 @@ function board(page=0){
  return c;
 }
 function exportPageCount(){const counts=[0,1].map(p=>views.filter(v=>v.plane===p&&v.frameImg).length);return Math.max(1,Math.ceil(Math.max(...counts)/8))}
-function serializeProject(){return{schema:'movement-evaluation-studio',version:2,exercise:$('exercise').value,student:$('student').value,activeId:current().uid,views:views.map(v=>({uid:v.uid,plane:viewNames[v.plane],category:v.category||'Other',name:v.name||'',frameSrc:v.frameSrc,frameLabel:v.frameLabel,annotations:v.annotations}))}}
+function serializeProject(){return{schema:'movement-evaluation-studio',version:2,exercise:$('exercise').value,student:$('student').value,activeId:current().uid,views:views.map(v=>({uid:v.uid,plane:viewNames[v.plane],category:v.category||'Other',name:v.name||'',frameSrc:v.frameSrc,frameLabel:v.frameLabel,cropBaseSrc:v.cropBaseSrc,cropBounds:v.cropBounds,annotations:v.annotations}))}}
 function saveProject(){download(new Blob([JSON.stringify(serializeProject())],{type:'application/json'}),safeName()+'-movement-project.json');toast('Editable multi-frame project backup downloaded.');}
 function hydrateProject(d){
  if(d?.schema!=='movement-evaluation-studio'||![1,2].includes(d.version)||!Array.isArray(d.views))throw Error('Not a Movement Evaluation project');
@@ -1143,6 +1330,8 @@ function hydrateProject(d){
   const v=makeView(plane,category,String(src.name||'').slice(0,75));v.uid=String(src.uid||newDocId());
   v.annotations=Array.isArray(src.annotations)?src.annotations:[];
   v.frameLabel=String(src.frameLabel||'Captured frame');
+  if(typeof src.cropBaseSrc==='string'&&/^data:image\/(jpeg|png|webp);base64,/i.test(src.cropBaseSrc))v.cropBaseSrc=src.cropBaseSrc;
+  if(src.cropBounds&&[src.cropBounds.x,src.cropBounds.y,src.cropBounds.w,src.cropBounds.h].every(Number.isFinite))v.cropBounds={...src.cropBounds};
   if(src.frameSrc&&/^data:image\/(jpeg|png|webp);base64,/i.test(src.frameSrc))addImageToView(v,src.frameSrc,v.frameLabel);
   return v;
  });
@@ -1343,8 +1532,8 @@ function createGalleryNode(v){
  card.append(surface,name,category);
  card.addEventListener('click',()=>{const i=views.findIndex(x=>x.uid===v.uid);if(i>=0)switchDocument(i)});
  const actions=document.createElement('div');actions.className='gallery-doc-actions';
- const edit=document.createElement('button');edit.type='button';edit.innerHTML=pencilIcon;edit.title='Choose another frame';edit.setAttribute('aria-label','Choose another frame');
- edit.addEventListener('click',e=>{e.stopPropagation();const i=views.findIndex(x=>x.uid===v.uid);if(i>=0)reopenCapturedFrame(i)});
+ const edit=document.createElement('button');edit.type='button';edit.innerHTML=pencilIcon;edit.title='Edit or crop frame';edit.setAttribute('aria-label','Edit or crop frame');
+ edit.addEventListener('click',e=>{e.stopPropagation();openFrameEditMenu(v.uid,edit)});
  const remove=document.createElement('button');remove.type='button';remove.innerHTML=trashIcon;remove.title='Delete frame and annotations';remove.setAttribute('aria-label','Delete frame');
  remove.addEventListener('click',e=>{e.stopPropagation();deleteFrame(v.uid)});
  actions.append(edit,remove);wrap.append(card,actions);
