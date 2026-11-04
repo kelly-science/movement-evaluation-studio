@@ -1,8 +1,8 @@
 {
   "id": "./",
-  "name": "Movement Evaluation Studio",
-  "short_name": "Movement Studio",
-  "description": "Offline-capable anatomy lab workspace to annotate frontal and sagittal exercise movement photos and video frames.",
+  "name": "Kinetica Studio",
+  "short_name": "Kinetica Studio",
+  "description": "Kinetica Studio — offline-capable movement analysis and anatomical annotation workspace for photos and video frames.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

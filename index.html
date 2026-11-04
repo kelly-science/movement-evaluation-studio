@@ -2,7 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#30353c"><title>Untitled Exercise — Movement Evaluation Studio</title>
+<meta name="theme-color" content="#30353c"><title>Untitled Exercise — Kinetica Studio</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <style>
 :root{--body:#fff;--device:#30353c;--button:#373d45;--recess:#1b2026;--text:#eef1f4;--muted:#b7c2cd;--lcd:#b0c3a4;--line:#ffffff19;--blue:#65baf1;--green:#80df93;--amber:#ffbf72;--red:#ff8686}
 *{box-sizing:border-box}body{margin:0;background:var(--body);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding:clamp(10px,2.7vw,38px)}button,input,select{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}button:disabled{opacity:.42;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #a9d2ff;outline-offset:3px}
@@ -272,6 +277,22 @@ body{padding:0;background:#30343b;color:var(--text)}
 .menu-trigger{gap:0}
 .menu-chevron{display:none}
 .gallery-heading .local-save-status{display:block;margin-top:9px}
+
+/* Kinetica Studio v15 — polished document chrome and manual local Save */
+.menu-bar{background:#394048fa;border:1px solid #ffffff24;border-radius:10px 10px 0 0;box-shadow:none;overflow:visible}
+.studio-toolbar{background:#394048fa;border:1px solid #ffffff24;border-radius:0 0 10px 10px;border-top:0;box-shadow:none}
+.document-student .local-save-status{flex:0 1 auto;display:inline-flex;align-items:center;gap:6px;margin:0;min-height:18px;min-width:0;white-space:nowrap;text-align:left;font-size:10px;color:#b8d3b4;line-height:1.2}
+.document-student .local-save-status::before{content:"";width:6px;height:6px;flex:none;background:#89bc8a;border-radius:50%}
+.document-student .local-save-status.error{color:#ffc7b8}
+.document-student .local-save-status.error::before{background:#ed9d8e}
+.shortcuts-dialog{max-width:500px}
+.shortcuts-list{display:grid;gap:0;margin-top:15px;border:1px solid #ffffff20;border-radius:10px;overflow:hidden}
+.shortcuts-list>div{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:13px 14px;font-size:12px;color:#e1e9f0}
+.shortcuts-list>div+div{border-top:1px solid #ffffff16}
+.shortcuts-list kbd{font-family:inherit;white-space:nowrap;color:#d7e7f7;background:#252d36;border:1px solid #607183;border-radius:6px;padding:5px 8px;font-size:11px}
+@media(max-width:920px){.document-header{flex-wrap:wrap;gap:5px 12px}.document-student{margin-left:46px}.document-student .local-save-status{font-size:9px}}
+@media(max-width:750px){.document-header{gap:5px 10px}.document-student{margin-left:0}.document-student input{width:120px}.document-student .local-save-status{max-width:190px;white-space:normal}.menu-bar{margin-left:-4px;margin-right:-4px}}
+@media(max-width:450px){.document-header{min-height:66px}.document-student{flex-basis:100%;margin-left:34px;justify-content:flex-start}.document-student input{width:112px}.document-student .local-save-status{max-width:calc(100vw - 178px)}.shortcuts-list>div{align-items:flex-start;flex-direction:column;gap:7px}}
 </style>
 </head>
 <body>
@@ -283,12 +304,13 @@ body{padding:0;background:#30343b;color:var(--text)}
       <div class="document-titles">
         <label class="visually-hidden" for="exercise">Exercise project title</label>
         <input id="exercise" class="document-title-input" type="text" value="Untitled Exercise" maxlength="90" spellcheck="false" autocomplete="off" aria-label="Project title; click to rename exercise" title="Click to rename this exercise" />
-        <div class="document-subtitle">Regular Anatomy <span aria-hidden="true">·</span> Muscular System Lab</div>
+        <div class="document-subtitle">Kinetica Studio</div>
       </div>
     </div>
     <div class="document-student">
       <label for="student">Student</label>
       <input id="student" type="text" placeholder="Student name" autocomplete="off" aria-label="Student name for export" />
+      <span class="local-save-status" id="localSaveStatus" role="status" aria-live="polite">Checking local storage…</span>
     </div>
   </header>
   <nav class="menu-bar" aria-label="Studio menu bar">
@@ -298,6 +320,7 @@ body{padding:0;background:#30343b;color:var(--text)}
         <div class="menu-dropdown" id="fileMenu" role="group" aria-label="File actions" hidden>
           <button type="button" class="menu-action" id="menuNew">New Project</button>
           <button type="button" class="menu-action" id="menuOpenProject">Open Project…</button>
+          <button type="button" class="menu-action" id="menuSaveLocal">Save <span class="menu-shortcut">⌘/Ctrl S</span></button>
           <button type="button" class="menu-action" id="menuSaveProject">Download Project Backup (.json)</button>
           <div class="menu-separator" role="separator"></div>
           <button type="button" class="menu-action" id="menuExportPoster">Export All Frames (PNG)</button>
@@ -320,6 +343,12 @@ body{padding:0;background:#30343b;color:var(--text)}
         <div class="menu-dropdown" id="viewMenu" role="group" aria-label="View actions" hidden>
           <button type="button" class="menu-action" data-plane-menu="0">Frontal Plane <span class="menu-selected" aria-hidden="true">✓</span></button>
           <button type="button" class="menu-action" data-plane-menu="1">Sagittal Plane <span class="menu-selected" aria-hidden="true"></span></button>
+        </div>
+      </div>
+      <div class="menu-wrap">
+        <button type="button" class="menu-trigger" id="helpMenuButton" aria-expanded="false" aria-haspopup="true" aria-controls="helpMenu">Help</button>
+        <div class="menu-dropdown" id="helpMenu" role="group" aria-label="Help actions" hidden>
+          <button type="button" class="menu-action" id="menuKeyboardShortcuts">Keyboard Shortcuts…</button>
         </div>
       </div>
     </div>
@@ -353,7 +382,6 @@ body{padding:0;background:#30343b;color:var(--text)}
   <aside class="plane-gallery" aria-label="Plane gallery">
     <div class="gallery-heading">
       <div class="gallery-heading-title">Plane gallery</div>
-      <span class="local-save-status" id="localSaveStatus" role="status" aria-live="polite">Checking local storage…</span>
     </div>
     <section class="gallery-group" aria-labelledby="frontalGalleryTitle">
       <div class="gallery-section-header"><h2 id="frontalGalleryTitle">Frontal plane</h2><span class="gallery-state" id="galleryStatus0">EMPTY</span></div>
@@ -415,6 +443,21 @@ body{padding:0;background:#30343b;color:var(--text)}
     <div class="dialog-footer"><button class="tactile primary" id="doneAnnotations" type="button">DONE</button></div>
   </dialog>
 
+<dialog class="checklist-dialog shortcuts-dialog" id="shortcutsDialog" aria-labelledby="shortcutsTitle">
+  <div class="dialog-header">
+    <div><div class="dialog-overline">KINETICA STUDIO</div><h2 id="shortcutsTitle">Keyboard Shortcuts</h2></div>
+    <button type="button" class="tactile dialog-close" id="closeShortcuts" aria-label="Close keyboard shortcuts">✕</button>
+  </div>
+  <p class="dialog-description">Use Command on Mac, or Ctrl on Windows and Chromebooks.</p>
+  <div class="shortcuts-list">
+    <div><span>Save project locally</span><kbd>⌘ / Ctrl + S</kbd></div>
+    <div><span>Undo</span><kbd>⌘ / Ctrl + Z</kbd></div>
+    <div><span>Redo</span><kbd>⌘ / Ctrl + Shift + Z</kbd></div>
+    <div><span>Delete selected annotation</span><kbd>Delete / Backspace</kbd></div>
+    <div><span>Deselect / close menu</span><kbd>Esc</kbd></div>
+  </div>
+  <div class="dialog-footer"><button type="button" class="tactile primary" id="doneShortcuts">Done</button></div>
+</dialog>
 <input type="file" id="projectInput" accept=".json,.movement.json,application/json" hidden>
 </div><div id="toast" class="hidden" role="status" aria-live="polite"></div>
 <div id="videoDecodePool" aria-hidden="true"></div>
@@ -971,6 +1014,15 @@ document.querySelectorAll('[data-plane-menu]').forEach(button=>button.addEventLi
   closeMenus();
 }));
 document.addEventListener('pointerdown',event=>{if(!event.target.closest('.menu-bar'))closeMenus()});
+const shortcutsDialog=$('shortcutsDialog');
+$('menuKeyboardShortcuts').addEventListener('click',()=>{
+  closeMenus();shortcutsDialog.showModal();
+});
+$('closeShortcuts').addEventListener('click',()=>shortcutsDialog.close());
+$('doneShortcuts').addEventListener('click',()=>shortcutsDialog.close());
+shortcutsDialog.addEventListener('click',event=>{
+  if(event.target===shortcutsDialog)shortcutsDialog.close();
+});
 
 function syncMenuActions(){
   document.querySelectorAll('[data-click]').forEach(button=>{button.disabled=$(button.dataset.click).disabled});
@@ -1024,13 +1076,28 @@ $('labelSize').addEventListener('change',()=>updateStyleControl('labelScale'));
 $('undoBtn').onclick=undoAction;$('redoBtn').onclick=redoAction;$('deleteBtn').onclick=removeSelected;$('clearBtn').onclick=clearPlane;
 // File menu actions run directly, with no duplicate project buttons in the workspace.
 $('menuOpenProject').onclick=()=>{closeMenus();$('projectInput').click()};
+$('menuSaveLocal').onclick=()=>{closeMenus();saveNow()};
 $('menuSaveProject').onclick=()=>{closeMenus();saveProject()};
 $('projectInput').onchange=e=>{openProject(e.target.files?.[0]);e.target.value=''};
 $('menuExportPlane').onclick=async()=>{closeMenus();try{await downloadCanvas(canvasPNG(current()),safeName()+'-'+viewNames[current().plane].toLowerCase()+'-'+(current().category||'frame').toLowerCase()+'-annotated.png');toast('Annotated plane picture saved.')}catch(e){toast('Could not export current plane.')}};
 $('menuExportPoster').onclick=async()=>{closeMenus();try{const count=exportPageCount();for(let i=0;i<count;i++){await downloadCanvas(board(i),safeName()+'-exercise-evaluation'+(count>1?'-page-'+(i+1):'')+'.png');}toast('Exported all '+views.filter(v=>v.frameImg).length+' saved frames'+(count>1?' across '+count+' PNG pages.':'.'));}catch(e){console.error(e);toast('Unable to export all frames.')}};
 
 const stage=$('stage');stage.addEventListener('dragover',e=>{e.preventDefault();stage.classList.add('dragover')});stage.addEventListener('dragleave',e=>{if(!stage.contains(e.relatedTarget))stage.classList.remove('dragover')});stage.addEventListener('drop',e=>{e.preventDefault();stage.classList.remove('dragover');loadMedia(e.dataTransfer?.files?.[0])});
-window.addEventListener('keydown',e=>{if(annotationsDialog.open)return;if(e.key==='Escape'&&menuButtons.some(b=>b.getAttribute('aria-expanded')==='true')){closeMenus();return}const tag=document.activeElement?.tagName||'';if(/INPUT|SELECT|TEXTAREA/.test(tag))return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redoAction():undoAction()}else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelected()}else if(e.key==='Escape'){selected=-1;setTool('select')}});
+window.addEventListener('keydown',e=>{
+ const command=(e.ctrlKey||e.metaKey)&&!e.altKey;
+ if(command&&e.key.toLowerCase()==='s'){
+   e.preventDefault();closeMenus();saveNow();return;
+ }
+ if(e.key==='Escape'&&menuButtons.some(b=>b.getAttribute('aria-expanded')==='true')){closeMenus();return}
+ if(annotationsDialog.open||$('shortcutsDialog').open)return;
+ const tag=document.activeElement?.tagName||'';
+ if(/INPUT|SELECT|TEXTAREA/.test(tag))return;
+ if(command&&e.key.toLowerCase()==='z'){
+   e.preventDefault();e.shiftKey?redoAction():undoAction();
+ }else if(e.key==='Delete'||e.key==='Backspace'){
+   e.preventDefault();removeSelected();
+ }else if(e.key==='Escape'){selected=-1;setTool('select')}
+});
 window.addEventListener('resize',resizeCanvas);if('ResizeObserver' in window)new ResizeObserver(resizeCanvas).observe($('pictureFrame'));window.addEventListener('beforeunload',()=>views.forEach(disposeSource));
 
 // MES V10 TOP TOOLBAR TOOLTIP — keyboard accessible, independent of scroll clipping.
@@ -1089,7 +1156,7 @@ const untitledExercise='Untitled Exercise';
 const galleryNodes=new Map();
 function updateDocumentTitle(){
  const name=exerciseTitle.value.trim()||untitledExercise;
- document.title=name+' — Movement Evaluation Studio';
+ document.title=name+' — Kinetica Studio';
  exerciseTitle.setAttribute('aria-label','Exercise project title: '+name+'. Click to rename');
 }
 exerciseTitle.addEventListener('focus',()=>{if(exerciseTitle.value===untitledExercise)exerciseTitle.select()});
@@ -1187,7 +1254,7 @@ $('galleryInput').addEventListener('change',e=>{
 });
 
 // Resilient IndexedDB autosave: alternate two full snapshots, recover newest valid.
-let localDB=null,cacheSlot='A',saveTimer=null,autosaveReady=false,writeInFlight=false,writeQueued=false;
+let localDB=null,cacheSlot='A',saveTimer=null,autosaveReady=false,saveChain=Promise.resolve();
 const cacheStatus=$('localSaveStatus');
 function statusSave(message,error=false){cacheStatus.textContent=message;cacheStatus.classList.toggle('error',error)}
 function openCache(){return new Promise((resolve,reject)=>{
@@ -1207,18 +1274,40 @@ function writeSnapshot(record){return new Promise((resolve,reject)=>{
 function queueAutosave(immediate=false){
  if(!autosaveReady)return;
  statusSave('Saving locally…');clearTimeout(saveTimer);
- if(immediate)flushAutosave();else saveTimer=setTimeout(flushAutosave,550);
+ if(immediate)return flushAutosave();
+ saveTimer=setTimeout(flushAutosave,550);
 }
-async function flushAutosave(){
- if(!autosaveReady||!localDB)return;
- if(writeInFlight){writeQueued=true;return}
- writeInFlight=true;const next=cacheSlot==='A'?'B':'A';
- try{
-  const record={key:next,savedAt:Date.now(),payload:serializeProject()};
-  await writeSnapshot(record);cacheSlot=next;
-  statusSave('Saved locally · '+new Date(record.savedAt).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}));
- }catch(e){console.error('Movement Studio autosave failed',e);statusSave('Local save failed · download a project backup',true);toast('Could not save locally. Download a project backup from File.');}
- finally{writeInFlight=false;if(writeQueued){writeQueued=false;queueAutosave(true)}}
+function flushAutosave(){
+ clearTimeout(saveTimer);
+ if(!autosaveReady||!localDB)return Promise.resolve(false);
+ // Serialize writes so a manual Save always includes changes made since the last snapshot.
+ saveChain=saveChain.catch(()=>false).then(async()=>{
+   statusSave('Saving locally…');
+   const next=cacheSlot==='A'?'B':'A';
+   try{
+     const record={key:next,savedAt:Date.now(),payload:serializeProject()};
+     await writeSnapshot(record);cacheSlot=next;
+     statusSave('Saved locally · '+new Date(record.savedAt).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}));
+     return true;
+   }catch(e){
+     console.error('Kinetica Studio save failed',e);
+     statusSave('Local save failed · download a backup',true);
+     toast('Local save failed. Use File → Download Project Backup.');
+     return false;
+   }
+ });
+ return saveChain;
+}
+async function saveNow(){
+ clearTimeout(saveTimer);
+ if(!autosaveReady||!localDB){
+   statusSave('Local cache unavailable · download a backup',true);
+   toast('Local storage unavailable. Use File → Download Project Backup.');
+   return false;
+ }
+ const saved=await flushAutosave();
+ if(saved)toast('Project saved locally on this device.');
+ return saved;
 }
 async function restoreCached(){
  statusSave('Loading local project…');
@@ -1237,6 +1326,11 @@ async function restoreCached(){
 }
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushAutosave()});
 window.addEventListener('pagehide',()=>flushAutosave());
+// Register the offline shell when served from GitHub Pages or another secure origin.
+if('serviceWorker' in navigator && (location.protocol==='https:' || location.hostname==='localhost')){
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{scope:'./'})
+   .catch(error=>console.warn('Kinetica Studio offline worker unavailable',error)));
+}
 updateDocumentTitle();updateGallery();requestAnimationFrame(updateStickyOffsets);
 
 renderPalette();setTool('select');switchDocument(0);restoreCached();})();
