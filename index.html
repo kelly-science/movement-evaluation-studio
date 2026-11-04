@@ -229,7 +229,7 @@ body{padding:0;background:#30343b;color:var(--text)}
 @media(max-width:450px){.device{padding:0 9px 24px}.document-header{margin:0 -2px;padding:8px 5px}.document-identity{gap:7px}.document-title-input{font-size:15px}.document-subtitle{display:none}.document-student input{width:97px}.menu-bar{margin:0 -2px;padding:3px 1px}.studio-toolbar{margin:0 -2px 10px}.studio-toolbar-scroll{padding:5px 6px 6px}.toolbar-section-label{display:none}.toolbar-cluster{gap:1px}.toolbar-button{height:33px;width:34px;min-width:34px}.toolbar-button svg{width:18px;height:18px}.gallery-photo-surface{height:76px}.gallery-add{min-height:101px}.gallery-heading-title{font-size:12px}}
 
 
-/* MES V12 — Gallery-owned media actions and protected video-frame editing */
+/* MES V13 — Multi-frame gallery with local autosave */
 .gallery-group,.gallery-heading{min-width:0}.gallery-card-wrap{position:relative;min-width:0;max-width:100%}
 .gallery-edit{position:absolute;right:7px;top:7px;z-index:3;display:grid;place-items:center;width:34px;height:34px;padding:0;border:1px solid #c3d8ec75;border-radius:9px;background:#25303de8;color:#e4f0fc;box-shadow:0 2px 9px #0009;cursor:pointer;touch-action:manipulation}
 .gallery-edit:hover{background:#49617a;border-color:#d4e5f4}
@@ -238,6 +238,34 @@ body{padding:0;background:#30343b;color:var(--text)}
 .frame-cancel{border:0;background:transparent;box-shadow:none;color:#cfdfec;font-size:11px;font-weight:600;padding:7px 9px;border-radius:5px;cursor:pointer}
 .frame-cancel:hover{background:#46525e;color:white}
 @media(max-width:750px){.gallery-edit{width:34px;height:34px;right:5px;top:5px}}
+
+/* MES V13: multi-document gallery and durable local autosave */
+.gallery-heading .local-save-status{display:block;text-align:left;margin-top:10px;white-space:normal;line-height:1.4}.gallery-documents{display:grid;gap:11px;min-width:0;margin-bottom:11px}
+.gallery-group .gallery-add{display:flex!important;min-height:64px;border-radius:10px;gap:4px}
+.gallery-plus{width:26px;height:26px;font-size:19px}
+.gallery-card-wrap{position:relative}
+.gallery-doc-card{width:100%;display:block;text-align:left;border:1px solid #717c89;border-radius:10px;overflow:hidden;background:#363e48;box-shadow:none;color:#e5eef7;padding:0;cursor:pointer}
+.gallery-doc-card:hover{border-color:#a5bcd4;background:#3f4b59}
+.gallery-doc-card.active{border:2px solid #a8c8ee;box-shadow:0 0 0 2px #83b9ec28}
+.gallery-doc-preview{height:112px;display:flex;align-items:center;justify-content:center;background:#1c2229;overflow:hidden}
+.gallery-doc-preview img{display:block;width:100%;height:100%;object-fit:contain}
+.gallery-doc-placeholder{font-size:10px;letter-spacing:.08em;color:#b3becb}
+.gallery-doc-name{display:block;font-size:11px;font-weight:690;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:7px 9px 2px}
+.gallery-doc-category{display:block;font-size:10px;color:#afc6de;padding:0 9px 9px}
+.gallery-doc-actions{position:absolute;right:5px;top:5px;display:flex;gap:5px}
+.gallery-doc-actions button{width:29px;height:29px;padding:5px;border-radius:7px;background:#212e3de7;color:#e2edf6;border:1px solid #9db1c383;display:grid;place-items:center;cursor:pointer}
+.gallery-doc-actions button:hover{background:#3e5872}
+.gallery-doc-actions button svg{width:16px;height:16px;pointer-events:none}
+.frame-properties{display:flex;align-items:flex-end;gap:11px;flex-wrap:wrap;padding:13px 7px 5px;border-bottom:1px solid #ffffff17}
+.frame-properties label{display:flex;flex-direction:column;gap:4px;font-size:10px;color:#aebdca;letter-spacing:.04em;flex:1 1 145px}
+.frame-properties input,.frame-properties select{height:35px;max-width:100%;padding:7px 9px;border-radius:8px;background:#222b35;border:1px solid #596b7b;color:#f1f4f7;font-size:12px}
+.frame-properties input:focus,.frame-properties select:focus{outline:2px solid #97bde7;outline-offset:1px}
+.local-save-status{flex:1 1 100%;text-align:right;font-size:10px;color:#b8d3b4;min-height:14px}
+.local-save-status.error{color:#ffb8aa;font-weight:700}
+.add-document-dialog .dialog-footer{justify-content:stretch;gap:12px;flex-wrap:wrap}
+.add-document-dialog .dialog-footer button{flex:1;min-width:135px}
+@media(max-width:750px){.gallery-documents{gap:8px}.gallery-doc-preview{height:78px}.gallery-doc-actions button{width:28px;height:28px}.gallery-group .gallery-add{min-height:60px}.frame-properties{gap:8px}}
+
 </style>
 </head>
 <body>
@@ -264,13 +292,10 @@ body{padding:0;background:#30343b;color:var(--text)}
         <div class="menu-dropdown" id="fileMenu" role="group" aria-label="File actions" hidden>
           <button type="button" class="menu-action" id="menuNew">New Project</button>
           <button type="button" class="menu-action" id="menuOpenProject">Open Project…</button>
-          <button type="button" class="menu-action" id="menuSaveProject">Save Editable Project</button>
+          <button type="button" class="menu-action" id="menuSaveProject">Download Project Backup (.json)</button>
           <div class="menu-separator" role="separator"></div>
-          <button type="button" class="menu-action" id="menuExportPoster">Export Submission Picture (PNG)</button>
+          <button type="button" class="menu-action" id="menuExportPoster">Export All Frames (PNG)</button>
           <button type="button" class="menu-action" id="menuExportPlane">Export Current Plane (PNG)</button>
-          <button type="button" class="menu-action" id="menuExportExcalidraw">Export Excalidraw Project</button>
-          <div class="menu-separator" role="separator"></div>
-          <button type="button" class="menu-action menu-checklist" id="menuChecklist">Project Checklist <span class="menu-indicator" aria-hidden="true">↗</span></button>
         </div>
       </div>
       <div class="menu-wrap">
@@ -322,33 +347,25 @@ body{padding:0;background:#30343b;color:var(--text)}
   <aside class="plane-gallery" aria-label="Plane gallery">
     <div class="gallery-heading">
       <div class="gallery-heading-title">Plane gallery</div>
-      <p>Choose an image to open that plane’s live workspace.</p>
+      <p>Each photo is its own editable, locally saved workspace.</p><span class="local-save-status" id="localSaveStatus" role="status" aria-live="polite">Checking local storage…</span>
     </div>
     <section class="gallery-group" aria-labelledby="frontalGalleryTitle">
       <div class="gallery-section-header"><h2 id="frontalGalleryTitle">Frontal plane</h2><span class="gallery-state" id="galleryStatus0">EMPTY</span></div>
-      <div class="gallery-card-wrap hidden" id="galleryWrap0">
-      <button type="button" class="gallery-photo-card" id="galleryCard0" data-gallery-plane="0" aria-label="Open frontal plane workspace">
-        <span class="gallery-photo-surface"><img id="galleryImage0" alt="Frontal plane captured frame" class="hidden"><span class="gallery-video-state hidden" id="galleryPreview0">VIDEO<br><small>Choose peak frame</small></span></span>
-        <span class="gallery-card-footer"><span class="gallery-card-name" id="galleryName0">Frontal frame</span><span aria-hidden="true">›</span></span>
-      </button>
-      <button type="button" class="gallery-edit" id="galleryEdit0" aria-label="Edit frontal plane captured frame" title="Edit frontal plane captured frame" aria-haspopup="false"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L9 17l-4 1 1-4 10.5-10.5Z"/></svg></button>
-      </div>
-      <button type="button" class="gallery-add" id="galleryAdd0" data-gallery-add="0" aria-label="Add frontal plane photo or video" title="Add frontal plane photo or video"><span class="gallery-plus" aria-hidden="true">+</span><span>Add image or video</span></button>
+      <div class="gallery-documents" id="galleryDocuments0"></div>
+      <button type="button" class="gallery-add" data-gallery-add="0" aria-label="Add a frontal plane image or video"><span class="gallery-plus" aria-hidden="true">+</span><span>Add frontal frame</span></button>
     </section>
     <section class="gallery-group" aria-labelledby="sagittalGalleryTitle">
       <div class="gallery-section-header"><h2 id="sagittalGalleryTitle">Sagittal plane</h2><span class="gallery-state" id="galleryStatus1">EMPTY</span></div>
-      <div class="gallery-card-wrap hidden" id="galleryWrap1">
-      <button type="button" class="gallery-photo-card" id="galleryCard1" data-gallery-plane="1" aria-label="Open sagittal plane workspace">
-        <span class="gallery-photo-surface"><img id="galleryImage1" alt="Sagittal plane captured frame" class="hidden"><span class="gallery-video-state hidden" id="galleryPreview1">VIDEO<br><small>Choose peak frame</small></span></span>
-        <span class="gallery-card-footer"><span class="gallery-card-name" id="galleryName1">Sagittal frame</span><span aria-hidden="true">›</span></span>
-      </button>
-      <button type="button" class="gallery-edit" id="galleryEdit1" aria-label="Edit sagittal plane captured frame" title="Edit sagittal plane captured frame" aria-haspopup="false"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L9 17l-4 1 1-4 10.5-10.5Z"/></svg></button>
-      </div>
-      <button type="button" class="gallery-add" id="galleryAdd1" data-gallery-add="1" aria-label="Add sagittal plane photo or video" title="Add sagittal plane photo or video"><span class="gallery-plus" aria-hidden="true">+</span><span>Add image or video</span></button>
+      <div class="gallery-documents" id="galleryDocuments1"></div>
+      <button type="button" class="gallery-add" data-gallery-add="1" aria-label="Add a sagittal plane image or video"><span class="gallery-plus" aria-hidden="true">+</span><span>Add sagittal frame</span></button>
     </section>
   </aside>
 <section class="center" aria-label="Movement canvas">
   <div class="bezel"><div class="oled"><div class="screen-head"><span id="screenTitle">FRONTAL PLANE · NO FRAME</span><span class="screen-tag" id="screenTag">STANDBY</span></div><div id="stage" class="stage empty-screen"><div class="empty" id="empty"><div class="empty-symbol">⌁</div><h3>CAPTURE YOUR PEAK MOVEMENT</h3><p>Upload a frontal- or sagittal-plane screenshot, or scrub a slow-motion video and choose the exact peak frame.</p></div><div id="pictureFrame" class="picture-frame hidden"><canvas id="canvas" aria-label="Movement photo and interactive anatomical annotations"></canvas><div id="overlayNotice" class="screen-overlay hidden"></div></div></div></div></div>
+  <div class="frame-properties" id="frameProperties">
+    <label>Frame name<input id="frameName" type="text" maxlength="75" placeholder="e.g., Frontal ROM" autocomplete="off"></label>
+    <label>Category<select id="frameCategory"><option value="ROM">ROM</option><option value="Muscles">Muscles</option><option value="Skeletal">Skeletal</option><option value="Joints">Joints</option><option value="Movement">Movement</option><option value="Other">Other</option></select></label>
+    </div>
   <div class="screen-bottom"><div id="videoControls" class="hidden"><div class="timeline-pocket"><div class="timeline-row"><span id="timeNow" class="time">00:00.00</span><input type="range" id="timeline" min="0" max="1" step=".001" value="0" aria-label="Scrub slow-motion video"><span id="timeEnd" class="time">00:00.00</span></div></div><div class="frame-buttons"><button class="tactile" id="previous" type="button">◀ PREV FRAME</button><button class="tactile primary" id="captureBtn" type="button" disabled>◎ USE THIS FRAME</button><button class="tactile" id="next" type="button">NEXT FRAME ▶</button></div><div class="frame-cancel-row"><button class="frame-cancel hidden" id="cancelFrameBtn" type="button">Keep original frame &amp; annotations</button></div><div class="frame-note">Frame stepping is approximately ±1/120 second; the exact displayed frame depends on the video.</div></div><div class="frame-note" id="canvasHelp">Tap to place labels, drag to draw traces or arrows. Switch planes without losing your annotations.</div></div>
 </section>
 <aside class="right" aria-label="Advanced annotation settings">
@@ -374,7 +391,7 @@ body{padding:0;background:#30343b;color:var(--text)}
       <p class="field-tip">Included is the angle between the arms (0–180°). From straight is 180° minus the included angle. Use your lab's joint-specific convention.</p>
     </div>
     <div class="fieldgroup hidden" id="jointFields"><label for="jointType">SYNOVIAL JOINT TYPE</label><select class="select-well" id="jointType"><option>Hinge</option><option>Ball-and-socket</option><option>Pivot</option><option>Condyloid</option><option>Saddle</option><option>Plane (gliding)</option></select></div>
-    <div class="fieldgroup hidden" id="muscleFields"><p class="field-tip">Use one color consistently for each named muscle. The color key is generated in the submission export.</p></div>
+    <div class="fieldgroup hidden" id="muscleFields"><p class="field-tip">Use one color consistently for each named muscle. The export includes a color key.</p></div>
     <div class="fieldgroup hidden" id="arrowFields"><label for="movementType">MOVEMENT TYPE</label><select class="select-well" id="movementType"><option>Flexion</option><option>Extension</option><option>Abduction</option><option>Adduction</option><option>Rotation</option><option>Medial rotation</option><option>Lateral rotation</option><option>Circumduction</option><option>Dorsiflexion</option><option>Plantar flexion</option><option>Elevation</option><option>Depression</option><option>Pronation</option><option>Supination</option><option>Other</option></select><p class="field-tip">Drag the arrow toward the direction of movement.</p></div>
     <div class="fieldgroup hidden" id="styleFields">
       <label id="colorLabel">ANNOTATION COLOR</label><div class="palette" id="palette" role="group" aria-label="Choose annotation color"></div>
@@ -391,18 +408,12 @@ body{padding:0;background:#30343b;color:var(--text)}
     <div id="annotationList" class="selected-list"><p class="hint">No annotations yet.</p></div>
     <div class="dialog-footer"><button class="tactile primary" id="doneAnnotations" type="button">DONE</button></div>
   </dialog>
-  <dialog class="checklist-dialog" id="checklistDialog" aria-labelledby="checklistTitle" aria-describedby="checklistDescription">
-    <div class="dialog-header">
-      <div>
-        <div class="dialog-overline">REGULAR ANATOMY · MUSCULAR SYSTEM LAB</div>
-        <h2 id="checklistTitle">PROJECT CHECKLIST</h2>
-      </div>
-      <button class="tactile dialog-close" type="button" id="closeChecklist" aria-label="Close project checklist">✕</button>
-    </div>
-    <p id="checklistDescription" class="dialog-description">The checklist detects image and annotation types. Upper/lower joint coverage is inferred from joint names and should be checked by the student. It does not verify anatomical accuracy.</p>
-    <div class="dialog-progress" id="checkSummary" aria-live="polite">0 of 8 requirements present</div>
-    <div class="check-grid" id="checkGrid"></div>
-    <div class="dialog-footer"><button class="tactile primary" id="doneChecklist" type="button">DONE</button></div>
+  <dialog class="checklist-dialog add-document-dialog" id="addDocumentDialog" aria-labelledby="addDocumentTitle">
+    <div class="dialog-header"><div><div class="dialog-overline">ADD ANNOTATION WORKSPACE</div><h2 id="addDocumentTitle">NEW FRAME</h2></div><button class="tactile dialog-close" type="button" id="closeAddDocument" aria-label="Close">✕</button></div>
+    <p class="dialog-description">Choose what you will evaluate in this image. You can add as many frames as needed to each plane.</p>
+    <div class="fieldgroup"><label for="newDocCategory">CATEGORY</label><select id="newDocCategory" class="select-well"><option>ROM</option><option>Muscles</option><option>Skeletal</option><option>Joints</option><option>Movement</option><option>Other</option></select></div>
+    <div class="fieldgroup"><label for="newDocName">FRAME NAME (OPTIONAL)</label><input id="newDocName" class="input-well" maxlength="75" placeholder="e.g., Frontal ROM"></div>
+    <div class="dialog-footer"><button type="button" class="tactile primary" id="addDocumentPhoto">CHOOSE PHOTO</button><button type="button" class="tactile" id="addDocumentVideo">CHOOSE VIDEO</button></div>
   </dialog>
 
 <input type="file" id="projectInput" accept=".json,.movement.json,application/json" hidden>
@@ -413,8 +424,11 @@ body{padding:0;background:#30343b;color:var(--text)}
 const $=id=>document.getElementById(id), canvas=$('canvas'),ctx=canvas.getContext('2d');
 const colors=['#fc8c86','#fac46d','#93da79','#68c8f0','#c5a0fb','#ee89c2','#86ded0','#f9a86a'];
 const viewNames=['FRONTAL','SAGITTAL'];
+const frameCategories=['ROM','Muscles','Skeletal','Joints','Movement','Other'];
+let documentCounter=0;
+const newDocId=()=>`frame_${Date.now().toString(36)}_${(++documentCounter).toString(36)}_${Math.random().toString(36).slice(2,7)}`;
 const help={select:'Tap any existing annotation or its label to edit or move it. You can do this with any drawing tool active.',joint:'Enter the joint name and select its synovial type, then tap the joint location.',bone:'Enter the bone name, then draw in empty space. Tap any existing annotation to edit or drag it.',muscle:'Enter a visible Set 1 or 2 muscle, then draw in empty space. Tap an existing trace to edit or move it.',arrow:'Choose a movement type, then drag an arrow on empty space. Tap an existing arrow to edit or move it.',text:'Enter a label, then tap the photo where you want it.',rom:'Place the fulcrum, stationary arm and moving arm. Drag the colored markers to adjust. Angles update live.'};
-let views=[makeView(),makeView()],active=0,tool='select',selected=-1,drag=null,draft=null;
+let views=[makeView(0),makeView(1)],active=0,tool='select',selected=-1,drag=null,draft=null;
 let undo=[],redo=[],chosenColor=colors[0],nextID=1,toastTimer=null;
 let romDraft=null,romPointActive=0,romMode='included',romReposition=false;
 let inspectorEditSession=0;
@@ -467,7 +481,7 @@ function updateStyleControl(property){
  applySelectedProperty(property);
 }
 
-function makeView(){return{frameSrc:null,frameImg:null,annotations:[],source:null,preview:false,frameLabel:''}}
+function makeView(plane=0,category='Other',name=''){return{uid:newDocId(),plane,category,name,frameSrc:null,frameImg:null,annotations:[],source:null,preview:false,frameLabel:''}}
 function current(){return views[active]}
 function clamp(v,a=0,b=1){return Math.max(a,Math.min(b,v))}
 function id(){return 'm'+(nextID++)+'_'+Math.random().toString(36).slice(2,7)}
@@ -484,10 +498,10 @@ function remember(before,index=active,mergeKey=null){
  redo=[];updateUI();
 }
 function replaceAnnotation(index,items){views[index].annotations=deepcopy(items);selected=-1;populateInspector();updateUI();draw()}
-function undoAction(){const entry=undo.pop();if(!entry)return;redo.push(entry);active=entry.index;selected=-1;replaceAnnotation(active,entry.before);switchPlane(active)}
-function redoAction(){const entry=redo.pop();if(!entry)return;undo.push(entry);active=entry.index;selected=-1;replaceAnnotation(active,entry.after);switchPlane(active)}
+function undoAction(){const entry=undo.pop();if(!entry)return;redo.push(entry);active=entry.index;selected=-1;replaceAnnotation(active,entry.before);switchDocument(active)}
+function redoAction(){const entry=redo.pop();if(!entry)return;undo.push(entry);active=entry.index;selected=-1;replaceAnnotation(active,entry.after);switchDocument(active)}
 function disposeSource(v){if(v.source?.video){v.source.video.pause();v.source.video.removeAttribute('src');v.source.video.load();v.source.video.remove()}if(v.source?.url)URL.revokeObjectURL(v.source.url);v.source=null;v.preview=false}
-function addImageToView(v,src,label){const im=new Image();im.onload=()=>{v.frameImg=im;v.frameSrc=src;v.frameLabel=label||'Captured frame';v.preview=false;updateGallery();if(v===current()){selected=-1;syncCanvas();updateUI();draw()}};im.onerror=()=>toast('This image could not be decoded.');im.src=src}
+function addImageToView(v,src,label){const im=new Image();im.onload=()=>{v.frameImg=im;v.frameSrc=src;v.frameLabel=label||'Captured frame';v.preview=false;updateGallery();if(v===current()){selected=-1;syncCanvas();updateFrameProperties();updateUI();draw()}else queueAutosave()};im.onerror=()=>toast('This image could not be decoded.');im.src=src}
 function saveSnapshot(source,w,h){const limit=2200,scale=Math.min(1,limit/Math.max(w,h)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*scale));c.height=Math.max(1,Math.round(h*scale));c.getContext('2d').drawImage(source,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.91)}
 function replaceFrame(v,src,label){if(v.annotations.length&&!confirm('Replace this plane’s frame and clear its annotations?'))return false;v.annotations=[];undo=[];redo=[];if(v===current())selected=-1;addImageToView(v,src,label);return true}
 function loadMedia(file){if(!file)return;const v=current();const type=file.type.startsWith('image/')?'photo':file.type.startsWith('video/')?'video':null;if(!type){toast('Choose a photo or video.');return}const idx=active;
@@ -505,10 +519,16 @@ syncCanvas();updateUI();draw()}
 function seekVideo(v,t){const s=v.source;if(!v.preview||!s||!s.duration)return;const goal=clamp(t,0,s.duration);s.seeking=true;if(v===current())updateUI();try{if(Math.abs(s.video.currentTime-goal)<.0003&&s.ready){s.seeking=false;if(v===current()){updateUI();draw()}}else s.video.currentTime=goal}catch(e){s.seeking=false;toast('Unable to show this frame.')}if(v===current()){$('timeline').value=String(goal);$('timeNow').textContent=time(goal)}}
 function captureFrame(){const v=current(),s=v.source;if(!v.preview||!s||!s.ready||s.seeking||s.video.seeking){toast('Choose a fully loaded video frame.');return}try{const src=saveSnapshot(s.video,s.video.videoWidth,s.video.videoHeight);if(replaceFrame(v,src,s.fileName+' · '+time(s.video.currentTime)))toast('Peak frame captured. Start annotating.');else if(v.frameSrc)cancelFrameEdit()}catch(e){toast('Unable to capture this video frame.')}}
 function cancelFrameEdit(){const v=current();if(!v.frameSrc)return;v.preview=false;selected=-1;draft=null;romDraft=null;drag=null;syncCanvas();updateUI();draw();toast('Original frame and annotations preserved.')}
-function reopenCapturedFrame(index){switchPlane(index);const v=current();if(v.source?.ready&&v.frameSrc){v.preview=true;selected=-1;draft=null;romDraft=null;drag=null;syncCanvas();updateUI();draw();toast('Choose a new frame or keep your original annotations.')}else{$('galleryInput').click()}}
+function reopenCapturedFrame(index){switchDocument(index);const v=current();if(v.source?.ready&&v.frameSrc){v.preview=true;selected=-1;draft=null;romDraft=null;drag=null;syncCanvas();updateUI();draw();toast('Choose a new frame or keep your original annotations.')}else{$('galleryInput').accept='image/*,video/*';$('galleryInput').click()}}
 function visibleSource(v){if(v.preview&&v.source?.ready)return v.source.video;if(v.frameImg)return v.frameImg;if(v.source?.ready)return v.source.video;return null}
 function sourceSize(v){const s=visibleSource(v);if(!s)return{w:16,h:9};return s instanceof HTMLVideoElement?{w:s.videoWidth,h:s.videoHeight}:{w:s.naturalWidth,h:s.naturalHeight}}
-function switchPlane(index){active=index;selected=-1;draft=null;romDraft=null;romPointActive=0;romReposition=false;drag=null;document.querySelectorAll('[data-plane]').forEach(b=>{const yes=Number(b.dataset.plane)===active;b.classList.toggle('active',yes);b.setAttribute('aria-pressed',String(yes))});populateInspector();syncCanvas();updateUI();draw()}
+function switchDocument(index){
+ if(index<0||index>=views.length)return;
+ active=index;selected=-1;draft=null;romDraft=null;romPointActive=0;romReposition=false;drag=null;
+ document.querySelectorAll('[data-plane]').forEach(b=>{const yes=Number(b.dataset.plane)===current().plane;b.classList.toggle('active',yes);b.setAttribute('aria-pressed',String(yes))});
+ populateInspector();syncCanvas();updateFrameProperties();updateUI();draw();
+}
+function switchPlane(plane){const index=views.findIndex(v=>v.plane===plane&&v.frameSrc);const empty=views.findIndex(v=>v.plane===plane);switchDocument(index>=0?index:empty)}
 function syncCanvas(){const v=current(),source=visibleSource(v);$('empty').classList.toggle('hidden',!!source);$('pictureFrame').classList.toggle('hidden',!source);$('stage').classList.toggle('empty-screen',!source);const{w,h}=sourceSize(v);$('pictureFrame').style.setProperty('--aspect',String(w/h));requestAnimationFrame(resizeCanvas)}
 function resizeCanvas(){const rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;const dpr=Math.min(2,devicePixelRatio||1);const w=Math.round(rect.width*dpr),h=Math.round(rect.height*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}draw()}
 function normalized(e){const r=canvas.getBoundingClientRect();return{x:clamp((e.clientX-r.left)/r.width),y:clamp((e.clientY-r.top)/r.height)}}
@@ -791,54 +811,75 @@ function inferredJointRegion(a){
  // Prior projects may have stored this classification explicitly.
  return a.region==='upper'||a.region==='lower'?a.region:null;
 }
-function updateUI(){const v=current(),s=v.source,canAnnotate=!!v.frameSrc&&!v.preview;const source=visibleSource(v);$('screenTitle').textContent=viewNames[active]+' PLANE · '+(v.preview?'VIDEO PREVIEW':v.frameLabel||'NO FRAME');$('screenTag').textContent=v.preview?'VIDEO':v.frameSrc?'CAPTURED':'STANDBY';$('sourceStatus').textContent=v.preview?'Scrub to the peak position and choose USE THIS FRAME.':v.frameSrc?'Frame captured. Add joint types, trace bones/muscles and draw movement arrows.':'No '+viewNames[active].toLowerCase()+' frame captured yet. Upload a screenshot or video.';
+function updateUI(){const v=current(),s=v.source,canAnnotate=!!v.frameSrc&&!v.preview;const source=visibleSource(v);$('screenTitle').textContent=viewNames[v.plane]+' PLANE · '+(v.preview?'VIDEO PREVIEW':v.frameLabel||'NO FRAME');$('screenTag').textContent=v.preview?'VIDEO':v.frameSrc?'CAPTURED':'STANDBY';$('sourceStatus').textContent=v.preview?'Scrub to the peak position and choose USE THIS FRAME.':v.frameSrc?'Frame captured. Add joint types, trace bones/muscles and draw movement arrows.':'No '+viewNames[v.plane].toLowerCase()+' frame captured yet. Upload a screenshot or video.';
 $('captureBtn').disabled=!v.preview||!s||!s.ready||s.seeking||s.video.seeking;
 $('videoControls').classList.toggle('hidden',!(s&&v.preview));$('cancelFrameBtn').classList.toggle('hidden',!(v.preview&&v.frameSrc));if(s){$('timeline').max=String(s.duration||1);$('timeline').value=String(s.video.currentTime||0);$('timeNow').textContent=time(s.video.currentTime);$('timeEnd').textContent=time(s.duration)}
 $('overlayNotice').classList.toggle('hidden',!v.preview);$('overlayNotice').textContent=v.preview?'VIDEO PREVIEW · CAPTURE FRAME BEFORE ANNOTATING':'';
 updateGallery();
-$('clearBtn').disabled=!v.annotations.length;$('deleteBtn').disabled=selected<0;$('undoBtn').disabled=!undo.length;$('redoBtn').disabled=!redo.length;$('menuExportPlane').disabled=!v.frameSrc;$('menuExportPoster').disabled=!views.some(z=>z.frameSrc);$('menuExportExcalidraw').disabled=!views.some(z=>z.frameSrc);
+$('clearBtn').disabled=!v.annotations.length;$('deleteBtn').disabled=selected<0;$('undoBtn').disabled=!undo.length;$('redoBtn').disabled=!redo.length;$('menuExportPlane').disabled=!v.frameSrc;$('menuExportPoster').disabled=!views.some(z=>z.frameSrc);
 const list=$('annotationList');list.replaceChildren();if(v.annotations.length===0){const p=document.createElement('p');p.className='hint';p.textContent='No annotations yet.';list.appendChild(p)}v.annotations.forEach((a,i)=>{const b=document.createElement('button');b.className='annotation-chip'+(selected===i?' active':'');const dot=document.createElement('span');dot.className='led on';dot.style.color=a.color;const label=document.createElement('span');label.className='name';label.textContent=a.label+(a.type==='joint'?' · '+a.jointType:'');const typ=document.createElement('small');typ.textContent=a.type.toUpperCase();b.append(dot,label,typ);b.onclick=()=>{rememberCreationFields();chooseSelected(i);if(annotationsDialog.open)closeAnnotations()};list.appendChild(b)});
-const all=allAnnotations(),check=[['Frontal plane image',!!views[0].frameSrc],['Sagittal plane image',!!views[1].frameSrc],['Upper-body joint type',all.some(a=>inferredJointRegion(a)==='upper')],['Lower-body joint type',all.some(a=>inferredJointRegion(a)==='lower')],['Named bone traces',all.some(a=>a.type==='bone')],['Visible muscles + color key',all.some(a=>a.type==='muscle')],['Movement arrows',all.some(a=>a.type==='arrow')],['Both views annotated',views.every(x=>x.frameSrc&&x.annotations.length)]];const grid=$('checkGrid');grid.replaceChildren();$('checkSummary').textContent=check.filter(([,yes])=>yes).length+' of '+check.length+' requirements present';check.forEach(([label,yes])=>{const row=document.createElement('div');row.className='check-item'+(yes?' complete':'');const light=document.createElement('span');light.className='led on';const span=document.createElement('span');span.textContent=label;row.append(light,span);grid.appendChild(row)});
 syncMenuActions();
-$('canvasHelp').textContent=canAnnotate?help[tool]:v.preview?'Select USE THIS FRAME to freeze the video before drawing.':'Choose a photo or video for the active plane.';updateROMInspector()}
+$('canvasHelp').textContent=canAnnotate?help[tool]:v.preview?'Select USE THIS FRAME to freeze the video before drawing.':'Choose a photo or video for the active plane.';updateROMInspector();queueAutosave()}
 function canvasPNG(v,dimension=2000){if(!v.frameImg)return null;const im=v.frameImg,scale=Math.min(1,dimension/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*scale)),h=Math.max(1,Math.round(im.naturalHeight*scale)),out=document.createElement('canvas');out.width=w;out.height=h;const c=out.getContext('2d');c.drawImage(im,0,0,w,h);v.annotations.forEach(a=>drawOne(c,a,w,h,{scale:Math.max(1,w/1000)}));return out}
 function download(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),30000)}
 async function downloadCanvas(c,name){if(!c)return;const blob=await new Promise((ok,no)=>c.toBlob(b=>b?ok(b):no(new Error('PNG export failed')),'image/png'));download(blob,name)}
-function boardGeometry(){const W=2400,margin=75,gap=60,pw=(W-2*margin-gap)/2,top=215,imgTop=315;const fitHeights=views.filter(v=>v.frameImg).map(v=>pw*v.frameImg.naturalHeight/v.frameImg.naturalWidth);const imgBoxH=clamp(Math.max(650,...fitHeights),650,1170),base=imgTop+imgBoxH;return{W,margin,gap,pw,top,imgTop,imgBoxH,base}}
-function boardRect(v,i,g){const left=g.margin+i*(g.pw+g.gap);if(!v.frameImg)return{x:left,y:g.imgTop,w:g.pw,h:g.imgBoxH};const im=v.frameImg,scale=Math.min(g.pw/im.naturalWidth,g.imgBoxH/im.naturalHeight),w=im.naturalWidth*scale,h=im.naturalHeight*scale;return{x:left+(g.pw-w)/2,y:g.imgTop+(g.imgBoxH-h)/2,w,h}}
-function boardContent(){const g=boardGeometry(),muscles=new Map(),all=allAnnotations();all.filter(a=>a.type==='muscle').forEach(a=>{if(!muscles.has(a.label.toLowerCase()))muscles.set(a.label.toLowerCase(),a)});const keyItems=[...muscles.values()];const rows=Math.ceil(keyItems.length/4);const H=Math.max(1120,g.base+195+rows*46+110);return{g,H,keyItems}}
-function board(){const {g,H,keyItems}=boardContent(),c=document.createElement('canvas');c.width=g.W;c.height=H;const q=c.getContext('2d');q.fillStyle='#f5f7f6';q.fillRect(0,0,g.W,H);q.fillStyle='#20272c';q.fillRect(0,0,g.W,164);q.fillStyle='#dbedda';q.font='bold 67px system-ui';q.fillText('MOVEMENT EVALUATION',g.margin,89);q.font='25px system-ui';q.fillStyle='#bbc9c2';q.fillText(($('exercise').value.trim()||'EXERCISE NOT SPECIFIED').slice(0,75)+'   ·   '+($('student').value.trim()||'ANATOMY LAB').slice(0,70),g.margin,139);
-views.forEach((v,i)=>{const x=g.margin+i*(g.pw+g.gap);q.fillStyle='#dde4df';q.fillRect(x,g.top,g.pw,g.base-g.top+18);q.fillStyle='#2d3439';q.fillRect(x,g.top,g.pw,70);q.fillStyle='#eff4ef';q.font='bold 32px system-ui';q.fillText(viewNames[i]+' PLANE · PEAK OF MOVEMENT',x+25,g.top+46);const r=boardRect(v,i,g);if(v.frameImg){q.drawImage(v.frameImg,r.x,r.y,r.w,r.h);q.save();q.translate(r.x,r.y);v.annotations.forEach(a=>drawOne(q,a,r.w,r.h,{scale:Math.max(.8,r.w/900)}));q.restore()}else{q.font='bold 24px system-ui';q.fillStyle='#65746d';q.fillText('NO IMAGE CAPTURED',x+55,g.imgTop+330)} });
-const ly=g.base+85;q.fillStyle='#1f2925';q.font='bold 35px system-ui';q.fillText('MUSCLE COLOR KEY  ·  VISIBLE SET 1 + SET 2',g.margin,ly);if(!keyItems.length){q.font='23px system-ui';q.fillStyle='#66746d';q.fillText('No muscle traces included',g.margin,ly+51)}keyItems.forEach((a,i)=>{const col=i%4,row=Math.floor(i/4),x=g.margin+col*565,y=ly+55+row*46;q.fillStyle=a.color;q.fillRect(x,y-21,27,27);q.fillStyle='#26352e';q.font='22px system-ui';q.fillText(a.label.slice(0,39),x+39,y,505)});q.fillStyle='#647069';q.font='20px system-ui';q.fillText('Manual anatomical annotations · Frontal and sagittal views · For classroom evaluation',g.margin,H-38);return c}
-function saveProject(){const data={schema:'movement-evaluation-studio',version:1,exercise:$('exercise').value,student:$('student').value,views:views.map((v,i)=>({plane:viewNames[i],frameSrc:v.frameSrc,frameLabel:v.frameLabel,annotations:v.annotations}))};download(new Blob([JSON.stringify(data)],{type:'application/json'}),safeName()+'-movement-project.json');toast('Editable project saved with both captured images.')}
-function openProject(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(d.schema!=='movement-evaluation-studio'||d.version!==1||!Array.isArray(d.views)||d.views.length!==2)throw Error('Not a Movement Evaluation project');if(!confirm('Open project and replace the current work?'))return;views.forEach(disposeSource);views=[makeView(),makeView()];d.views.forEach((src,i)=>{const v=views[i];v.annotations=Array.isArray(src.annotations)?src.annotations:[];v.frameLabel=String(src.frameLabel||'Saved frame');if(src.frameSrc&&/^data:image\/(jpeg|png|webp);base64,/i.test(src.frameSrc))addImageToView(v,src.frameSrc,v.frameLabel)});$('exercise').value=String(d.exercise||'Untitled Exercise');$('student').value=String(d.student||'');updateDocumentTitle();selected=-1;undo=[];redo=[];switchPlane(0);toast('Editable project reopened.')}catch(e){toast('Project could not be opened: '+e.message)}};r.onerror=()=>toast('File could not be read.');r.readAsText(file)}
-function excalidrawScene(){const {g,H,keyItems}=boardContent(),elements=[],files={},timestamp=Date.now(),W=g.W;let counter=0;const uid=()=>`mes_${Date.now().toString(36)}_${(counter++).toString(36)}`;
-function base(type,x,y,w,h,color='#222222'){return{id:uid(),type,x,y,width:Math.max(1,w),height:Math.max(1,h),angle:0,strokeColor:color,backgroundColor:'transparent',fillStyle:'solid',strokeWidth:2,strokeStyle:'solid',roughness:0,opacity:100,groupIds:[],frameId:null,roundness:null,seed:Math.floor(Math.random()*1e9),version:1,versionNonce:Math.floor(Math.random()*1e9),isDeleted:false,boundElements:null,updated:timestamp,link:null,locked:false}}
-function addText(text,x,y,color='#26352f',size=27){const str=String(text).slice(0,250),e={...base('text',x,y,Math.max(20,str.length*size*.56),size*1.4,color),text:str,originalText:str,fontSize:size,fontFamily:2,textAlign:'left',verticalAlign:'top',lineHeight:1.25,autoResize:true,containerId:null};elements.push(e)}
-function lineShape(type,p1,p2,color){const x=Math.min(p1.x,p2.x),y=Math.min(p1.y,p2.y),e={...base(type,x,y,Math.abs(p2.x-p1.x),Math.abs(p2.y-p1.y),color),points:[[p1.x-x,p1.y-y],[p2.x-x,p2.y-y]],lastCommittedPoint:null,startBinding:null,endBinding:null,startArrowhead:null,endArrowhead:type==='arrow'?'arrow':null,elbowed:false};e.strokeWidth=4;elements.push(e)}
-addText('MOVEMENT EVALUATION · '+($('exercise').value.trim()||'EXERCISE'),75,62,'#1e3024',51);addText($('student').value||'Regular Anatomy · Muscular System Lab',75,135,'#4a6451',26);
-views.forEach((v,i)=>{const x=g.margin+i*(g.pw+g.gap);addText(viewNames[i]+' PLANE · PEAK MOVEMENT',x,g.top+7,'#354b3b',32);if(!v.frameImg)return;const r=boardRect(v,i,g),fid=uid();files[fid]={id:fid,mimeType:'image/jpeg',dataURL:v.frameSrc,created:timestamp,lastRetrieved:timestamp};elements.push({...base('image',r.x,r.y,r.w,r.h,'#1e1e1e'),fileId:fid,scale:[1,1],status:'saved'});
-const pt=p=>({x:r.x+p.x*r.w,y:r.y+p.y*r.h});v.annotations.forEach(a=>{if(a.type==='bone'||a.type==='muscle'){if(!a.points?.length)return;const coords=a.points.map(pt),xs=coords.map(z=>z.x),ys=coords.map(z=>z.y),ox=Math.min(...xs),oy=Math.min(...ys);const el={...base('freedraw',ox,oy,Math.max(...xs)-ox,Math.max(...ys)-oy,a.color),points:coords.map(z=>[z.x-ox,z.y-oy]),pressures:[],simulatePressure:true,lastCommittedPoint:null};el.strokeWidth=a.strokeWidth||(a.type==='muscle'?5:4);elements.push(el);const anchor=coords.at(-1);addText(a.label,anchor.x+12,anchor.y-18,a.color,20*(a.labelScale||1))}else if(a.type==='joint'){const p=pt(a);elements.push({...base('ellipse',p.x-10,p.y-10,20,20,a.color),strokeWidth:a.strokeWidth||4});addText(a.label+' · '+a.jointType,p.x+12,p.y-19,a.color,20*(a.labelScale||1))}else if(a.type==='rom'){
- const p=(a.points||[]).map(q=>q?pt(q):null),[f,s,m]=p;
- if(f&&s){lineShape('line',f,s,'#65c9ef');elements.at(-1).strokeWidth=a.strokeWidth||4}
- if(f&&m){lineShape('line',f,m,'#ffb56e');elements.at(-1).strokeWidth=a.strokeWidth||4}
- p.forEach((q,k)=>{if(q)elements.push({...base('ellipse',q.x-7,q.y-7,14,14,['#c7e885','#65c9ef','#ffb56e'][k]),strokeWidth:3})});
- if(f&&s&&m){const ax=s.x-f.x,ay=s.y-f.y,bx=m.x-f.x,by=m.y-f.y,den=Math.hypot(ax,ay)*Math.hypot(bx,by);
-  if(den>4){
-   // Native Excalidraw polyline approximates the visible goniometer angle arc.
-   const start=Math.atan2(ay,ax),finish=Math.atan2(by,bx);let delta=finish-start;
-   while(delta>Math.PI)delta-=Math.PI*2;while(delta< -Math.PI)delta+=Math.PI*2;
-   const radius=Math.max(19,Math.min(65,Math.hypot(ax,ay)*.36,Math.hypot(bx,by)*.36));
-   const count=Math.max(8,Math.ceil(Math.abs(delta)*18));
-   const pts=Array.from({length:count+1},(_,i)=>({x:f.x+radius*Math.cos(start+delta*i/count),y:f.y+radius*Math.sin(start+delta*i/count)}));
-   const minx=Math.min(...pts.map(q=>q.x)),miny=Math.min(...pts.map(q=>q.y));
-   elements.push({...base('freedraw',minx,miny,Math.max(1,Math.max(...pts.map(q=>q.x))-minx),Math.max(1,Math.max(...pts.map(q=>q.y))-miny),'#f3f8ff'),points:pts.map(q=>[q.x-minx,q.y-miny]),pressures:[],simulatePressure:false,lastCommittedPoint:null,strokeWidth:2});
-   const included=Math.acos(clamp((ax*bx+ay*by)/den,-1,1))*180/Math.PI,shown=a.angleMode==='straight'?180-included:included;
-   addText((a.label||'ROM')+' · '+shown.toFixed(1)+'°'+(a.angleMode==='straight'?' from straight':' included'),f.x+17,f.y-37,a.color||'#e5f0e4',21*(a.labelScale||1))}
+// Combined submission export: each saved frame stays independent and is placed under its plane.
+function board(page=0){
+ const limit=8, frontal=views.filter(v=>v.plane===0&&v.frameImg),sagittal=views.filter(v=>v.plane===1&&v.frameImg);
+ const columns=[frontal.slice(page*limit,(page+1)*limit),sagittal.slice(page*limit,(page+1)*limit)];
+ const all=allAnnotations(),muscles=new Map();
+ all.filter(a=>a.type==='muscle').forEach(a=>{if(!muscles.has((a.label||'').toLowerCase()))muscles.set((a.label||'').toLowerCase(),a)});
+ const keyItems=[...muscles.values()],W=2200,margin=56,gap=40,pw=(W-2*margin-gap)/2;
+ const cardH=775,head=210,rows=Math.max(1,...columns.map(a=>a.length));
+ const keyRows=Math.ceil(keyItems.length/3),showKey=page===Math.ceil(Math.max(frontal.length,sagittal.length)/limit)-1;
+ const keyHeight=showKey?160+keyRows*43:0,H=head+rows*cardH+keyHeight+55;
+ const c=document.createElement('canvas');c.width=W;c.height=H;const q=c.getContext('2d');
+ q.fillStyle='#f4f6f7';q.fillRect(0,0,W,H);q.fillStyle='#242c35';q.fillRect(0,0,W,156);
+ q.font='bold 66px system-ui';q.fillStyle='#e4efe4';q.fillText('MOVEMENT EVALUATION',margin,83);
+ q.fillStyle='#cad5d9';q.font='25px system-ui';q.fillText(($('exercise').value.trim()||'Untitled Exercise').slice(0,76)+'  ·  '+($('student').value.trim()||'Anatomy Lab').slice(0,70),margin,128);
+ for(let p=0;p<2;p++){
+  const x=margin+p*(pw+gap);q.fillStyle='#333e4a';q.fillRect(x,169,pw,43);
+  q.fillStyle='#edf4f7';q.font='bold 24px system-ui';q.fillText(viewNames[p]+' PLANE',x+20,199);
+  columns[p].forEach((v,r)=>{
+   const y=head+r*cardH;q.fillStyle='#dde4e8';q.fillRect(x,y,pw,cardH-14);
+   q.fillStyle='#354554';q.fillRect(x,y,pw,64);
+   q.fillStyle='#f0f6fb';q.font='bold 27px system-ui';q.fillText((v.category||'OTHER').toUpperCase()+' · '+(v.name||v.frameLabel||'Frame').slice(0,37),x+22,y+41,pw-42);
+   const box={x:x+19,y:y+84,w:pw-38,h:cardH-120},im=v.frameImg;
+   const fit=Math.min(box.w/im.naturalWidth,box.h/im.naturalHeight);
+   const w=im.naturalWidth*fit,h=im.naturalHeight*fit;
+   const ix=box.x+(box.w-w)/2,iy=box.y+(box.h-h)/2;
+   q.drawImage(im,ix,iy,w,h);q.save();q.translate(ix,iy);
+   v.annotations.forEach(a=>drawOne(q,a,w,h,{scale:Math.max(.8,w/850)}));q.restore();
+  });
  }
- }else if(a.type==='text'){const p=pt(a);addText(a.label,p.x,p.y,a.color,20*(a.labelScale||1))}else if(a.type==='arrow'){const from=pt(a.from),to=pt(a.to);lineShape('arrow',from,to,a.color);elements.at(-1).strokeWidth=a.strokeWidth||4;addText(a.label||a.movement,to.x+12,to.y-19,a.color,20*(a.labelScale||1))}})});
-addText('MUSCLE COLOR KEY · SETS 1 + 2',75,g.base+55,'#354b3b',32);keyItems.forEach((a,i)=>addText('● '+a.label,75+(i%4)*565,g.base+104+Math.floor(i/4)*46,a.color,23));return{type:'excalidraw',version:2,source:'https://excalidraw.com',elements,appState:{viewBackgroundColor:'#ffffff',gridSize:null},files}}
-function exportExcalidraw(){const scene=excalidrawScene();download(new Blob([JSON.stringify(scene)],{type:'application/json'}),safeName()+'-movement.excalidraw');toast('Excalidraw project exported with editable annotations.')}
+ if(showKey){let y=head+rows*cardH+30;q.fillStyle='#2b353f';q.font='bold 29px system-ui';q.fillText('MUSCLE COLOR KEY',margin,y);
+  if(!keyItems.length){q.fillStyle='#657078';q.font='20px system-ui';q.fillText('No muscle traces',margin,y+39)}
+  keyItems.forEach((a,i)=>{const col=i%3,row=Math.floor(i/3),x=margin+col*710,yy=y+46+row*43;q.fillStyle=a.color;q.fillRect(x,yy-21,24,24);q.fillStyle='#39434e';q.font='20px system-ui';q.fillText((a.label||'Muscle').slice(0,36),x+33,yy,650)});
+ }
+ return c;
+}
+function exportPageCount(){const counts=[0,1].map(p=>views.filter(v=>v.plane===p&&v.frameImg).length);return Math.max(1,Math.ceil(Math.max(...counts)/8))}
+function serializeProject(){return{schema:'movement-evaluation-studio',version:2,exercise:$('exercise').value,student:$('student').value,activeId:current().uid,views:views.map(v=>({uid:v.uid,plane:viewNames[v.plane],category:v.category||'Other',name:v.name||'',frameSrc:v.frameSrc,frameLabel:v.frameLabel,annotations:v.annotations}))}}
+function saveProject(){download(new Blob([JSON.stringify(serializeProject())],{type:'application/json'}),safeName()+'-movement-project.json');toast('Editable multi-frame project backup downloaded.');}
+function hydrateProject(d){
+ if(d?.schema!=='movement-evaluation-studio'||![1,2].includes(d.version)||!Array.isArray(d.views))throw Error('Not a Movement Evaluation project');
+ views.forEach(disposeSource);
+ views=d.views.map((src,i)=>{
+  const plane=(src.plane==='SAGITTAL'||src.plane===1||src.plane==='Sagittal')?1:0;
+  const category=frameCategories.includes(src.category)?src.category:'Other';
+  const v=makeView(plane,category,String(src.name||'').slice(0,75));v.uid=String(src.uid||newDocId());
+  v.annotations=Array.isArray(src.annotations)?src.annotations:[];
+  v.frameLabel=String(src.frameLabel||'Captured frame');
+  if(src.frameSrc&&/^data:image\/(jpeg|png|webp);base64,/i.test(src.frameSrc))addImageToView(v,src.frameSrc,v.frameLabel);
+  return v;
+ });
+ for(let plane=0;plane<2;plane++)if(!views.some(v=>v.plane===plane))views.push(makeView(plane));
+ if(!views.length)views=[makeView(0),makeView(1)];
+ $('exercise').value=String(d.exercise||'Untitled Exercise');$('student').value=String(d.student||'');updateDocumentTitle();
+ selected=-1;undo=[];redo=[];draft=null;drag=null;romDraft=null;
+ const wanted=views.findIndex(v=>v.uid===d.activeId);switchDocument(wanted>=0?wanted:0);
+}
+function openProject(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!confirm('Open project and replace the current work? Your current project is autosaved locally, but please download a backup first if needed.'))return;hydrateProject(d);queueAutosave(true);toast('Project restored with '+views.filter(v=>v.frameSrc).length+' frame(s).')}catch(e){console.error(e);toast('Could not open project: '+e.message)}};r.onerror=()=>toast('File could not be read');r.readAsText(file)}
 
 // Top menu bar: use the existing application actions rather than duplicating logic.
 const menuButtons=[...document.querySelectorAll('.menu-trigger')];
@@ -862,22 +903,19 @@ document.addEventListener('pointerdown',event=>{if(!event.target.closest('.menu-
 function syncMenuActions(){
   document.querySelectorAll('[data-click]').forEach(button=>{button.disabled=$(button.dataset.click).disabled});
   document.querySelectorAll('[data-plane-menu]').forEach(button=>{
-    const currentPlane=Number(button.dataset.planeMenu)===active;
+    const currentPlane=Number(button.dataset.planeMenu)===current().plane;
     button.setAttribute('aria-current',currentPlane?'true':'false');
     button.querySelector('.menu-selected').textContent=currentPlane?'✓':'';
   });
 }
 
 $('menuNew').addEventListener('click',()=>{
-  closeMenus();
-  const hasWork=views.some(v=>v.frameSrc||v.source||v.annotations.length)||($('exercise').value.trim() && $('exercise').value.trim()!=='Untitled Exercise')||$('student').value;
-  if(hasWork&&!confirm('Start a new project? Unsaved changes to both planes will be lost.'))return;
-  views.forEach(disposeSource);
-  views=[makeView(),makeView()];
-  $('exercise').value='Untitled Exercise';$('student').value='';updateDocumentTitle();
-  undo=[];redo=[];selected=-1;draft=null;drag=null;romDraft=null;romReposition=false;
-  switchPlane(0);setTool('select');
-  toast('New empty project created.');
+ closeMenus();const hasWork=views.some(v=>v.frameSrc||v.source||v.annotations.length)||$('exercise').value.trim()!=='Untitled Exercise'||$('student').value.trim();
+ if(hasWork&&!confirm('Start a new project? The current project will be replaced in local autosave. Download a project backup first if you need to keep it.'))return;
+ views.forEach(disposeSource);views=[makeView(0),makeView(1)];
+ $('exercise').value='Untitled Exercise';$('student').value='';updateDocumentTitle();
+ undo=[];redo=[];selected=-1;draft=null;drag=null;romDraft=null;romReposition=false;
+ switchDocument(0);setTool('select');queueAutosave(true);toast('New empty project created.');
 });
 
 const annotationsDialog=$('annotationsDialog');
@@ -886,22 +924,6 @@ $('menuAnnotations').addEventListener('click',()=>{closeMenus();updateUI();annot
 $('closeAnnotations').addEventListener('click',closeAnnotations);
 $('doneAnnotations').addEventListener('click',closeAnnotations);
 annotationsDialog.addEventListener('click',event=>{if(event.target===annotationsDialog)closeAnnotations()});
-const checklistDialog=$('checklistDialog');
-let checklistReturnFocus=null;
-function openChecklist(){
-  closeMenus();
-  checklistReturnFocus=document.activeElement;
-  updateUI();
-  checklistDialog.showModal();
-  $('closeChecklist').focus();
-}
-function closeChecklist(){checklistDialog.close()}
-$('menuChecklist').addEventListener('click',openChecklist);
-$('closeChecklist').addEventListener('click',closeChecklist);
-$('doneChecklist').addEventListener('click',closeChecklist);
-checklistDialog.addEventListener('click',event=>{if(event.target===checklistDialog)closeChecklist()});
-checklistDialog.addEventListener('close',()=>{checklistReturnFocus?.focus?.()});
-
 document.querySelectorAll('[data-rom-point]').forEach(b=>b.addEventListener('click',()=>setROMPoint(Number(b.dataset.romPoint))));
 document.querySelectorAll('[data-rom-mode]').forEach(b=>b.addEventListener('click',()=>{
  const next=b.dataset.romMode;romMode=next;
@@ -932,11 +954,11 @@ $('undoBtn').onclick=undoAction;$('redoBtn').onclick=redoAction;$('deleteBtn').o
 $('menuOpenProject').onclick=()=>{closeMenus();$('projectInput').click()};
 $('menuSaveProject').onclick=()=>{closeMenus();saveProject()};
 $('projectInput').onchange=e=>{openProject(e.target.files?.[0]);e.target.value=''};
-$('menuExportPlane').onclick=async()=>{closeMenus();try{await downloadCanvas(canvasPNG(current()),safeName()+'-'+viewNames[active].toLowerCase()+'-annotated.png');toast('Annotated plane picture saved.')}catch(e){toast('Could not export current plane.')}};
-$('menuExportPoster').onclick=async()=>{closeMenus();try{await downloadCanvas(board(),safeName()+'-exercise-evaluation.png');toast('Submission picture exported with both planes and the muscle key.')}catch(e){toast('Could not export combined image.')}};
-$('menuExportExcalidraw').onclick=()=>{closeMenus();try{exportExcalidraw()}catch(e){console.error(e);toast('Excalidraw export failed. Use editable project or PNG.')}};
+$('menuExportPlane').onclick=async()=>{closeMenus();try{await downloadCanvas(canvasPNG(current()),safeName()+'-'+viewNames[current().plane].toLowerCase()+'-'+(current().category||'frame').toLowerCase()+'-annotated.png');toast('Annotated plane picture saved.')}catch(e){toast('Could not export current plane.')}};
+$('menuExportPoster').onclick=async()=>{closeMenus();try{const count=exportPageCount();for(let i=0;i<count;i++){await downloadCanvas(board(i),safeName()+'-exercise-evaluation'+(count>1?'-page-'+(i+1):'')+'.png');}toast('Exported all '+views.filter(v=>v.frameImg).length+' saved frames'+(count>1?' across '+count+' PNG pages.':'.'));}catch(e){console.error(e);toast('Unable to export all frames.')}};
+
 const stage=$('stage');stage.addEventListener('dragover',e=>{e.preventDefault();stage.classList.add('dragover')});stage.addEventListener('dragleave',e=>{if(!stage.contains(e.relatedTarget))stage.classList.remove('dragover')});stage.addEventListener('drop',e=>{e.preventDefault();stage.classList.remove('dragover');loadMedia(e.dataTransfer?.files?.[0])});
-window.addEventListener('keydown',e=>{if(checklistDialog.open||annotationsDialog.open)return;if(e.key==='Escape'&&menuButtons.some(b=>b.getAttribute('aria-expanded')==='true')){closeMenus();return}const tag=document.activeElement?.tagName||'';if(/INPUT|SELECT|TEXTAREA/.test(tag))return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redoAction():undoAction()}else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelected()}else if(e.key==='Escape'){selected=-1;setTool('select')}});
+window.addEventListener('keydown',e=>{if(annotationsDialog.open||$('addDocumentDialog').open)return;if(e.key==='Escape'&&menuButtons.some(b=>b.getAttribute('aria-expanded')==='true')){closeMenus();return}const tag=document.activeElement?.tagName||'';if(/INPUT|SELECT|TEXTAREA/.test(tag))return;if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();e.shiftKey?redoAction():undoAction()}else if(e.key==='Delete'||e.key==='Backspace'){e.preventDefault();removeSelected()}else if(e.key==='Escape'){selected=-1;setTool('select')}});
 window.addEventListener('resize',resizeCanvas);if('ResizeObserver' in window)new ResizeObserver(resizeCanvas).observe($('pictureFrame'));window.addEventListener('beforeunload',()=>views.forEach(disposeSource));
 
 // MES V10 TOP TOOLBAR TOOLTIP — keyboard accessible, independent of scroll clipping.
@@ -991,72 +1013,161 @@ window.addEventListener('resize',()=>{mesHideTooltip();mesUpdateOverflow()},{pas
 const documentHeader=$('documentHeader');
 const exerciseTitle=$('exercise');
 const untitledExercise='Untitled Exercise';
-const galleryDisplayedSrc=[null,null];
+// Local document gallery: each image is a distinct editable document.
+const galleryNodes=new Map();
 function updateDocumentTitle(){
  const name=exerciseTitle.value.trim()||untitledExercise;
  document.title=name+' — Movement Evaluation Studio';
  exerciseTitle.setAttribute('aria-label','Exercise project title: '+name+'. Click to rename');
 }
-exerciseTitle.addEventListener('focus',()=>{
- if(exerciseTitle.value===untitledExercise)exerciseTitle.select();
-});
-exerciseTitle.addEventListener('input',updateDocumentTitle);
-exerciseTitle.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();exerciseTitle.blur();}});
-exerciseTitle.addEventListener('blur',()=>{
- if(!exerciseTitle.value.trim())exerciseTitle.value=untitledExercise;
- updateDocumentTitle();
-});
+exerciseTitle.addEventListener('focus',()=>{if(exerciseTitle.value===untitledExercise)exerciseTitle.select()});
+exerciseTitle.addEventListener('input',()=>{updateDocumentTitle();queueAutosave()});
+exerciseTitle.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();exerciseTitle.blur()}});
+exerciseTitle.addEventListener('blur',()=>{if(!exerciseTitle.value.trim())exerciseTitle.value=untitledExercise;updateDocumentTitle();queueAutosave()});
+$('student').addEventListener('input',()=>queueAutosave());
 function updateStickyOffsets(){
  document.documentElement.style.setProperty('--doc-title-height',Math.ceil(documentHeader.getBoundingClientRect().height)+'px');
  document.documentElement.style.setProperty('--doc-menu-height',Math.ceil(document.querySelector('.menu-bar').getBoundingClientRect().height)+'px');
  document.documentElement.style.setProperty('--doc-toolbar-height',Math.ceil($('studioToolbar').getBoundingClientRect().height)+'px');
 }
-if('ResizeObserver' in window){
- const stickyObserver=new ResizeObserver(updateStickyOffsets);
- [documentHeader,document.querySelector('.menu-bar'),$('studioToolbar')].forEach(el=>stickyObserver.observe(el));
-}
+if('ResizeObserver' in window){const stickyObserver=new ResizeObserver(updateStickyOffsets);[documentHeader,document.querySelector('.menu-bar'),$('studioToolbar')].forEach(el=>stickyObserver.observe(el))}
 window.addEventListener('resize',updateStickyOffsets);
+const pencilIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L9 17l-4 1 1-4 10.5-10.5Z"/></svg>';
+const trashIcon='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 15h10l1-15M10 10v8M14 10v8"/></svg>';
+function createGalleryNode(v){
+ const wrap=document.createElement('div');wrap.className='gallery-card-wrap';
+ const card=document.createElement('button');card.type='button';card.className='gallery-doc-card';card.setAttribute('aria-label','Open '+viewNames[v.plane].toLowerCase()+' '+v.category+' frame');
+ const surface=document.createElement('span');surface.className='gallery-doc-preview';
+ const image=document.createElement('img');image.alt='Captured '+viewNames[v.plane].toLowerCase()+' frame';
+ const placeholder=document.createElement('span');placeholder.className='gallery-doc-placeholder';placeholder.textContent='VIDEO PREVIEW';
+ surface.append(image,placeholder);
+ const name=document.createElement('span');name.className='gallery-doc-name';
+ const category=document.createElement('span');category.className='gallery-doc-category';
+ card.append(surface,name,category);
+ card.addEventListener('click',()=>{const i=views.findIndex(x=>x.uid===v.uid);if(i>=0)switchDocument(i)});
+ const actions=document.createElement('div');actions.className='gallery-doc-actions';
+ const edit=document.createElement('button');edit.type='button';edit.innerHTML=pencilIcon;edit.title='Edit or replace this frame';edit.setAttribute('aria-label','Edit or replace frame');
+ edit.addEventListener('click',e=>{e.stopPropagation();const i=views.findIndex(x=>x.uid===v.uid);if(i>=0)reopenCapturedFrame(i)});
+ const remove=document.createElement('button');remove.type='button';remove.innerHTML=trashIcon;remove.title='Delete frame and annotations';remove.setAttribute('aria-label','Delete frame');
+ remove.addEventListener('click',e=>{e.stopPropagation();deleteFrame(v.uid)});
+ actions.append(edit,remove);wrap.append(card,actions);
+ return{wrap,card,image,placeholder,name,category,edit,lastSrc:undefined};
+}
 function updateGallery(){
- views.forEach((v,i)=>{
-  const card=$('galleryCard'+i),wrap=$('galleryWrap'+i),edit=$('galleryEdit'+i),add=$('galleryAdd'+i),image=$('galleryImage'+i);
-  const preview=$('galleryPreview'+i),status=$('galleryStatus'+i),caption=$('galleryName'+i);
-  const hasImage=!!v.frameSrc;
-  const showingVideo=!!v.preview && !hasImage;
-  const filled=hasImage||showingVideo;
-  wrap.classList.toggle('hidden',!filled);
-  edit.classList.toggle('hidden',!hasImage||v.preview);
-  edit.title=v.source?.ready?'Choose a different video frame':'Replace photo or video';
-  add.classList.toggle('hidden',filled);
-  card.classList.toggle('active',active===i);
-  add.classList.toggle('active-plane',active===i);
-  card.setAttribute('aria-pressed',String(active===i));
-  status.textContent=v.preview&&hasImage?'EDITING':hasImage?'CAPTURED':showingVideo?'PREVIEW':'EMPTY';
-  status.classList.toggle('is-ready',hasImage);
-  preview.classList.toggle('hidden',!showingVideo);
-  image.classList.toggle('hidden',!hasImage);
-  if(hasImage&&galleryDisplayedSrc[i]!==v.frameSrc){image.src=v.frameSrc;galleryDisplayedSrc[i]=v.frameSrc;}
-  if(!hasImage&&galleryDisplayedSrc[i]!==null){image.removeAttribute('src');galleryDisplayedSrc[i]=null;}
-  caption.textContent=showingVideo?'Video preview':(v.frameLabel||((i===0?'Frontal':'Sagittal')+' frame'));
+ const ids=new Set(views.filter(v=>v.frameSrc||v.preview).map(v=>v.uid));
+ for(const [id,node] of galleryNodes)if(!ids.has(id)){node.wrap.remove();galleryNodes.delete(id)}
+ [0,1].forEach(plane=>{
+  const host=$('galleryDocuments'+plane),docs=views.filter(v=>v.plane===plane&&(v.frameSrc||v.preview));
+  const count=docs.filter(v=>v.frameSrc).length;
+  $('galleryStatus'+plane).textContent=docs.length?count+' FRAME'+(count===1?'':'S'):'EMPTY';
+  $('galleryStatus'+plane).classList.toggle('is-ready',count>0);
+  docs.forEach(v=>{
+   let n=galleryNodes.get(v.uid);if(!n){n=createGalleryNode(v);galleryNodes.set(v.uid,n)}
+   host.appendChild(n.wrap);n.card.classList.toggle('active',current().uid===v.uid);
+   n.card.setAttribute('aria-pressed',String(current().uid===v.uid));
+   n.name.textContent=v.name||v.frameLabel||('New '+v.category+' frame');
+   n.category.textContent=v.category+(v.annotations.length?' · '+v.annotations.length+' annotation'+(v.annotations.length===1?'':'s'):'');
+   n.edit.classList.toggle('hidden',!v.frameSrc||v.preview);
+   n.placeholder.classList.toggle('hidden',!!v.frameSrc);
+   n.image.classList.toggle('hidden',!v.frameSrc);
+   if(n.lastSrc!==v.frameSrc){if(v.frameSrc)n.image.src=v.frameSrc;else n.image.removeAttribute('src');n.lastSrc=v.frameSrc;}
+  });
  });
 }
-document.querySelectorAll('[data-gallery-plane]').forEach(button=>{
- button.addEventListener('click',()=>switchPlane(Number(button.dataset.galleryPlane)));
-});
-document.querySelectorAll('.gallery-edit').forEach(button=>{
- button.addEventListener('click',()=>reopenCapturedFrame(Number(button.id.slice(-1))));
-});
-document.querySelectorAll('[data-gallery-add]').forEach(button=>{
- button.addEventListener('click',()=>{
-  switchPlane(Number(button.dataset.galleryAdd));
-  $('galleryInput').click();
- });
-});
+function updateFrameProperties(){
+ const v=current();$('frameProperties').classList.toggle('hidden',!v.frameSrc||v.preview);
+ $('frameName').value=v.name||'';$('frameName').placeholder=v.frameLabel||'Frame name';
+ $('frameCategory').value=frameCategories.includes(v.category)?v.category:'Other';
+}
+$('frameName').addEventListener('input',e=>{current().name=e.target.value.slice(0,75);updateGallery();queueAutosave()});
+$('frameCategory').addEventListener('change',e=>{current().category=e.target.value;updateGallery();queueAutosave()});
+function deleteFrame(uid){
+ const i=views.findIndex(v=>v.uid===uid);if(i<0)return;
+ const v=views[i];if(!confirm('Delete this '+viewNames[v.plane].toLowerCase()+' '+v.category+' frame and all its annotations?'))return;
+ disposeSource(v);views.splice(i,1);
+ if(!views.some(x=>x.plane===v.plane))views.push(makeView(v.plane));
+ if(!views.length)views=[makeView(0),makeView(1)];
+ undo=[];redo=[];switchDocument(Math.min(i,views.length-1));queueAutosave(true);toast('Frame deleted from project.');
+}
+let pendingNew=null;
+const addDlg=$('addDocumentDialog');
+function addNewFrame(plane){
+ pendingNew={plane};$('newDocCategory').value='ROM';$('newDocName').value='';
+ $('addDocumentTitle').textContent='ADD '+viewNames[plane]+' FRAME';addDlg.showModal();
+}
+$('closeAddDocument').onclick=()=>addDlg.close();
+addDlg.addEventListener('click',e=>{if(e.target===addDlg)addDlg.close()});
+function chooseFrameMedia(mediaType){
+ if(!pendingNew)return;
+ pendingNew.category=$('newDocCategory').value;pendingNew.name=$('newDocName').value.trim().slice(0,75);
+ $('galleryInput').accept=mediaType==='video'?'video/*':'image/*';
+ addDlg.close();$('galleryInput').click();
+}
+$('addDocumentPhoto').onclick=()=>chooseFrameMedia('photo');
+$('addDocumentVideo').onclick=()=>chooseFrameMedia('video');
+document.querySelectorAll('[data-gallery-add]').forEach(button=>button.addEventListener('click',()=>addNewFrame(Number(button.dataset.galleryAdd))));
 $('galleryInput').addEventListener('change',e=>{
- loadMedia(e.target.files?.[0]);
- e.target.value='';
+ const file=e.target.files?.[0];e.target.value='';if(!file){pendingNew=null;return}
+ if(pendingNew){
+  const {plane,category,name}=pendingNew;const v=makeView(plane,category,name||`${viewNames[plane][0]}${viewNames[plane].slice(1).toLowerCase()} ${category}`);
+  views.push(v);switchDocument(views.length-1);pendingNew=null;
+ }
+ loadMedia(file);
 });
+
+// Resilient IndexedDB autosave: alternate two full snapshots, recover newest valid.
+let localDB=null,cacheSlot='A',saveTimer=null,autosaveReady=false,writeInFlight=false,writeQueued=false;
+const cacheStatus=$('localSaveStatus');
+function statusSave(message,error=false){cacheStatus.textContent=message;cacheStatus.classList.toggle('error',error)}
+function openCache(){return new Promise((resolve,reject)=>{
+ if(!('indexedDB' in window)){reject(Error('IndexedDB unavailable'));return}
+ const req=indexedDB.open('movement-evaluation-studio-local-v13',1);
+ req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('snapshots'))req.result.createObjectStore('snapshots',{keyPath:'key'})};
+ req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||Error('Cache unavailable'));
+ })}
+function cacheRecords(){return new Promise((resolve,reject)=>{
+ const t=localDB.transaction('snapshots','readonly');const store=t.objectStore('snapshots');
+ const a=store.get('A'),b=store.get('B');t.oncomplete=()=>resolve([a.result,b.result].filter(Boolean).sort((x,y)=>y.savedAt-x.savedAt));t.onerror=()=>reject(t.error);
+ })}
+function writeSnapshot(record){return new Promise((resolve,reject)=>{
+ const t=localDB.transaction('snapshots','readwrite');t.objectStore('snapshots').put(record);
+ t.oncomplete=resolve;t.onabort=()=>reject(t.error||Error('Local storage full'));t.onerror=()=>reject(t.error||Error('Local storage write failed'));
+ })}
+function queueAutosave(immediate=false){
+ if(!autosaveReady)return;
+ statusSave('Saving locally…');clearTimeout(saveTimer);
+ if(immediate)flushAutosave();else saveTimer=setTimeout(flushAutosave,550);
+}
+async function flushAutosave(){
+ if(!autosaveReady||!localDB)return;
+ if(writeInFlight){writeQueued=true;return}
+ writeInFlight=true;const next=cacheSlot==='A'?'B':'A';
+ try{
+  const record={key:next,savedAt:Date.now(),payload:serializeProject()};
+  await writeSnapshot(record);cacheSlot=next;
+  statusSave('Saved locally · '+new Date(record.savedAt).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}));
+ }catch(e){console.error('Movement Studio autosave failed',e);statusSave('Local save failed · download a project backup',true);toast('Could not save locally. Download a project backup from File.');}
+ finally{writeInFlight=false;if(writeQueued){writeQueued=false;queueAutosave(true)}}
+}
+async function restoreCached(){
+ statusSave('Loading local project…');
+ try{
+  localDB=await openCache();const records=await cacheRecords();
+  let restored=false;
+  for(const record of records){try{if(record.payload?.schema!=='movement-evaluation-studio'||record.payload.version!==2)continue;
+   autosaveReady=false;hydrateProject(record.payload);cacheSlot=record.key;restored=true;
+   statusSave('Restored local work · '+new Date(record.savedAt).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}));break;
+  }catch(e){console.warn('Could not restore snapshot',record.key,e)}}
+  if(!restored)statusSave('New project · local autosave ready');
+  autosaveReady=true;
+  if(!restored)queueAutosave(true);
+  if(navigator.storage?.persist){navigator.storage.persist().catch(()=>{});}
+ }catch(e){autosaveReady=false;statusSave('Local cache unavailable · save project backups',true);console.warn(e)}
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushAutosave()});
+window.addEventListener('pagehide',()=>flushAutosave());
 updateDocumentTitle();updateGallery();requestAnimationFrame(updateStickyOffsets);
 
-renderPalette();setTool('select');switchPlane(0);})();
+renderPalette();setTool('select');switchDocument(0);restoreCached();})();
 </script>
 </body></html>
