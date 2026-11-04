@@ -506,6 +506,51 @@ body.rom-mode .frame-properties{display:none!important}
 body.rom-mode .gallery-heading p{display:none}
 body.rom-mode #galleryHeadingText{font-size:12px}
 @media(max-width:750px){.rom-gallery{max-height:none;overflow:visible}.rom-slot-media{height:76px}.rom-slot-caption{font-size:10px}}
+/* Kinetica v24 — ROM phone gallery / editor navigation.
+   Applied only to phone-sized viewports; tablet, desktop and Movement Eval remain unchanged. */
+.rom-mobile-back{display:none;align-items:center;justify-content:center;width:41px;height:39px;padding:0;border:1px solid #94bce477;border-radius:9px;background:#455b75;color:#e4f3ff;box-shadow:none;cursor:pointer}
+.rom-mobile-back:hover,.rom-mobile-back:focus-visible{background:#597699;border-color:#b8d9fa;outline:none}
+@media(max-width:600px), (max-height:500px) and (pointer:coarse){
+ body.rom-mode{width:100%;max-width:100%;overflow-x:hidden;touch-action:manipulation}
+ body.rom-mode .device{width:100%;max-width:100%;padding:0 10px 26px}
+ body.rom-mode .document-header{display:flex;flex-wrap:nowrap;align-items:flex-start;gap:6px;min-height:77px;margin:0 -3px;padding:10px 7px 13px}
+ body.rom-mode .document-identity{flex:1 1 0;min-width:0;gap:7px}
+ body.rom-mode .document-titles{min-width:0}
+ body.rom-mode .document-title-input{display:block;width:100%;min-width:0;font-size:16px;line-height:1.3;padding:5px 4px;margin:-3px 0 0 -4px}
+ body.rom-mode .document-subtitle{display:block;font-size:10px;margin-top:2px;white-space:nowrap}
+ body.rom-mode .document-student{display:flex;flex:0 0 145px;width:145px;min-width:0;flex-direction:column;align-items:flex-end;justify-content:flex-start;gap:6px;margin:0;padding:0}
+ body.rom-mode .document-student label{display:none!important}
+ body.rom-mode .document-student .local-save-status{display:inline-flex;justify-content:flex-end;align-items:center;text-align:right;font-size:9px;line-height:1.2;max-width:145px;min-width:0;white-space:normal;overflow-wrap:anywhere;min-height:13px;margin:0}
+ body.rom-mode.rom-phone-gallery .document-student input{display:block;width:139px;max-width:100%;min-height:34px;flex:none;padding:7px 9px;font-size:12px;text-align:right;margin:0}
+ body.rom-mode.rom-phone-editor .document-student input{display:none!important}
+ body.rom-mode.rom-phone-editor #romMobileBack{display:flex!important;flex:none}
+ body.rom-mode .menu-bar{margin-left:-3px;margin-right:-3px}
+ body.rom-mode .workbench{display:block;width:100%;max-width:100%;min-width:0;margin:0}
+ body.rom-mode.rom-phone-gallery .studio-toolbar,
+ body.rom-mode.rom-phone-gallery .center,
+ body.rom-mode.rom-phone-gallery .right{display:none!important}
+ body.rom-mode.rom-phone-gallery .plane-gallery{display:block!important;position:static!important;width:100%!important;max-width:none!important;min-width:0;grid-column:auto;grid-row:auto;order:initial;padding:4px 0 28px;margin:0}
+ body.rom-mode.rom-phone-gallery .gallery-heading{display:block;padding:9px 3px 16px}
+ body.rom-mode.rom-phone-gallery #galleryHeadingText{font-size:17px;letter-spacing:-.02em}
+ body.rom-mode.rom-phone-gallery .rom-gallery{display:block!important;width:100%!important;max-width:none!important;max-height:none!important;overflow:visible!important;padding:0!important;margin:0!important}
+ body.rom-mode.rom-phone-gallery .rom-group{padding:17px 2px 20px}
+ body.rom-mode.rom-phone-gallery .rom-group-heading{font-size:13px;margin-bottom:12px}
+ body.rom-mode.rom-phone-gallery .rom-slot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;width:100%;min-width:0}
+ body.rom-mode.rom-phone-gallery .rom-slot{min-width:0;border-radius:10px}
+ body.rom-mode.rom-phone-gallery .rom-slot-media{height:auto;min-height:98px;aspect-ratio:1.64;max-width:100%}
+ body.rom-mode.rom-phone-gallery .rom-slot-caption{min-height:39px;padding:10px 9px;font-size:12px;line-height:1.35}
+ body.rom-mode.rom-phone-gallery .rom-slot-check{height:24px;width:24px;font-size:15px}
+ body.rom-mode.rom-phone-editor .plane-gallery{display:none!important}
+ body.rom-mode.rom-phone-editor .center,
+ body.rom-mode.rom-phone-editor .right{display:block!important;width:100%;min-width:0;max-width:none;grid-column:auto;grid-row:auto;order:initial}
+ body.rom-mode.rom-phone-editor .center{margin:0 0 14px}
+ body.rom-mode.rom-phone-editor .right{padding:7px 0 22px}
+ body.rom-mode.rom-phone-editor .right .tool-fields{display:block}
+ body.rom-mode.rom-phone-editor .stage{min-height:260px;padding:7px}
+ body.rom-mode.rom-phone-editor .picture-frame{width:min(100%,calc(56svh * var(--aspect,1.7778)))}
+ body.rom-mode.rom-phone-editor .studio-toolbar{display:block!important}
+}
+
 </style>
 </head>
 <body>
@@ -530,6 +575,7 @@ body.rom-mode #galleryHeadingText{font-size:12px}
       <span class="local-save-status" id="localSaveStatus" role="status" aria-live="polite">Checking local storage…</span>
       <label for="student">Student</label>
       <input id="student" type="text" placeholder="Student name" autocomplete="off" aria-label="Student name for export" />
+      <button id="romMobileBack" class="rom-mobile-back" type="button" aria-label="Back to ROM measurements" title="Back to ROM measurements" hidden><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
     </div>
   </header>
   <nav class="menu-bar" aria-label="Studio menu bar">
@@ -758,6 +804,37 @@ function firstEnabledROMIndex(preferCaptured=true){
 }
 let projectType='movement';
 let movementTitle='Untitled Exercise';
+// ROM phones start in the full-width measurement gallery. This is presentation
+// state only; returning to the gallery never discards annotations or a capture.
+let romPhonePage='gallery';
+const isROMPhone=()=>projectType==='rom'&&(window.matchMedia('(max-width:600px)').matches||window.matchMedia('(max-height:500px) and (pointer:coarse)').matches);
+function syncROMPhonePage(){
+ const phone=isROMPhone();
+ document.body.classList.toggle('rom-phone-gallery',phone&&romPhonePage==='gallery');
+ document.body.classList.toggle('rom-phone-editor',phone&&romPhonePage==='editor');
+ $('romMobileBack').hidden=!(phone&&romPhonePage==='editor');
+ requestAnimationFrame(()=>{
+  if(typeof updateStickyOffsets==='function')updateStickyOffsets();
+  if(phone&&romPhonePage==='editor'&&typeof resizeCanvas==='function')resizeCanvas();
+ });
+}
+function showROMPhonePage(page){
+ if(!isROMPhone())return;
+ romPhonePage=page==='editor'?'editor':'gallery';
+ syncROMPhonePage();
+ window.scrollTo({top:0,behavior:'instant'});
+}
+// Disable viewport pinch/gesture zoom only for the ROM phone view, without
+// blocking normal single-finger scrolling, goniometer dragging, or timeline scrubbing.
+const blockROMPinch=e=>{if(isROMPhone()&&e.cancelable)e.preventDefault()};
+document.addEventListener('gesturestart',blockROMPinch,{passive:false});
+document.addEventListener('gesturechange',blockROMPinch,{passive:false});
+document.addEventListener('touchmove',e=>{if(isROMPhone()&&e.touches.length>1&&e.cancelable)e.preventDefault()},{passive:false});
+document.addEventListener('touchstart',e=>{if(isROMPhone()&&e.touches.length>1&&e.cancelable)e.preventDefault()},{passive:false});
+window.addEventListener('resize',syncROMPhonePage,{passive:true});
+$('romMobileBack').addEventListener('click',()=>showROMPhonePage('gallery'));
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&isROMPhone()&&romPhonePage==='editor'&&!document.querySelector('dialog[open]'))showROMPhonePage('gallery')});
+
 function romDocument(def){const v=makeView(0,'ROM',def.label);v.romKey=def.key;return v}
 function ensureROMDocuments(){for(const def of romDefinitions)if(!views.some(v=>v.romKey===def.key))views.push(romDocument(def))}
 function isROMView(v){return !!v.romKey}
@@ -767,6 +844,7 @@ function romSlotComplete(v){return !!(v?.frameSrc&&v.annotations.some(a=>a.type=
 function romSlotAnnotated(v){return !!(v?.frameSrc&&v.annotations.length)}
 function updateModeUI(){
  document.body.classList.toggle('rom-mode',projectType==='rom');
+ syncROMPhonePage();
  $('romGallery').hidden=projectType!=='rom';
  $('galleryHeadingText').textContent=projectType==='rom'?'ROM Measurements':'Plane Gallery';
  document.querySelectorAll('[data-project-type]').forEach(b=>{const on=b.dataset.projectType===projectType;b.setAttribute('aria-checked',String(on));b.lastElementChild.textContent=on?'✓':''});
@@ -778,6 +856,7 @@ function setProjectType(next,quiet=false){
  if(!['rom','movement'].includes(next)||next===projectType)return;
  if(projectType==='movement')movementTitle=$('exercise').value||'Untitled Exercise';
  projectType=next;
+ romPhonePage='gallery';
  if(next==='rom'){
   ensureROMDocuments();$('exercise').value='ROM Lab';$('exercise').readOnly=true;
   const index=firstEnabledROMIndex(true);
@@ -810,7 +889,7 @@ function renderROMGallery(){
    if(romSlotAnnotated(v)){const check=document.createElement('span');check.className='rom-slot-check';check.setAttribute('aria-label','Annotated');check.textContent='✓';media.appendChild(check)}
    const caption=document.createElement('span');caption.className='rom-slot-caption';caption.textContent=def.slot;
    b.append(media,caption);
-   b.addEventListener('click',()=>{const ix=views.indexOf(v);switchDocument(ix);if(!v.frameSrc&&!v.preview){pendingNew={romKey:def.key};$('galleryInput').accept='image/*,video/*';$('galleryInput').click()}});
+   b.addEventListener('click',()=>{const ix=views.indexOf(v);showROMPhonePage('editor');switchDocument(ix);if(!v.frameSrc&&!v.preview){pendingNew={romKey:def.key};$('galleryInput').accept='image/*,video/*';$('galleryInput').click()}});
    const wrap=document.createElement('div');wrap.style.position='relative';wrap.appendChild(b);
    if(v.frameSrc&&!v.preview){
     const edit=document.createElement('button');edit.type='button';edit.className='rom-slot-edit';edit.title='Crop or replace this capture';edit.setAttribute('aria-label','Edit '+def.label);edit.textContent='✎';
@@ -1076,7 +1155,7 @@ $('cropFrameOption').addEventListener('click',()=>{
  const idx=views.findIndex(v=>v.uid===editMenuTargetId);closeFrameEditMenu();if(idx>=0)openCropEditor(idx);
 });
 $('replaceFrameOption').addEventListener('click',()=>{
- const idx=views.findIndex(v=>v.uid===editMenuTargetId);closeFrameEditMenu();if(idx>=0)reopenCapturedFrame(idx);
+ const idx=views.findIndex(v=>v.uid===editMenuTargetId);closeFrameEditMenu();if(idx>=0){showROMPhonePage('editor');reopenCapturedFrame(idx);}
 });
 document.addEventListener('pointerdown',e=>{
  if(!$('frameEditMenu').classList.contains('hidden')&&!e.target.closest('#frameEditMenu')&&!e.target.closest('.gallery-edit'))closeFrameEditMenu();
@@ -1603,7 +1682,7 @@ function hydrateProject(d){
  for(let plane=0;plane<2;plane++)if(!views.some(v=>v.plane===plane&&!v.romKey))views.push(makeView(plane));
  if(!views.length)views=[makeView(0),makeView(1)];
  setEnabledROMKeys(d.romEnabledKeys);
- projectType=d.projectType==='rom'?'rom':'movement';movementTitle=String(d.movementTitle||(projectType==='movement'?d.exercise:'Untitled Exercise')||'Untitled Exercise');if(projectType==='rom')ensureROMDocuments();$('exercise').value=projectType==='rom'?'ROM Lab':String(d.exercise||'Untitled Exercise');$('exercise').readOnly=projectType==='rom';$('student').value=String(d.student||'');updateModeUI();refreshROMSelections();updateDocumentTitle();
+ romPhonePage='gallery';projectType=d.projectType==='rom'?'rom':'movement';movementTitle=String(d.movementTitle||(projectType==='movement'?d.exercise:'Untitled Exercise')||'Untitled Exercise');if(projectType==='rom')ensureROMDocuments();$('exercise').value=projectType==='rom'?'ROM Lab':String(d.exercise||'Untitled Exercise');$('exercise').readOnly=projectType==='rom';$('student').value=String(d.student||'');updateModeUI();refreshROMSelections();updateDocumentTitle();
  selected=-1;undo=[];redo=[];draft=null;drag=null;romDraft=null;
  const wanted=views.findIndex(v=>v.uid===d.activeId);const fallback=projectType==='rom'?firstEnabledROMIndex(true):views.findIndex(v=>!v.romKey);const wantedAllowed=wanted>=0&&((projectType==='rom')===!!views[wanted].romKey)&&(projectType!=='rom'||isROMEnabled(views[wanted].romKey));switchDocument(wantedAllowed?wanted:fallback>=0?fallback:0);setTool(projectType==='rom'?'rom':'select');
 }
@@ -1783,7 +1862,7 @@ function syncMenuActions(){
 $('menuNew').addEventListener('click',()=>{
  closeMenus();const hasWork=views.some(v=>v.frameSrc||v.source||v.annotations.length)||$('exercise').value.trim()!=='Untitled Exercise'||$('student').value.trim();
  if(hasWork&&!confirm('Start a new project? The current project will be replaced in local autosave. Download a project backup first if you need to keep it.'))return;
- views.forEach(disposeSource);views=[makeView(0),makeView(1)];setEnabledROMKeys();if(projectType==='rom')ensureROMDocuments();
+ romPhonePage='gallery';views.forEach(disposeSource);views=[makeView(0),makeView(1)];setEnabledROMKeys();if(projectType==='rom')ensureROMDocuments();
  $('exercise').value=projectType==='rom'?'ROM Lab':'Untitled Exercise';movementTitle='Untitled Exercise';$('student').value='';updateDocumentTitle();
  undo=[];redo=[];selected=-1;draft=null;drag=null;romDraft=null;romReposition=false;
  updateModeUI();refreshROMSelections();const first=projectType==='rom'?firstEnabledROMIndex(false):0;switchDocument(first);setTool(projectType==='rom'?'rom':'select');queueAutosave(true);toast('New empty project created.');
