@@ -1,13 +1,13 @@
 // Offline-first shell for Movement Evaluation Studio. Version this key for every release.
-const CACHE_NAME = 'movement-evaluation-studio-shell-v28';
+const CACHE_NAME = 'movement-evaluation-studio-shell-v29';
 const SHELL = [
   './',
   './index.html',
-  './manifest.webmanifest',
-  './icon-192.png',
-  './icon-512.png',
-  './icon-maskable-512.png',
-  './apple-touch-icon.png'
+  './manifest.webmanifest?v=29',
+  './icon-192.png?v=29',
+  './icon-512.png?v=29',
+  './icon-maskable-512.png?v=29',
+  './apple-touch-icon.png?v=29'
 ];
 
 self.addEventListener('install', event => {
