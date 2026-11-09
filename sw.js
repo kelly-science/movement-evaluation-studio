@@ -1,5 +1,5 @@
 // Offline-first shell for Movement Evaluation Studio. Version this key for every release.
-const CACHE_NAME = 'movement-evaluation-studio-shell-v30';
+const CACHE_NAME = 'movement-evaluation-studio-shell-v31';
 const SHELL = [
   './',
   './index.html',
@@ -29,7 +29,29 @@ const SHELL = [
   './rom-guides/guide-16.png',
   './rom-guides/guide-17.png',
   './rom-guides/guide-18.png',
-  './rom-guides/guide-19.png'
+  './rom-guides/guide-19.png',
+  './joint-actions/exercise-00.jpg',
+  './joint-actions/exercise-00.mp4',
+  './joint-actions/exercise-01.jpg',
+  './joint-actions/exercise-01.mp4',
+  './joint-actions/exercise-02.jpg',
+  './joint-actions/exercise-02.mp4',
+  './joint-actions/exercise-03.jpg',
+  './joint-actions/exercise-03.mp4',
+  './joint-actions/exercise-04.jpg',
+  './joint-actions/exercise-04.mp4',
+  './joint-actions/exercise-05.jpg',
+  './joint-actions/exercise-05.mp4',
+  './joint-actions/exercise-06.jpg',
+  './joint-actions/exercise-06.mp4',
+  './joint-actions/exercise-07.jpg',
+  './joint-actions/exercise-07.mp4',
+  './joint-actions/exercise-08.jpg',
+  './joint-actions/exercise-08.mp4',
+  './joint-actions/exercise-09.jpg',
+  './joint-actions/exercise-09.mp4',
+  './joint-actions/exercise-10.jpg',
+  './joint-actions/exercise-10.mp4'
 ];
 
 self.addEventListener('install', event => {
@@ -64,6 +86,35 @@ self.addEventListener('fetch', event => {
         return response;
       }).catch(async () => (await caches.match('./index.html')) || Response.error())
     );
+    return;
+  }
+  // Safari/iOS commonly requests MP4 clips using Range. CacheStorage keeps
+  // whole files, so serve the requested byte range from the offline copy.
+  if (/\/joint-actions\/exercise-\d{2}\.mp4$/.test(url.pathname) && event.request.headers.has('range')) {
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE_NAME);
+      const cached = await cache.match(url.href);
+      if (!cached) return fetch(event.request);
+      const blob = await cached.blob();
+      const range = /^bytes=(\d+)-(\d*)$/i.exec(event.request.headers.get('range') || '');
+      if (!range) return cached;
+      const start = Number(range[1]);
+      if (!Number.isSafeInteger(start) || start >= blob.size)
+        return new Response(null, {status: 416, headers: {'Content-Range': 'bytes */' + blob.size}});
+      const requestedEnd = range[2] ? Number(range[2]) : blob.size - 1;
+      const end = Math.min(blob.size - 1, requestedEnd);
+      if (!Number.isSafeInteger(end) || end < start)
+        return new Response(null, {status: 416, headers: {'Content-Range': 'bytes */' + blob.size}});
+      return new Response(blob.slice(start, end + 1, 'video/mp4'), {
+        status: 206,
+        headers: {
+          'Content-Type': 'video/mp4',
+          'Content-Length': String(end - start + 1),
+          'Content-Range': `bytes ${start}-${end}/${blob.size}`,
+          'Accept-Ranges': 'bytes'
+        }
+      });
+    })());
     return;
   }
   event.respondWith(

@@ -609,6 +609,54 @@ body.rom-mode #viewMenuWrap{display:none!important}
  body.rom-mode .menu-bar,body.rom-mode .studio-toolbar{margin-left:-4px;margin-right:-4px}
 }
 
+
+
+/* KINETICA JOINT ACTIONS v31 — exercise gallery, paused animation previews */
+body.joint-mode .movement-only,body.joint-mode #romGallery,body.joint-mode #romSelectWrap,body.joint-mode #viewMenuWrap{display:none!important}
+body.joint-mode [data-tool]:not([data-tool="joint"]):not([data-tool="rom"]){display:none!important}
+body.joint-mode #frameProperties,body.joint-mode #frameCategory{display:none!important}
+body.joint-mode .joint-gallery{display:block!important}
+body.joint-mode .gallery-heading-title{font-size:14px}
+body.joint-mode .gallery-heading{padding-bottom:6px}
+.joint-progress{padding:0 5px;color:#afd0f3;font-size:11px;margin:1px 0 12px}
+.joint-exercise-group{border-top:1px solid #ffffff18;padding:13px 3px 20px}
+.joint-group-title{color:#d9e5f1;font-weight:700;font-size:11px;letter-spacing:.035em;margin:0 0 9px}
+.joint-exercise-wrap{position:relative;margin:0 0 12px}
+.joint-exercise-card{border:1px solid #687687;background:#343e4a;color:#edf3fa;text-align:left;border-radius:10px;width:100%;overflow:hidden;padding:0;display:block;cursor:pointer}
+.joint-exercise-card:hover{border-color:#a8c6e4}
+.joint-exercise-card.is-active{border:2px solid #aed2fc;box-shadow:0 0 0 2px #72a6e627}
+.joint-exercise-card img{width:100%;height:119px;object-fit:contain;display:block;background:#fff}
+.joint-exercise-caption{display:block;font-weight:670;font-size:11px;padding:9px 10px 3px}
+.joint-exercise-state{display:block;color:#9db5cb;font-size:9px;font-weight:600;padding:0 10px 9px;letter-spacing:.07em}
+.joint-exercise-check{position:absolute;top:7px;right:8px;background:#34c76d;color:#06250e;border-radius:50%;width:26px;height:26px;display:grid;place-items:center;font-weight:900;box-shadow:0 2px 7px #0006}
+.joint-exercise-reselect{position:absolute;top:7px;left:7px;z-index:3;background:#263848eb;color:#d7eaff;border:1px solid #9ab7d4;border-radius:8px;padding:4px 8px;font-size:16px;line-height:20px}
+body.joint-mode .frame-buttons button{min-width:0}
+@media(max-width:750px){body.joint-mode .joint-gallery{display:grid!important;grid-template-columns:1fr 1fr;gap:0 12px}body.joint-mode .joint-progress{font-size:11px}body.joint-mode .joint-exercise-card img{height:125px}body.joint-mode .plane-gallery{width:100%}body.joint-mode .joint-exercise-group{min-width:0}body.joint-mode .joint-exercise-caption{font-size:11px}}
+@media(max-width:750px){
+ body.joint-mode.rom-phone-gallery .studio-toolbar,body.joint-mode.rom-phone-gallery .center,body.joint-mode.rom-phone-gallery .right{display:none!important}
+ body.joint-mode.rom-phone-gallery .plane-gallery{display:block!important;position:static!important;width:100%!important;max-width:none!important;padding:8px 0 25px!important}
+ body.joint-mode.rom-phone-gallery .joint-gallery{display:block!important;width:100%;max-width:none}
+ body.joint-mode.rom-phone-gallery .joint-exercise-group{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px 12px}
+ body.joint-mode.rom-phone-gallery .joint-group-title{grid-column:1/-1;margin-bottom:0}
+ body.joint-mode.rom-phone-gallery .joint-exercise-wrap{min-width:0;margin:0}
+ body.joint-mode.rom-phone-gallery .joint-exercise-card img{height:112px}
+ body.joint-mode.rom-phone-editor .plane-gallery{display:none!important}
+ body.joint-mode.rom-phone-editor .workbench{display:block;width:100%;max-width:100%;min-width:0;margin:0}
+ body.joint-mode.rom-phone-editor .center,body.joint-mode.rom-phone-editor .right{display:block!important;width:100%;min-width:0;max-width:none;order:initial}
+ body.joint-mode.rom-phone-editor .center{margin-bottom:15px}
+ body.joint-mode.rom-phone-editor .right{padding:8px 0 20px}
+ body.joint-mode.rom-phone-editor .right .tool-fields{display:block}
+ body.joint-mode.rom-phone-gallery #romMobileBack{display:none!important}
+ body.joint-mode.rom-phone-editor .document-identity .document-icon,body.joint-mode.rom-phone-editor .document-identity .document-titles{display:none!important}
+ body.joint-mode.rom-phone-editor #romMobileBack{display:flex!important;margin:0 auto 0 0}
+ body.joint-mode.rom-phone-editor .document-identity{align-items:center;min-height:39px}
+ body.joint-mode.rom-phone-editor .document-student input{display:none!important}
+ body.joint-mode.rom-phone-editor .document-student label{display:none!important}
+ body.joint-mode.rom-phone-editor .studio-toolbar{display:block!important}
+ body.joint-mode.rom-phone-gallery .gallery-heading{display:block}
+}
+@media(max-width:450px){body.joint-mode .joint-gallery{grid-template-columns:1fr 1fr;gap:8px}body.joint-mode .joint-exercise-card img{height:94px}body.joint-mode.rom-phone-gallery .joint-exercise-card img{height:110px}}
+
 </style>
   <link rel="stylesheet" href="./rom-guides-v30.css?v=30">
 </head>
@@ -652,6 +700,7 @@ body.rom-mode #viewMenuWrap{display:none!important}
             <div class="project-type-submenu" id="projectTypeSubmenu" role="group" aria-label="Choose project type" hidden>
               <button type="button" class="menu-action" data-project-type="movement" role="menuitemradio" aria-checked="true">Movement Eval <span>✓</span></button>
               <button type="button" class="menu-action" data-project-type="rom" role="menuitemradio" aria-checked="false">ROM Lab <span> </span></button>
+              <button type="button" class="menu-action" data-project-type="joint" role="menuitemradio" aria-checked="false">Joint Actions <span> </span></button>
             </div>
           </div>
           <div class="menu-separator" role="separator"></div>
@@ -734,6 +783,8 @@ body.rom-mode #viewMenuWrap{display:none!important}
       <button type="button" class="gallery-add" data-gallery-add="1" aria-label="Add a sagittal plane image or video"><span class="gallery-plus" aria-hidden="true">+</span><span>Add sagittal frame</span></button>
     </section>
     <div class="rom-gallery" id="romGallery" hidden aria-label="ROM Lab measurement gallery"></div>
+    <p id="jointProgress" class="joint-progress" hidden>0 / 11 annotated</p>
+    <div class="joint-gallery" id="jointGallery" hidden aria-label="Joint Actions exercise gallery"></div>
   </aside>
 <section class="center" aria-label="Movement canvas">
   <div class="bezel"><div class="oled"><div class="screen-head"><span id="screenTitle">FRONTAL PLANE · NO FRAME</span><span class="screen-tag" id="screenTag">STANDBY</span></div><div id="stage" class="stage empty-screen"><div class="empty" id="empty"><div class="empty-symbol">⌁</div><h3>CAPTURE YOUR PEAK MOVEMENT</h3><p>Upload a frontal- or sagittal-plane screenshot, or scrub a slow-motion video and choose the exact peak frame.</p></div><div id="pictureFrame" class="picture-frame hidden"><canvas id="canvas" aria-label="Movement photo and interactive anatomical annotations"></canvas><div id="overlayNotice" class="screen-overlay hidden"></div></div></div></div></div>
@@ -877,6 +928,20 @@ function firstEnabledROMIndex(preferCaptured=true){
  const found=preferCaptured?visible.find(v=>v.frameSrc):null;
  return views.indexOf(found||visible[0]);
 }
+const jointExercises=[
+ {key:'joint-00',name:'Shoulder Lateral Raises',group:'Single-joint lifts',video:'./joint-actions/exercise-00.mp4',poster:'./joint-actions/exercise-00.jpg',fps:25},
+ {key:'joint-01',name:'Shoulder Front Raises',group:'Single-joint lifts',video:'./joint-actions/exercise-01.mp4',poster:'./joint-actions/exercise-01.jpg',fps:25},
+ {key:'joint-02',name:'Reverse Bicep Curl',group:'Single-joint lifts',video:'./joint-actions/exercise-02.mp4',poster:'./joint-actions/exercise-02.jpg',fps:25},
+ {key:'joint-03',name:'Hydrant',group:'Single-joint lifts',video:'./joint-actions/exercise-03.mp4',poster:'./joint-actions/exercise-03.jpg',fps:25},
+ {key:'joint-04',name:'Bar Curl',group:'Single-joint lifts',video:'./joint-actions/exercise-04.mp4',poster:'./joint-actions/exercise-04.jpg',fps:25},
+ {key:'joint-05',name:'Triceps Extension',group:'Single-joint lifts',video:'./joint-actions/exercise-05.mp4',poster:'./joint-actions/exercise-05.jpg',fps:12},
+ {key:'joint-06',name:'Push Ups',group:'Multi-joint exercises',video:'./joint-actions/exercise-06.mp4',poster:'./joint-actions/exercise-06.jpg',fps:25},
+ {key:'joint-07',name:'Jumping Jacks',group:'Multi-joint exercises',video:'./joint-actions/exercise-07.mp4',poster:'./joint-actions/exercise-07.jpg',fps:25},
+ {key:'joint-08',name:'Mountain Climbers',group:'Multi-joint exercises',video:'./joint-actions/exercise-08.mp4',poster:'./joint-actions/exercise-08.jpg',fps:25},
+ {key:'joint-09',name:'Pile Squats',group:'Multi-joint exercises',video:'./joint-actions/exercise-09.mp4',poster:'./joint-actions/exercise-09.jpg',fps:25},
+ {key:'joint-10',name:'Lunges',group:'Multi-joint exercises',video:'./joint-actions/exercise-10.mp4',poster:'./joint-actions/exercise-10.jpg',fps:25},
+];
+const jointKeys=new Set(jointExercises.map(item=>item.key));
 let projectType='movement';
 let movementTitle='Untitled Exercise';
 // ROM phones start in the full-width measurement gallery. This is presentation
@@ -885,7 +950,7 @@ let romPhonePage='gallery';
 let romNavigationBusy=false;
 let romFallbackTimer=0;
 const ROM_HISTORY_KEY='kineticaROMPage';
-const isROMPhone=()=>projectType==='rom'&&(window.matchMedia('(max-width:600px)').matches||window.matchMedia('(max-height:500px) and (pointer:coarse)').matches);
+const isROMPhone=()=>['rom','joint'].includes(projectType)&&(window.matchMedia('(max-width:600px)').matches||window.matchMedia('(max-height:500px) and (pointer:coarse)').matches);
 function syncROMPhonePage(){
  const phone=isROMPhone();
  document.body.classList.toggle('rom-phone-gallery',phone&&romPhonePage==='gallery');
@@ -972,38 +1037,89 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&isROMPhone()&&romPh
 function romDocument(def){const v=makeView(0,'ROM',def.label);v.romKey=def.key;return v}
 function ensureROMDocuments(){for(const def of romDefinitions)if(!views.some(v=>v.romKey===def.key))views.push(romDocument(def))}
 function isROMView(v){return !!v.romKey}
-function movementViews(){return views.filter(v=>!isROMView(v))}
+function movementViews(){return views.filter(v=>!isROMView(v)&&!v.jointKey)}
+function jointDocument(def){const v=makeView(0,'Joints',def.name);v.jointKey=def.key;return v}
+function ensureJointDocuments(){for(const def of jointExercises)if(!views.some(v=>v.jointKey===def.key))views.push(jointDocument(def))}
+function jointViewFor(key){return views.find(v=>v.jointKey===key)}
+function jointCompleted(v){return !!(v?.frameSrc&&v.annotations.length)}
+async function openJointExercise(v,{reselect=false}={}){
+ const ix=views.indexOf(v);if(ix<0)return;switchDocument(ix);
+ if(v.frameSrc&&!reselect)return;
+ if(v.preview&&v.source?.ready&&!reselect)return;
+ const def=jointExercises.find(item=>item.key===v.jointKey);if(!def)return;
+ try{
+  const response=await fetch(def.video);if(!response.ok)throw new Error('Exercise video unavailable ('+response.status+')');
+  const blob=await response.blob();
+  if(projectType!=='joint'||current()!==v)return;
+  const file=new File([blob],def.name+'.mp4',{type:'video/mp4'});
+  loadMedia(file);
+ }catch(error){console.error(error);toast('Could not load the exercise clip. Check offline downloads.')}
+}
+function renderJointGallery(){
+ if(projectType!=='joint')return;
+ const host=$('jointGallery'),previousScroll=host.scrollTop,fragment=document.createDocumentFragment();
+ for(const groupName of ['Single-joint lifts','Multi-joint exercises']){
+  const section=document.createElement('section');section.className='joint-exercise-group';
+  const title=document.createElement('h3');title.className='joint-group-title';title.textContent=groupName;section.appendChild(title);
+  for(const def of jointExercises.filter(e=>e.group===groupName)){
+   const v=jointViewFor(def.key);if(!v)continue;
+   const row=document.createElement('div');row.className='joint-exercise-wrap';
+   const button=document.createElement('button');button.type='button';button.className='joint-exercise-card'+(current().uid===v.uid?' is-active':'');
+   button.setAttribute('aria-label','Open '+def.name);button.setAttribute('aria-pressed',String(current().uid===v.uid));
+   const image=document.createElement('img');image.src=def.poster;image.alt=def.name+' paused exercise preview';image.loading='lazy';
+   const details=document.createElement('span');details.className='joint-exercise-caption';details.textContent=def.name;
+   const state=document.createElement('span');state.className='joint-exercise-state';state.textContent=v.frameSrc?'FRAME SAVED':'SCRUB & CAPTURE';
+   button.append(image,details,state);
+   if(jointCompleted(v)){const done=document.createElement('span');done.className='joint-exercise-check';done.textContent='✓';done.setAttribute('aria-label','Annotated');button.appendChild(done)}
+   button.addEventListener('click',()=>{const i=views.indexOf(v);if(isROMPhone())showROMPhonePage('editor',{index:i});openJointExercise(v)});
+   row.appendChild(button);
+   if(v.frameSrc){const edit=document.createElement('button');edit.type='button';edit.className='joint-exercise-reselect';edit.textContent='✎';edit.title='Choose another animation frame';edit.setAttribute('aria-label','Choose another frame for '+def.name);edit.addEventListener('click',e=>{e.stopPropagation();openJointExercise(v,{reselect:true})});row.appendChild(edit)}
+   section.appendChild(row);
+  }
+  fragment.appendChild(section);
+ }
+ host.replaceChildren(fragment);host.scrollTop=previousScroll;
+ $('jointProgress').textContent=jointExercises.filter(def=>jointCompleted(jointViewFor(def.key))).length+' / '+jointExercises.length+' annotated';
+}
+
 function romViewFor(key){return views.find(v=>v.romKey===key)}
 function romSlotComplete(v){return !!(v?.frameSrc&&v.annotations.some(a=>a.type==='rom'&&a.points?.length===3&&a.points.every(Boolean)))}
 function romSlotAnnotated(v){return !!(v?.frameSrc&&v.annotations.length)}
 function updateModeUI(){
  document.body.classList.toggle('rom-mode',projectType==='rom');
+ document.body.classList.toggle('joint-mode',projectType==='joint');
  syncROMPhonePage();
  $('romGallery').hidden=projectType!=='rom';
- $('galleryHeadingText').textContent=projectType==='rom'?'ROM Measurements':'Plane Gallery';
+ $('jointGallery').hidden=projectType!=='joint';
+ $('jointProgress').hidden=projectType!=='joint';
+ $('galleryHeadingText').textContent=projectType==='rom'?'ROM Measurements':projectType==='joint'?'Joint Actions':'Plane Gallery';
  document.querySelectorAll('[data-project-type]').forEach(b=>{const on=b.dataset.projectType===projectType;b.setAttribute('aria-checked',String(on));b.lastElementChild.textContent=on?'✓':''});
- document.querySelectorAll('[data-plane-menu]').forEach(b=>b.classList.toggle('hidden',projectType==='rom'));
- $('menuExportPoster').textContent=projectType==='rom'?'Export ROM Lab (Two-Column PNG)':'Export All Frames (PNG)';
- $('menuExportPlane').textContent=projectType==='rom'?'Export Current Measurement (PNG)':'Export Current Plane (PNG)';
+ document.querySelectorAll('[data-plane-menu]').forEach(b=>b.classList.toggle('hidden',projectType!=='movement'));
+ $('menuExportPoster').textContent=projectType==='rom'?'Export ROM Lab (Two-Column PNG)':projectType==='joint'?'Export Joint Actions (Two-Column PNG)':'Export All Frames (PNG)';
+ $('menuExportPlane').textContent=projectType==='rom'?'Export Current Measurement (PNG)':projectType==='joint'?'Export Current Exercise (PNG)':'Export Current Plane (PNG)';
+ document.querySelector('#videoControls .frame-note').textContent=projectType==='joint'?'Step through the exercise clip to find the peak position. Exact steps follow the clip’s frame rate.':'Frame stepping is approximately ±1/120 second; the exact displayed frame depends on the video.';
 }
 function setProjectType(next,quiet=false){
- if(!['rom','movement'].includes(next)||next===projectType)return;
+ if(!['rom','movement','joint'].includes(next)||next===projectType)return;
  if(projectType==='movement')movementTitle=$('exercise').value||'Untitled Exercise';
- projectType=next;
- romPhonePage='gallery';
+ projectType=next;romPhonePage='gallery';
  if(next==='rom'&&history.state?.[ROM_HISTORY_KEY]==='editor'){try{history.replaceState({...history.state,[ROM_HISTORY_KEY]:'gallery'},'')}catch(e){}}
+ let index=0;
  if(next==='rom'){
   ensureROMDocuments();$('exercise').value='ROM Lab';$('exercise').readOnly=true;
-  const index=firstEnabledROMIndex(true);
-  updateModeUI();switchDocument(index);setTool('rom');
+  index=firstEnabledROMIndex(true);
+ }else if(next==='joint'){
+  ensureJointDocuments();$('exercise').value='Joint Actions';$('exercise').readOnly=true;
+  index=views.findIndex(v=>v.jointKey===jointExercises[0].key);
  }else{
   $('exercise').value=movementTitle||'Untitled Exercise';$('exercise').readOnly=false;
-  let ix=views.findIndex(v=>!v.romKey&&v.frameSrc);if(ix<0)ix=views.findIndex(v=>!v.romKey);
-  if(ix<0){views.unshift(makeView(0));ix=0}
-  updateModeUI();switchDocument(ix);setTool('select');
+  index=views.findIndex(v=>!v.romKey&&!v.jointKey&&v.frameSrc);
+  if(index<0)index=views.findIndex(v=>!v.romKey&&!v.jointKey);
+  if(index<0){views.unshift(makeView(0));index=0}
  }
+ updateModeUI();switchDocument(index);setTool(next==='rom'?'rom':next==='joint'?'joint':'select');
  updateDocumentTitle();updateGallery();queueAutosave(true);
- if(!quiet)toast(next==='rom'?'ROM Lab workspace opened.':'Movement Evaluation workspace opened.');
+ if(!quiet)toast(next==='rom'?'ROM Lab workspace opened.':next==='joint'?'Joint Actions workspace opened.':'Movement Evaluation workspace opened.');
 }
 function renderROMGallery(){
  if(projectType!=='rom')return;
@@ -1669,6 +1785,7 @@ c.restore()}
 function draw(){const v=current(),src=visibleSource(v),r=canvas.getBoundingClientRect();if(!src||!r.width||!r.height)return;ctx.setTransform(canvas.width/r.width,0,0,canvas.height/r.height,0,0);ctx.clearRect(0,0,r.width,r.height);ctx.fillStyle='#06080c';ctx.fillRect(0,0,r.width,r.height);try{ctx.drawImage(src,0,0,r.width,r.height)}catch(e){}if(v.preview)return;v.annotations.forEach((a,i)=>drawOne(ctx,a,r.width,r.height,{selected:i===selected}));if(draft)drawOne(ctx,draft,r.width,r.height);if(romDraft)drawOne(ctx,romDraft,r.width,r.height)}
 function setTool(t){
  if(projectType==='rom'&&!['text','rom'].includes(t))t='rom';
+ if(projectType==='joint'&&!['joint','rom'].includes(t))t='joint';
  rememberCreationFields();
  tool=t;selected=-1;romReposition=false;romDraft=null;romPointActive=0;
  document.querySelectorAll('[data-tool]').forEach(b=>{const on=b.dataset.tool===t;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on))});
@@ -1718,12 +1835,12 @@ function inferredJointRegion(a){
  // Prior projects may have stored this classification explicitly.
  return a.region==='upper'||a.region==='lower'?a.region:null;
 }
-function updateUI(){const v=current(),s=v.source,canAnnotate=!!v.frameSrc&&!v.preview;const source=visibleSource(v);$('screenTitle').textContent=projectType==='rom'?(v.name||'ROM MEASUREMENT')+' · '+(v.preview?'VIDEO PREVIEW':v.frameSrc?'CAPTURED':'NO FRAME'):viewNames[v.plane]+' PLANE · '+(v.preview?'VIDEO PREVIEW':v.frameLabel||'NO FRAME');$('screenTag').textContent=v.preview?'VIDEO':v.frameSrc?'CAPTURED':'STANDBY';$('sourceStatus').textContent=v.preview?'Scrub to the peak position and choose USE THIS FRAME.':v.frameSrc?'Frame captured. Add joint types, trace bones/muscles and draw movement arrows.':'No '+viewNames[v.plane].toLowerCase()+' frame captured yet. Upload a screenshot or video.';
+function updateUI(){const v=current(),s=v.source,canAnnotate=!!v.frameSrc&&!v.preview;const source=visibleSource(v);$('screenTitle').textContent=(projectType==='rom'||projectType==='joint')?(v.name||'MEASUREMENT')+' · '+(v.preview?'VIDEO PREVIEW':v.frameSrc?'CAPTURED':'NO FRAME'):viewNames[v.plane]+' PLANE · '+(v.preview?'VIDEO PREVIEW':v.frameLabel||'NO FRAME');$('screenTag').textContent=v.preview?'VIDEO':v.frameSrc?'CAPTURED':'STANDBY';$('sourceStatus').textContent=v.preview?'Scrub to the peak position and choose USE THIS FRAME.':v.frameSrc?(projectType==='joint'?'Label the relevant synovial joint(s), and add ROM measurements if needed.':'Frame captured. Add joint types, trace bones/muscles and draw movement arrows.'):(projectType==='joint'?'Choose an exercise from the gallery to scrub its animation.':'No '+viewNames[v.plane].toLowerCase()+' frame captured yet. Upload a screenshot or video.');
 $('captureBtn').disabled=!v.preview||!s||!s.ready||s.seeking||s.video.seeking;
 $('videoControls').classList.toggle('hidden',!(s&&v.preview));$('cancelFrameBtn').classList.toggle('hidden',!(v.preview&&v.frameSrc));if(s){$('timeline').max=String(s.duration||1);$('timeline').value=String(s.video.currentTime||0);$('timeNow').textContent=time(s.video.currentTime);$('timeEnd').textContent=time(s.duration)}
 $('overlayNotice').classList.toggle('hidden',!v.preview);$('overlayNotice').textContent=v.preview?'VIDEO PREVIEW · CAPTURE FRAME BEFORE ANNOTATING':'';
 updateGallery();
-$('clearBtn').disabled=!v.annotations.length;$('deleteBtn').disabled=selected<0;$('undoBtn').disabled=!undo.length;$('redoBtn').disabled=!redo.length;$('menuExportPlane').disabled=!v.frameSrc;$('menuExportPoster').disabled=projectType==='rom'?!views.some(z=>z.romKey&&romSlotComplete(z)):!movementViews().some(z=>z.frameSrc);
+$('clearBtn').disabled=!v.annotations.length;$('deleteBtn').disabled=selected<0;$('undoBtn').disabled=!undo.length;$('redoBtn').disabled=!redo.length;$('menuExportPlane').disabled=!v.frameSrc;$('menuExportPoster').disabled=projectType==='rom'?!views.some(z=>z.romKey&&romSlotComplete(z)):projectType==='joint'?!views.some(z=>z.jointKey&&z.frameSrc):!movementViews().some(z=>z.frameSrc);
 const list=$('annotationList');list.replaceChildren();if(v.annotations.length===0){const p=document.createElement('p');p.className='hint';p.textContent='No annotations yet.';list.appendChild(p)}v.annotations.forEach((a,i)=>{const b=document.createElement('button');b.className='annotation-chip'+(selected===i?' active':'');const dot=document.createElement('span');dot.className='led on';dot.style.color=a.color;const label=document.createElement('span');label.className='name';label.textContent=a.label+(a.type==='joint'?' · '+a.jointType:'');const typ=document.createElement('small');typ.textContent=a.type.toUpperCase();b.append(dot,label,typ);b.onclick=()=>{rememberCreationFields();chooseSelected(i);if(annotationsDialog.open)closeAnnotations()};list.appendChild(b)});
 syncMenuActions();
 $('canvasHelp').textContent=canAnnotate?help[tool]:v.preview?'Select USE THIS FRAME to freeze the video before drawing.':'Choose a photo or video for the active plane.';updateROMInspector();queueAutosave()}
@@ -1800,10 +1917,26 @@ function romBoard(page=0){
  });
  return cvs;
 }
+
 function romPageCount(){return Math.max(1,Math.ceil(romCompleteDocs().length/8))}
+function jointCompletedDocs(){return jointExercises.map(def=>({def,v:jointViewFor(def.key)})).filter(({v})=>v?.frameImg&&v.frameSrc)}
+function jointPageCount(){return Math.max(1,Math.ceil(jointCompletedDocs().length/8))}
+function jointBoard(page=0){
+ const rows=jointCompletedDocs().slice(page*8,(page+1)*8),W=1800,margin=48,gap=28,col=(W-2*margin-gap)/2,head=170,cardH=610;
+ const H=head+Math.max(1,Math.ceil(rows.length/2))*cardH+28;
+ const canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;const c=canvas.getContext('2d');
+ c.fillStyle='#f3f6f9';c.fillRect(0,0,W,H);c.fillStyle='#293440';c.fillRect(0,0,W,145);
+ c.fillStyle='#f0f7ff';c.font='700 57px system-ui';c.fillText('JOINT ACTIONS',margin,73);
+ c.fillStyle='#cbd9ea';c.font='26px system-ui';c.fillText(($('student').value.trim()||'Anatomy Lab')+' · Page '+(page+1)+' of '+jointPageCount(),margin,118);
+ rows.forEach(({def,v},i)=>{const x=margin+i%2*(col+gap),y=head+Math.floor(i/2)*cardH;
+  c.fillStyle='#fff';c.fillRect(x,y,col,cardH-17);c.strokeStyle='#cbd5e1';c.lineWidth=2;c.strokeRect(x,y,col,cardH-17);
+  c.fillStyle='#304457';c.fillRect(x,y,col,52);c.fillStyle='#fff';c.font='bold 28px system-ui';c.fillText(def.name,x+16,y+35);
+  const output=canvasPNG(v,1400);if(output){const scale=Math.min((col-22)/output.width,(cardH-92)/output.height);const w=output.width*scale,h=output.height*scale;c.drawImage(output,x+(col-w)/2,y+63+((cardH-90)-h)/2,w,h)}
+ });return canvas;
+}
 
 function exportPageCount(){const counts=[0,1].map(p=>movementViews().filter(v=>v.plane===p&&v.frameImg).length);return Math.max(1,Math.ceil(Math.max(...counts)/8))}
-function serializeProject(){return{schema:'movement-evaluation-studio',version:2,projectType,romEnabledKeys:romDefinitions.filter(def=>isROMEnabled(def.key)).map(def=>def.key),movementTitle,exercise:$('exercise').value,student:$('student').value,activeId:current().uid,views:views.map(v=>({uid:v.uid,romKey:v.romKey||null,plane:viewNames[v.plane],category:v.category||'Other',name:v.name||'',frameSrc:v.frameSrc,frameLabel:v.frameLabel,cropBaseSrc:v.cropBaseSrc,cropBounds:v.cropBounds,annotations:v.annotations}))}}
+function serializeProject(){return{schema:'movement-evaluation-studio',version:2,projectType,romEnabledKeys:romDefinitions.filter(def=>isROMEnabled(def.key)).map(def=>def.key),movementTitle,exercise:$('exercise').value,student:$('student').value,activeId:current().uid,views:views.map(v=>({uid:v.uid,romKey:v.romKey||null,jointKey:v.jointKey||null,plane:viewNames[v.plane],category:v.category||'Other',name:v.name||'',frameSrc:v.frameSrc,frameLabel:v.frameLabel,cropBaseSrc:v.cropBaseSrc,cropBounds:v.cropBounds,annotations:v.annotations}))}}
 function saveProject(){download(new Blob([JSON.stringify(serializeProject())],{type:'application/json'}),safeName()+'-movement-project.json');toast('Editable multi-frame project backup downloaded.');}
 function hydrateProject(d){
  if(d?.schema!=='movement-evaluation-studio'||![1,2].includes(d.version)||!Array.isArray(d.views))throw Error('Not a Movement Evaluation project');
@@ -1811,7 +1944,7 @@ function hydrateProject(d){
  views=d.views.map((src,i)=>{
   const plane=(src.plane==='SAGITTAL'||src.plane===1||src.plane==='Sagittal')?1:0;
   const category=frameCategories.includes(src.category)?src.category:'Other';
-  const v=makeView(plane,category,String(src.name||'').slice(0,75));v.uid=String(src.uid||newDocId());if(romDefinitions.some(def=>def.key===src.romKey))v.romKey=src.romKey;
+  const v=makeView(plane,category,String(src.name||'').slice(0,75));v.uid=String(src.uid||newDocId());if(romDefinitions.some(def=>def.key===src.romKey))v.romKey=src.romKey;if(jointKeys.has(src.jointKey))v.jointKey=src.jointKey;
   v.annotations=Array.isArray(src.annotations)?src.annotations:[];
   v.frameLabel=String(src.frameLabel||'Captured frame');
   if(typeof src.cropBaseSrc==='string'&&/^data:image\/(jpeg|png|webp);base64,/i.test(src.cropBaseSrc))v.cropBaseSrc=src.cropBaseSrc;
@@ -1819,12 +1952,12 @@ function hydrateProject(d){
   if(src.frameSrc&&/^data:image\/(jpeg|png|webp);base64,/i.test(src.frameSrc))addImageToView(v,src.frameSrc,v.frameLabel);
   return v;
  });
- for(let plane=0;plane<2;plane++)if(!views.some(v=>v.plane===plane&&!v.romKey))views.push(makeView(plane));
+ for(let plane=0;plane<2;plane++)if(!views.some(v=>v.plane===plane&&!v.romKey&&!v.jointKey))views.push(makeView(plane));
  if(!views.length)views=[makeView(0),makeView(1)];
  setEnabledROMKeys(d.romEnabledKeys);
- romPhonePage='gallery';projectType=d.projectType==='rom'?'rom':'movement';movementTitle=String(d.movementTitle||(projectType==='movement'?d.exercise:'Untitled Exercise')||'Untitled Exercise');if(projectType==='rom')ensureROMDocuments();$('exercise').value=projectType==='rom'?'ROM Lab':String(d.exercise||'Untitled Exercise');$('exercise').readOnly=projectType==='rom';$('student').value=String(d.student||'');updateModeUI();refreshROMSelections();updateDocumentTitle();
+ romPhonePage='gallery';projectType=['rom','joint'].includes(d.projectType)?d.projectType:'movement';movementTitle=String(d.movementTitle||(projectType==='movement'?d.exercise:'Untitled Exercise')||'Untitled Exercise');if(projectType==='rom')ensureROMDocuments();if(projectType==='joint')ensureJointDocuments();$('exercise').value=projectType==='rom'?'ROM Lab':projectType==='joint'?'Joint Actions':String(d.exercise||'Untitled Exercise');$('exercise').readOnly=projectType!=='movement';$('student').value=String(d.student||'');updateModeUI();refreshROMSelections();updateDocumentTitle();
  selected=-1;undo=[];redo=[];draft=null;drag=null;romDraft=null;
- const wanted=views.findIndex(v=>v.uid===d.activeId);const fallback=projectType==='rom'?firstEnabledROMIndex(true):views.findIndex(v=>!v.romKey);const wantedAllowed=wanted>=0&&((projectType==='rom')===!!views[wanted].romKey)&&(projectType!=='rom'||isROMEnabled(views[wanted].romKey));switchDocument(wantedAllowed?wanted:fallback>=0?fallback:0);setTool(projectType==='rom'?'rom':'select');
+ const wanted=views.findIndex(v=>v.uid===d.activeId);const fallback=projectType==='rom'?firstEnabledROMIndex(true):projectType==='joint'?views.findIndex(v=>v.jointKey===jointExercises[0].key):views.findIndex(v=>!v.romKey&&!v.jointKey);const wantedAllowed=wanted>=0&&(projectType==='rom'?!!views[wanted].romKey&&isROMEnabled(views[wanted].romKey):projectType==='joint'?!!views[wanted].jointKey:!views[wanted].romKey&&!views[wanted].jointKey);switchDocument(wantedAllowed?wanted:fallback>=0?fallback:0);setTool(projectType==='rom'?'rom':projectType==='joint'?'joint':'select');
 }
 function openProject(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!confirm('Open project and replace the current work? Your current project is autosaved locally, but please download a backup first if needed.'))return;hydrateProject(d);queueAutosave(true);toast('Project restored with '+views.filter(v=>v.frameSrc).length+' frame(s).')}catch(e){console.error(e);toast('Could not open project: '+e.message)}};r.onerror=()=>toast('File could not be read');r.readAsText(file)}
 
@@ -2007,7 +2140,7 @@ document.querySelectorAll('[data-click]').forEach(button=>button.addEventListene
   $(button.dataset.click).click();
 }));
 document.querySelectorAll('[data-plane-menu]').forEach(button=>button.addEventListener('click',()=>{
-  if(projectType==='rom')return;
+  if(projectType!=='movement')return;
   switchPlane(Number(button.dataset.planeMenu));
   closeMenus();
 }));
@@ -2035,10 +2168,10 @@ function syncMenuActions(){
 $('menuNew').addEventListener('click',()=>{
  closeMenus();const hasWork=views.some(v=>v.frameSrc||v.source||v.annotations.length)||$('exercise').value.trim()!=='Untitled Exercise'||$('student').value.trim();
  if(hasWork&&!confirm('Start a new project? The current project will be replaced in local autosave. Download a project backup first if you need to keep it.'))return;
- romPhonePage='gallery';if(history.state?.[ROM_HISTORY_KEY]==='editor'){try{history.replaceState({...history.state,[ROM_HISTORY_KEY]:'gallery'},'')}catch(e){}}views.forEach(disposeSource);views=[makeView(0),makeView(1)];setEnabledROMKeys();if(projectType==='rom')ensureROMDocuments();
- $('exercise').value=projectType==='rom'?'ROM Lab':'Untitled Exercise';movementTitle='Untitled Exercise';$('student').value='';updateDocumentTitle();
+ romPhonePage='gallery';if(history.state?.[ROM_HISTORY_KEY]==='editor'){try{history.replaceState({...history.state,[ROM_HISTORY_KEY]:'gallery'},'')}catch(e){}}views.forEach(disposeSource);views=[makeView(0),makeView(1)];setEnabledROMKeys();if(projectType==='rom')ensureROMDocuments();if(projectType==='joint')ensureJointDocuments();
+ $('exercise').value=projectType==='rom'?'ROM Lab':projectType==='joint'?'Joint Actions':'Untitled Exercise';movementTitle='Untitled Exercise';$('student').value='';updateDocumentTitle();
  undo=[];redo=[];selected=-1;draft=null;drag=null;romDraft=null;romReposition=false;
- updateModeUI();refreshROMSelections();const first=projectType==='rom'?firstEnabledROMIndex(false):0;switchDocument(first);setTool(projectType==='rom'?'rom':'select');queueAutosave(true);toast('New empty project created.');
+ updateModeUI();refreshROMSelections();const first=projectType==='rom'?firstEnabledROMIndex(false):projectType==='joint'?views.findIndex(v=>v.jointKey===jointExercises[0].key):0;switchDocument(first);setTool(projectType==='rom'?'rom':projectType==='joint'?'joint':'select');queueAutosave(true);toast('New empty project created.');
 });
 
 const annotationsDialog=$('annotationsDialog');
@@ -2062,7 +2195,7 @@ document.querySelectorAll('[data-rom-mode]').forEach(b=>b.addEventListener('clic
 $('romNew').addEventListener('click',newROM);
 document.querySelectorAll('[data-plane]').forEach(b=>b.onclick=()=>switchPlane(Number(b.dataset.plane)));
 document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));$('captureBtn').onclick=captureFrame;
-$('previous').onclick=()=>{const v=current();if(v.preview&&v.source)seekVideo(v,(v.source.video.currentTime||0)-1/120)};$('next').onclick=()=>{const v=current();if(v.preview&&v.source)seekVideo(v,(v.source.video.currentTime||0)+1/120)};$('timeline').oninput=e=>seekVideo(current(),Number(e.target.value));$('cancelFrameBtn').onclick=cancelFrameEdit;
+$('previous').onclick=()=>{const v=current();if(v.preview&&v.source)seekVideo(v,(v.source.video.currentTime||0)-(projectType==='joint'?1/(jointExercises.find(x=>x.key===v.jointKey)?.fps||25):1/120))};$('next').onclick=()=>{const v=current();if(v.preview&&v.source)seekVideo(v,(v.source.video.currentTime||0)+(projectType==='joint'?1/(jointExercises.find(x=>x.key===v.jointKey)?.fps||25):1/120))};$('timeline').oninput=e=>seekVideo(current(),Number(e.target.value));$('cancelFrameBtn').onclick=cancelFrameEdit;
 // Auto-apply inspector fields without an extra confirmation button.
 // Focus/drag groups let Undo restore the entire edit, not one typed character.
 for(const id of ['labelInput','jointType','movementType','strokeWidth','labelSize']){
@@ -2084,8 +2217,8 @@ $('menuOpenProject').onclick=()=>{closeMenus();$('projectInput').click()};
 $('menuSaveLocal').onclick=()=>{closeMenus();saveNow()};
 $('menuSaveProject').onclick=()=>{closeMenus();saveProject()};
 $('projectInput').onchange=e=>{openProject(e.target.files?.[0]);e.target.value=''};
-$('menuExportPlane').onclick=async()=>{closeMenus();try{await downloadCanvas(canvasPNG(current()),safeName()+'-'+viewNames[current().plane].toLowerCase()+'-'+(current().category||'frame').toLowerCase()+'-annotated.png');toast('Annotated plane picture saved.')}catch(e){toast('Could not export current plane.')}};
-$('menuExportPoster').onclick=async()=>{closeMenus();try{if(projectType==='rom'){const count=romPageCount();for(let i=0;i<count;i++)await downloadCanvas(romBoard(i),'ROM-Lab'+(count>1?'-page-'+(i+1):'')+'.png');toast('Exported '+romCompleteDocs().length+' ROM measurements in two-column format.')}else{const count=exportPageCount();for(let i=0;i<count;i++)await downloadCanvas(board(i),safeName()+'-exercise-evaluation'+(count>1?'-page-'+(i+1):'')+'.png');toast('Exported all '+movementViews().filter(v=>v.frameImg).length+' saved frames'+(count>1?' across '+count+' PNG pages.':'.'))}}catch(e){console.error(e);toast('Unable to export project.')}};
+$('menuExportPlane').onclick=async()=>{closeMenus();try{await downloadCanvas(canvasPNG(current()),safeName()+'-'+(projectType==='joint'?(current().name||'joint-action').replace(/[^a-z0-9]+/gi,'-'):viewNames[current().plane].toLowerCase()+'-'+(current().category||'frame').toLowerCase())+'-annotated.png');toast('Annotated plane picture saved.')}catch(e){toast('Could not export current plane.')}};
+$('menuExportPoster').onclick=async()=>{closeMenus();try{if(projectType==='rom'){const count=romPageCount();for(let i=0;i<count;i++)await downloadCanvas(romBoard(i),'ROM-Lab'+(count>1?'-page-'+(i+1):'')+'.png');toast('Exported '+romCompleteDocs().length+' ROM measurements in two-column format.')}else if(projectType==='joint'){const count=jointPageCount();for(let i=0;i<count;i++)await downloadCanvas(jointBoard(i),'Joint-Actions'+(count>1?'-page-'+(i+1):'')+'.png');toast('Exported '+jointCompletedDocs().length+' annotated exercise frame(s).')}else{const count=exportPageCount();for(let i=0;i<count;i++)await downloadCanvas(board(i),safeName()+'-exercise-evaluation'+(count>1?'-page-'+(i+1):'')+'.png');toast('Exported all '+movementViews().filter(v=>v.frameImg).length+' saved frames'+(count>1?' across '+count+' PNG pages.':'.'))}}catch(e){console.error(e);toast('Unable to export project.')}};
 
 const stage=$('stage');stage.addEventListener('dragover',e=>{e.preventDefault();stage.classList.add('dragover')});stage.addEventListener('dragleave',e=>{if(!stage.contains(e.relatedTarget))stage.classList.remove('dragover')});stage.addEventListener('drop',e=>{e.preventDefault();stage.classList.remove('dragover');loadMedia(e.dataTransfer?.files?.[0])});
 window.addEventListener('keydown',e=>{
@@ -2199,6 +2332,7 @@ function createGalleryNode(v){
 }
 function updateGallery(){
  if(projectType==='rom'){renderROMGallery();return}
+ if(projectType==='joint'){renderJointGallery();return}
  const ids=new Set(movementViews().filter(v=>v.frameSrc||v.preview).map(v=>v.uid));
  for(const [id,node] of galleryNodes)if(!ids.has(id)){node.wrap.remove();galleryNodes.delete(id)}
  [0,1].forEach(plane=>{
