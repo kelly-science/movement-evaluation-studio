@@ -657,6 +657,31 @@ body.joint-mode .frame-buttons button{min-width:0}
 }
 @media(max-width:450px){body.joint-mode .joint-gallery{grid-template-columns:1fr 1fr;gap:8px}body.joint-mode .joint-exercise-card img{height:94px}body.joint-mode.rom-phone-gallery .joint-exercise-card img{height:110px}}
 
+
+
+/* v34: Chromebook-safe, user-initiated export center. */
+.save-center-dialog{width:min(94vw,780px);max-height:min(90vh,900px);padding:0;border:1px solid #647182;border-radius:18px;color:#edf4fc;background:#303841;box-shadow:0 30px 85px #000a;overflow:auto}
+.save-center-dialog::backdrop{background:rgba(7,13,22,.76)}
+.save-center-head{display:flex;justify-content:space-between;align-items:start;padding:19px 21px 15px;gap:14px;border-bottom:1px solid #ffffff1a}
+.save-center-head h2{font-size:20px;letter-spacing:.01em;margin:4px 0 0}
+.save-center-head small{color:#b3c7d8;font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:750}
+.save-center-close{font-size:22px;background:#404c59;border:1px solid #71809566;border-radius:10px;min-width:39px;min-height:39px;color:#f1f7fd}
+.save-center-body{padding:16px 20px 22px}
+.save-center-help{font-size:13px;line-height:1.55;color:#bfccd9;margin:0 0 12px}
+.save-center-state{font-size:12px;color:#a9d5ff;min-height:21px;margin-bottom:10px}
+.save-center-preview{background:#171e26;border:1px solid #607080;border-radius:11px;min-height:120px;max-height:38vh;display:grid;place-items:center;overflow:auto;padding:8px}
+.save-center-preview img{display:block;max-height:34vh;max-width:100%;width:auto;height:auto;object-fit:contain;background:#fff}
+.save-center-preview .save-center-nonimage{color:#b8cddd;padding:26px;text-align:center;font-size:13px;line-height:1.6}
+.save-center-pager{display:flex;justify-content:center;align-items:center;gap:14px;margin:11px 0;min-height:36px;color:#b8d3e5;font-size:12px}
+.save-center-pager button{border-radius:8px;border:1px solid #627589;background:#3a4754;padding:8px 13px;color:#eaf4fd}
+.save-center-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:16px 0}
+.save-center-actions a,.save-center-actions button{border:1px solid #7791a9;border-radius:10px;color:#edf7ff;background:#435262;text-decoration:none;text-align:center;display:flex;align-items:center;justify-content:center;min-height:45px;padding:10px 12px;font-size:13px;font-weight:700}
+.save-center-actions a.primary,.save-center-actions button.primary{background:#547da4;color:#fff;border-color:#83bdf3}
+.save-center-actions a[aria-disabled="true"],.save-center-actions button:disabled{opacity:.45;pointer-events:none}
+.save-center-one-file{grid-column:1/-1;color:#bdd6ec;font-size:12px;padding:6px 2px;line-height:1.5}
+.save-center-note{font-size:12px;line-height:1.55;color:#aebfcd;border-top:1px solid #ffffff20;padding-top:12px}
+@media(max-width:540px){.save-center-actions{grid-template-columns:1fr}.save-center-dialog{max-height:91dvh}.save-center-head{padding:14px 16px}.save-center-body{padding:13px 16px}.save-center-preview{max-height:30vh}.save-center-preview img{max-height:27vh}}
+
 </style>
   <link rel="stylesheet" href="./rom-guides-v30.css?v=30">
 </head>
@@ -693,7 +718,8 @@ body.joint-mode .frame-buttons button{min-width:0}
           <button type="button" class="menu-action" id="menuNew">New Project</button>
           <button type="button" class="menu-action" id="menuOpenProject">Open Project…</button>
           <button type="button" class="menu-action" id="menuSaveLocal">Save <span class="menu-shortcut">⌘/Ctrl S</span></button>
-          <button type="button" class="menu-action" id="menuSaveProject">Download Project Backup (.json)</button>
+          <button type="button" class="menu-action" id="menuSaveProject">Save / Share Project Backup…</button>
+          <button type="button" class="menu-action" id="menuLastExport">Reopen Saved Submission…</button>
           <div class="menu-separator" role="separator"></div>
           <div class="project-type-wrap" id="projectTypeWrap">
             <button type="button" class="menu-action project-type-trigger" id="projectTypeTrigger" aria-haspopup="true" aria-expanded="false" aria-controls="projectTypeSubmenu">Project Type <span class="submenu-caret" aria-hidden="true">›</span></button>
@@ -704,7 +730,7 @@ body.joint-mode .frame-buttons button{min-width:0}
             </div>
           </div>
           <div class="menu-separator" role="separator"></div>
-          <button type="button" class="menu-action" id="menuExportPoster">Export All Frames (PNG)</button>
+          <button type="button" class="menu-action" id="menuExportPoster">Export Complete Submission…</button>
           <button type="button" class="menu-action" id="menuExportPlane">Export Current Plane (PNG)</button>
         </div>
       </div>
@@ -867,6 +893,27 @@ body.joint-mode .frame-buttons button{min-width:0}
     <button type="button" class="crop-apply" id="cropApply">Apply Crop</button>
   </div>
 </dialog>
+
+<!-- v34: Explicit export / recovery screen. No hidden programmatic downloads. -->
+<dialog id="saveCenterDialog" class="save-center-dialog" aria-labelledby="saveCenterTitle">
+  <div class="save-center-head"><div><small>Kinetica Studio · Save &amp; Share</small><h2 id="saveCenterTitle">Prepare submission</h2></div><button type="button" class="save-center-close" id="saveCenterClose" aria-label="Close Save and Share">×</button></div>
+  <div class="save-center-body">
+    <p class="save-center-help">Every export uses one file: a PNG, a ZIP containing all PNG pages, or a project backup. If downloads are blocked on your school Chromebook, try <strong>Copy Image</strong> and paste into Google Docs, Slides, or a supported Schoology submission field.</p>
+    <div class="save-center-state" id="saveCenterState" role="status" aria-live="polite">Preparing…</div>
+    <div class="save-center-preview" id="saveCenterPreview"><div class="save-center-nonimage">Preparing export…</div></div>
+    <div class="save-center-pager" id="saveCenterPager"><button type="button" id="saveCenterPrevious">← Previous</button><span id="saveCenterPageLabel">Page 1 of 1</span><button type="button" id="saveCenterNext">Next →</button></div>
+    <div class="save-center-actions">
+      <a class="primary" id="saveCenterDownload" href="#" download="Kinetica-Submission.png">Download current file</a>
+      <button type="button" id="saveCenterSaveAs">Save to Files…</button>
+      <button type="button" id="saveCenterCopy">Copy Image</button>
+      <a id="saveCenterOpen" target="_blank" rel="noopener noreferrer" href="#">Open Image / Save As…</a>
+      <button type="button" id="saveCenterShare">Share to another app…</button>
+      <div class="save-center-one-file" id="saveCenterOneFile">Multiple export pages will be packaged into one ZIP download automatically.</div>
+    </div>
+    <div class="save-center-note" id="saveCenterNote">Autosave protects this device only. A downloaded file, a copy in Google Drive, or a submitted image is safer for turning in assignments.</div>
+  </div>
+</dialog>
+
 <input type="file" id="projectInput" accept=".json,.movement.json,application/json" hidden>
 </div>
 <div id="videoDecodePool" aria-hidden="true"></div>
@@ -1109,7 +1156,7 @@ function updateModeUI(){
  $('galleryHeadingText').textContent=projectType==='rom'?'ROM Measurements':projectType==='joint'?'Joint Actions':'Plane Gallery';
  document.querySelectorAll('[data-project-type]').forEach(b=>{const on=b.dataset.projectType===projectType;b.setAttribute('aria-checked',String(on));b.lastElementChild.textContent=on?'✓':''});
  document.querySelectorAll('[data-plane-menu]').forEach(b=>b.classList.toggle('hidden',projectType!=='movement'));
- $('menuExportPoster').textContent=projectType==='rom'?'Export ROM Lab (Two-Column PNG)':projectType==='joint'?'Export Joint Actions (Two-Column PNG)':'Export All Frames (PNG)';
+ $('menuExportPoster').textContent=projectType==='rom'?'Export ROM Lab Submission…':projectType==='joint'?'Export Joint Actions Submission…':'Export Complete Submission…';
  $('menuExportPlane').textContent=projectType==='rom'?'Export Current Measurement (PNG)':projectType==='joint'?'Export Current Exercise (PNG)':'Export Current Plane (PNG)';
  document.querySelector('#videoControls .frame-note').textContent=projectType==='joint'?'Step through the exercise clip to find the peak position. Exact steps follow the clip’s frame rate.':'Frame stepping is approximately ±1/120 second; the exact displayed frame depends on the video.';
 }
@@ -1859,8 +1906,10 @@ const list=$('annotationList');list.replaceChildren();if(v.annotations.length===
 syncMenuActions();
 $('canvasHelp').textContent=canAnnotate?help[tool]:v.preview?'Select USE THIS FRAME to freeze the video before drawing.':'Choose a photo or video for the active plane.';updateROMInspector();queueAutosave()}
 function canvasPNG(v,dimension=2000){if(!v.frameImg)return null;const im=v.frameImg,scale=Math.min(1,dimension/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*scale)),h=Math.max(1,Math.round(im.naturalHeight*scale)),out=document.createElement('canvas');out.width=w;out.height=h;const c=out.getContext('2d');c.drawImage(im,0,0,w,h);v.annotations.forEach(a=>drawOne(c,a,w,h,{scale:Math.max(1,w/1000)}));return out}
-function download(blob,name){const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),30000)}
-async function downloadCanvas(c,name){if(!c)return;const blob=await new Promise((ok,no)=>c.toBlob(b=>b?ok(b):no(new Error('PNG export failed')),'image/png'));download(blob,name)}
+function canvasBlob(c){return new Promise((ok,no)=>{if(!c){no(new Error('Nothing to export'));return;}c.toBlob(b=>b?ok(b):no(new Error('PNG rendering failed')),'image/png')})}
+// v34 exports are prepared and then saved using a real, visible user click.
+// Hidden anchor.click() after async canvas.toBlob() was unreliable on managed Chromebooks.
+
 // Combined submission export: each saved frame stays independent and is placed under its plane.
 function board(page=0){
  const limit=8, frontal=movementViews().filter(v=>v.plane===0&&v.frameImg),sagittal=movementViews().filter(v=>v.plane===1&&v.frameImg);
@@ -1951,7 +2000,7 @@ function jointBoard(page=0){
 
 function exportPageCount(){const counts=[0,1].map(p=>movementViews().filter(v=>v.plane===p&&v.frameImg).length);return Math.max(1,Math.ceil(Math.max(...counts)/8))}
 function serializeProject(){return{schema:'movement-evaluation-studio',version:2,projectType,romEnabledKeys:romDefinitions.filter(def=>isROMEnabled(def.key)).map(def=>def.key),movementTitle,exercise:$('exercise').value,student:$('student').value,activeId:current().uid,views:views.map(v=>({uid:v.uid,romKey:v.romKey||null,jointKey:v.jointKey||null,plane:viewNames[v.plane],category:v.category||'Other',name:v.name||'',frameSrc:v.frameSrc,frameLabel:v.frameLabel,cropBaseSrc:v.cropBaseSrc,cropBounds:v.cropBounds,annotations:v.annotations}))}}
-function saveProject(){download(new Blob([JSON.stringify(serializeProject())],{type:'application/json'}),safeName()+'-movement-project.json');toast('Editable multi-frame project backup downloaded.');}
+function saveProject(){openSaveCenterForBackup()}
 function hydrateProject(d){
  if(d?.schema!=='movement-evaluation-studio'||![1,2].includes(d.version)||!Array.isArray(d.views))throw Error('Not a Movement Evaluation project');
  views.forEach(disposeSource);
@@ -1974,6 +2023,185 @@ function hydrateProject(d){
  const wanted=views.findIndex(v=>v.uid===d.activeId);const fallback=projectType==='rom'?firstEnabledROMIndex(true):projectType==='joint'?views.findIndex(v=>v.jointKey===jointExercises[0].key):views.findIndex(v=>!v.romKey&&!v.jointKey);const wantedAllowed=wanted>=0&&(projectType==='rom'?!!views[wanted].romKey&&isROMEnabled(views[wanted].romKey):projectType==='joint'?!!views[wanted].jointKey:!views[wanted].romKey&&!views[wanted].jointKey);switchDocument(wantedAllowed?wanted:fallback>=0?fallback:0);setTool(projectType==='rom'?'rom':projectType==='joint'?'joint':'select');
 }
 function openProject(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!confirm('Open project and replace the current work? Your current project is autosaved locally, but please download a backup first if needed.'))return;hydrateProject(d);queueAutosave(true);toast('Project restored with '+views.filter(v=>v.frameSrc).length+' frame(s).')}catch(e){console.error(e);toast('Could not open project: '+e.message)}};r.onerror=()=>toast('File could not be read');r.readAsText(file)}
+
+
+// KINETICA_V34_SAVE_CENTER — user-initiated saving, preview, clipboard, Files picker, share.
+let exportFiles=[], exportUrls=[], exportIndex=0, exportBusy=false, exportKind='image';
+let exportDownloadFile=null, exportDownloadUrl=null;
+const exportDialog=$('saveCenterDialog');
+const exportStatus=$('saveCenterState');
+function exportMessage(msg){exportStatus.textContent=msg;}
+function revokeExportUrls(){for(const url of exportUrls)URL.revokeObjectURL(url);exportUrls=[];if(exportDownloadUrl){URL.revokeObjectURL(exportDownloadUrl);exportDownloadUrl=null;}exportDownloadFile=null;}
+function closeSaveCenter(){if(exportDialog.open)exportDialog.close();}
+$('saveCenterClose').addEventListener('click',closeSaveCenter);
+exportDialog.addEventListener('click',e=>{if(e.target===exportDialog)closeSaveCenter()});
+function selectedExport(){return exportFiles[exportIndex]||null;}
+function currentDownload(){return exportDownloadFile||selectedExport();}
+function setExportButtonsReady(ready){
+ for(const id of ['saveCenterSaveAs','saveCenterCopy','saveCenterShare','saveCenterPrevious','saveCenterNext'])$(id).disabled=!ready;
+ for(const id of ['saveCenterDownload','saveCenterOpen'])$(id).setAttribute('aria-disabled',String(!ready));
+}
+function refreshExportDisplay(){
+ const page=selectedExport(),downloadFile=currentDownload(),total=exportFiles.length;
+ const previous=$('saveCenterPrevious'),next=$('saveCenterNext');
+ previous.disabled=!page||exportIndex===0;next.disabled=!page||exportIndex>=total-1;
+ $('saveCenterPager').hidden=total<=1;
+ $('saveCenterPageLabel').textContent=`Page ${exportIndex+1} of ${total}`;
+ const link=$('saveCenterDownload'),open=$('saveCenterOpen');
+ if(!page||!downloadFile){link.removeAttribute('href');open.removeAttribute('href');return;}
+ const pageUrl=exportUrls[exportIndex],url=exportDownloadUrl||pageUrl;
+ link.href=url;link.download=downloadFile.name;
+ link.textContent=downloadFile.type==='application/zip'?'Download all '+total+' pages (one ZIP)':downloadFile.type==='image/png'?'Download PNG':'Download Project Backup';
+ open.href=pageUrl;open.textContent=page.type==='image/png'?'Open this PNG in a tab':'Open Project Backup';
+ $('saveCenterCopy').textContent=page.type==='image/png'?'Copy this PNG':'Copy Backup Text';
+ $('saveCenterOneFile').hidden=total<=1;
+ $('saveCenterShare').hidden=!(typeof navigator.share==='function');
+ $('saveCenterCopy').disabled=!navigator.clipboard||(page.type==='image/png'&&typeof ClipboardItem==='undefined');
+ const preview=$('saveCenterPreview');preview.replaceChildren();
+ if(page.type==='image/png'){
+  const img=new Image();img.alt='Preview of '+page.name;img.src=pageUrl;preview.appendChild(img);
+ }else{
+  const p=document.createElement('div');p.className='save-center-nonimage';p.textContent='Editable project backup · '+page.name+' · '+Math.ceil(page.blob.size/1024)+' KB. Keep this JSON file outside this browser so you can restore your annotations later.';preview.appendChild(p);
+ }
+ exportMessage('Ready: '+downloadFile.name+' · '+Math.ceil(downloadFile.blob.size/1024)+' KB'+(total>1?' · all '+total+' PNG pages in one ZIP':''));
+}
+async function cachePreparedExport(kind,files){
+ if(!localDB||!localDB.objectStoreNames.contains('exports'))return false;
+ try{
+  await new Promise((resolve,reject)=>{
+   const tx=localDB.transaction('exports','readwrite');
+   tx.objectStore('exports').put({key:kind==='image'?'latest-image':'latest-backup',savedAt:Date.now(),files});
+   tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);
+  });
+  return true;
+ }catch(e){console.warn('Kinetica export cache failed:',e);return false;}
+}
+async function setPreparedExport(files,kind,persist=true){
+ revokeExportUrls();exportFiles=files;exportIndex=0;exportKind=kind;
+ exportUrls=files.map(f=>URL.createObjectURL(f.blob));
+ // Only one file can be downloaded for an entire submission.
+ // Multiple PNG pages are prepared as a single ZIP before enabling Save/Download.
+ if(files.length>1&&files.every(f=>f.type==='image/png')){
+  exportMessage('Combining '+files.length+' PNG pages into one ZIP…');
+  const blob=await makeZip(files);
+  exportDownloadFile={name:safeName()+'-complete-submission.zip',blob,type:'application/zip'};
+  exportDownloadUrl=URL.createObjectURL(blob);
+ }
+ setExportButtonsReady(true);refreshExportDisplay();
+ if(persist){const ok=await cachePreparedExport(kind,files);
+  $('saveCenterNote').textContent=ok?'A copy of this export is kept in the browser cache. Confirm any download in your Chromebook Downloads/Files app, or copy a PNG into Google Docs. Browser cache alone is not a submission.':'The extra export cache could not be written. Save or copy the submission before closing. Your project autosave is separate.';
+ }
+}
+function beginSaveCenter(title){
+ if(exportBusy)return false;
+ exportBusy=true;revokeExportUrls();exportFiles=[];exportIndex=0;
+ $('saveCenterTitle').textContent=title;
+ $('saveCenterPreview').innerHTML='<div class="save-center-nonimage">Preparing your files…</div>';
+ $('saveCenterPager').hidden=true;
+ $('saveCenterOneFile').hidden=true;
+ $('saveCenterNote').textContent='Preparing your submission. After choosing Download or Save to Files, verify that the file appears in Files/Downloads. If your Chromebook blocks it, try Copy Image and paste into Google Docs.';
+ setExportButtonsReady(false);exportMessage('Preparing…');
+ if(!exportDialog.open)exportDialog.showModal();return true;
+}
+async function nextExportRender(){return new Promise(resolve=>setTimeout(resolve,15));}
+async function openSaveCenterForBackup(){
+ if(!beginSaveCenter('Save editable project backup'))return;
+ try{
+  const blob=new Blob([JSON.stringify(serializeProject())],{type:'application/json'});
+  await setPreparedExport([{name:safeName()+'-kinetica-backup.json',blob,type:'application/json'}],'backup');
+ }catch(e){console.error(e);exportMessage('Unable to prepare backup: '+e.message)}
+ finally{exportBusy=false;}
+}
+async function openSaveCenterForImages(currentOnly){
+ if(!beginSaveCenter(currentOnly?'Save current annotated image':'Save complete submission'))return;
+ try{
+  const files=[],plan=[];
+  if(currentOnly){
+   const v=current();if(!v.frameImg)throw Error('Capture a frame first.');
+   const fileName=safeName()+'-'+(projectType==='joint'?(v.name||'joint-action').replace(/[^a-z0-9]+/gi,'-'):projectType==='rom'?(v.name||'rom-measurement').replace(/[^a-z0-9]+/gi,'-'):viewNames[v.plane].toLowerCase()+'-'+(v.category||'frame').toLowerCase())+'-annotated.png';
+   plan.push({name:fileName,render:()=>canvasPNG(v)});
+  }else if(projectType==='rom'){
+   const count=romPageCount();if(!romCompleteDocs().length)throw Error('Complete a ROM measurement before exporting.');
+   for(let i=0;i<count;i++)plan.push({name:'ROM-Lab'+(count>1?'-page-'+(i+1):'')+'.png',render:()=>romBoard(i)});
+  }else if(projectType==='joint'){
+   const count=jointPageCount();if(!jointCompletedDocs().length)throw Error('Capture at least one exercise frame before exporting.');
+   for(let i=0;i<count;i++)plan.push({name:'Joint-Actions'+(count>1?'-page-'+(i+1):'')+'.png',render:()=>jointBoard(i)});
+  }else{
+   const count=exportPageCount();if(!movementViews().some(v=>v.frameImg))throw Error('Capture a frame before exporting.');
+   for(let i=0;i<count;i++)plan.push({name:safeName()+'-exercise-evaluation'+(count>1?'-page-'+(i+1):'')+'.png',render:()=>board(i)});
+  }
+  for(let i=0;i<plan.length;i++){
+   exportMessage('Rendering page '+(i+1)+' of '+plan.length+'…');await nextExportRender();
+   const canvas=plan[i].render();if(!canvas)throw Error('Could not render this frame');
+   const blob=await canvasBlob(canvas);
+   files.push({name:plan[i].name,blob,type:'image/png'});
+  }
+  await setPreparedExport(files,'image');
+ }catch(e){console.error('Export preparation failed',e);exportMessage('Could not prepare export: '+e.message);$('saveCenterPreview').textContent='Your original project is unchanged.';}
+ finally{exportBusy=false;}
+}
+$('saveCenterPrevious').onclick=()=>{if(exportIndex>0){exportIndex--;refreshExportDisplay()}};
+$('saveCenterNext').onclick=()=>{if(exportIndex<exportFiles.length-1){exportIndex++;refreshExportDisplay()}};
+// Show the native save picker as the very first asynchronous step of the real click.
+// showSaveFilePicker requires transient user activation, so never call it after PNG conversion.
+$('saveCenterSaveAs').onclick=async()=>{
+ const f=currentDownload();if(!f)return;
+ if(typeof window.showSaveFilePicker!=='function'){
+  exportMessage('Native Files picker unavailable. Try Download, Copy Image, or Open Image.');return;
+ }
+ try{
+  const type=f.type;
+  const ext=f.type==='image/png'?'.png':f.type==='application/zip'?'.zip':'.json';
+  const handle=await window.showSaveFilePicker({suggestedName:f.name,types:[{description:f.type==='image/png'?'PNG image':f.type==='application/zip'?'ZIP of PNG pages':'Project backup',accept:{[type]:[ext]}}]});
+  const writer=await handle.createWritable();await writer.write(f.blob);await writer.close();
+  exportMessage('Saved to the folder you selected: '+f.name);
+ }catch(e){if(e.name==='AbortError')exportMessage('Save canceled. Your export is still available here.');else {console.warn(e);exportMessage('Saving to Files was blocked. Try Copy Image, Open Image, or the Download link.')}}
+};
+$('saveCenterCopy').onclick=async()=>{
+ const f=selectedExport();if(!f)return;
+ try{
+  if(f.type==='image/png')await navigator.clipboard.write([new ClipboardItem({'image/png':f.blob})]);
+  else await navigator.clipboard.writeText(await f.blob.text());
+  exportMessage('Copied this page. Paste into Google Docs, Slides, or a supported Schoology submission.');
+ }catch(e){console.warn('Clipboard unavailable',e);exportMessage('Clipboard blocked on this device. Try Save to Files, Open Image, or Share.');}
+};
+$('saveCenterShare').onclick=async()=>{
+ const f=currentDownload();if(!f||typeof navigator.share!=='function')return;
+ try{
+  const file=new File([f.blob],f.name,{type:f.type});
+  if(navigator.canShare&&!navigator.canShare({files:[file]}))throw new Error('File sharing is not available');
+  await navigator.share({files:[file],title:'Kinetica Studio submission'});
+  exportMessage('Share sheet closed. Confirm the image is present in your destination.');
+ }catch(e){if(e.name!=='AbortError'){console.warn(e);exportMessage('Sharing unavailable. Try Copy Image or Save to Files.')}}
+};
+// Build a single uncompressed ZIP for multi-page exports, to avoid multiple-download blocking.
+function crc32Bytes(bytes){let crc=0xffffffff;for(const b of bytes){crc^=b;for(let k=0;k<8;k++)crc=(crc>>>1)^((crc&1)?0xedb88320:0)}return(crc^0xffffffff)>>>0;}
+async function makeZip(files){
+ const encoder=new TextEncoder(),parts=[],central=[];let offset=0;
+ for(const file of files){
+  const name=encoder.encode(file.name),data=new Uint8Array(await file.blob.arrayBuffer()),crc=crc32Bytes(data);
+  const local=new Uint8Array(30+name.length),v=new DataView(local.buffer);
+  v.setUint32(0,0x04034b50,true);v.setUint16(4,20,true);v.setUint16(8,0,true);v.setUint32(14,crc,true);v.setUint32(18,data.length,true);v.setUint32(22,data.length,true);v.setUint16(26,name.length,true);local.set(name,30);
+  parts.push(local,data);
+  const cd=new Uint8Array(46+name.length),c=new DataView(cd.buffer);
+  c.setUint32(0,0x02014b50,true);c.setUint16(4,20,true);c.setUint16(6,20,true);c.setUint32(16,crc,true);c.setUint32(20,data.length,true);c.setUint32(24,data.length,true);c.setUint16(28,name.length,true);c.setUint32(42,offset,true);cd.set(name,46);central.push(cd);
+  offset+=local.length+data.length;
+ }
+ const centralSize=central.reduce((n,c)=>n+c.length,0),eocd=new Uint8Array(22),e=new DataView(eocd.buffer);
+ e.setUint32(0,0x06054b50,true);e.setUint16(8,central.length,true);e.setUint16(10,central.length,true);e.setUint32(12,centralSize,true);e.setUint32(16,offset,true);
+ return new Blob([...parts,...central,eocd],{type:'application/zip'});
+}
+
+$('menuLastExport').onclick=async()=>{
+ closeMenus();if(!beginSaveCenter('Previously prepared submission'))return;
+ try{
+  if(!localDB||!localDB.objectStoreNames.contains('exports'))throw Error('Local export cache unavailable');
+  const rec=await new Promise((resolve,reject)=>{const tx=localDB.transaction('exports','readonly'),q=tx.objectStore('exports').get('latest-image');q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error)});
+  if(!rec?.files?.length)throw Error('No previous saved PNG submission found on this device');
+  await setPreparedExport(rec.files,'image',false);
+  $('saveCenterNote').textContent='Recovered from this browser’s local cache. Copy or save the image outside this browser before clearing site data.';
+ }catch(e){exportMessage(e.message);$('saveCenterPreview').textContent='Use File → Export to create an image first.'}finally{exportBusy=false;}
+};
 
 // Top menu bar: use the existing application actions rather than duplicating logic.
 const menuButtons=[...document.querySelectorAll('.menu-trigger')];
@@ -2231,8 +2459,8 @@ $('menuOpenProject').onclick=()=>{closeMenus();$('projectInput').click()};
 $('menuSaveLocal').onclick=()=>{closeMenus();saveNow()};
 $('menuSaveProject').onclick=()=>{closeMenus();saveProject()};
 $('projectInput').onchange=e=>{openProject(e.target.files?.[0]);e.target.value=''};
-$('menuExportPlane').onclick=async()=>{closeMenus();try{await downloadCanvas(canvasPNG(current()),safeName()+'-'+(projectType==='joint'?(current().name||'joint-action').replace(/[^a-z0-9]+/gi,'-'):viewNames[current().plane].toLowerCase()+'-'+(current().category||'frame').toLowerCase())+'-annotated.png');toast('Annotated plane picture saved.')}catch(e){toast('Could not export current plane.')}};
-$('menuExportPoster').onclick=async()=>{closeMenus();try{if(projectType==='rom'){const count=romPageCount();for(let i=0;i<count;i++)await downloadCanvas(romBoard(i),'ROM-Lab'+(count>1?'-page-'+(i+1):'')+'.png');toast('Exported '+romCompleteDocs().length+' ROM measurements in two-column format.')}else if(projectType==='joint'){const count=jointPageCount();for(let i=0;i<count;i++)await downloadCanvas(jointBoard(i),'Joint-Actions'+(count>1?'-page-'+(i+1):'')+'.png');toast('Exported '+jointCompletedDocs().length+' annotated exercise frame(s).')}else{const count=exportPageCount();for(let i=0;i<count;i++)await downloadCanvas(board(i),safeName()+'-exercise-evaluation'+(count>1?'-page-'+(i+1):'')+'.png');toast('Exported all '+movementViews().filter(v=>v.frameImg).length+' saved frames'+(count>1?' across '+count+' PNG pages.':'.'))}}catch(e){console.error(e);toast('Unable to export project.')}};
+$('menuExportPlane').onclick=()=>{closeMenus();openSaveCenterForImages(true)};
+$('menuExportPoster').onclick=()=>{closeMenus();openSaveCenterForImages(false)};
 
 const stage=$('stage');stage.addEventListener('dragover',e=>{e.preventDefault();stage.classList.add('dragover')});stage.addEventListener('dragleave',e=>{if(!stage.contains(e.relatedTarget))stage.classList.remove('dragover')});stage.addEventListener('drop',e=>{e.preventDefault();stage.classList.remove('dragover');loadMedia(e.dataTransfer?.files?.[0])});
 window.addEventListener('keydown',e=>{
@@ -2241,7 +2469,7 @@ window.addEventListener('keydown',e=>{
    e.preventDefault();closeMenus();saveNow();return;
  }
  if(e.key==='Escape'&&menuButtons.some(b=>b.getAttribute('aria-expanded')==='true')){closeMenus();return}
- if(annotationsDialog.open||$('shortcutsDialog').open)return;
+ if(annotationsDialog.open||$('shortcutsDialog').open||exportDialog.open)return;
  const tag=document.activeElement?.tagName||'';
  if(/INPUT|SELECT|TEXTAREA/.test(tag))return;
  if(command&&e.key.toLowerCase()==='z'){
@@ -2417,8 +2645,8 @@ const cacheStatus=$('localSaveStatus');
 function statusSave(message,error=false){cacheStatus.textContent=message;cacheStatus.classList.toggle('error',error)}
 function openCache(){return new Promise((resolve,reject)=>{
  if(!('indexedDB' in window)){reject(Error('IndexedDB unavailable'));return}
- const req=indexedDB.open('movement-evaluation-studio-local-v13',1);
- req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('snapshots'))req.result.createObjectStore('snapshots',{keyPath:'key'})};
+ const req=indexedDB.open('movement-evaluation-studio-local-v13',2);
+ req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('snapshots'))req.result.createObjectStore('snapshots',{keyPath:'key'});if(!req.result.objectStoreNames.contains('exports'))req.result.createObjectStore('exports',{keyPath:'key'})};
  req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||Error('Cache unavailable'));
  })}
 function cacheRecords(){return new Promise((resolve,reject)=>{
