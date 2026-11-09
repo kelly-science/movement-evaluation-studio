@@ -1,5 +1,5 @@
 // Offline-first shell for Movement Evaluation Studio. Version this key for every release.
-const CACHE_NAME = 'movement-evaluation-studio-shell-v29';
+const CACHE_NAME = 'movement-evaluation-studio-shell-v30';
 const SHELL = [
   './',
   './index.html',
@@ -7,7 +7,29 @@ const SHELL = [
   './icon-192.png?v=29',
   './icon-512.png?v=29',
   './icon-maskable-512.png?v=29',
-  './apple-touch-icon.png?v=29'
+  './apple-touch-icon.png?v=29',
+  './rom-guides-v30.css?v=30',
+  './rom-guides-v30.js?v=30',
+  './rom-guides/guide-00.png',
+  './rom-guides/guide-01.png',
+  './rom-guides/guide-02.png',
+  './rom-guides/guide-03.png',
+  './rom-guides/guide-04.png',
+  './rom-guides/guide-05.png',
+  './rom-guides/guide-06.png',
+  './rom-guides/guide-07.png',
+  './rom-guides/guide-08.png',
+  './rom-guides/guide-09.png',
+  './rom-guides/guide-10.png',
+  './rom-guides/guide-11.png',
+  './rom-guides/guide-12.png',
+  './rom-guides/guide-13.png',
+  './rom-guides/guide-14.png',
+  './rom-guides/guide-15.png',
+  './rom-guides/guide-16.png',
+  './rom-guides/guide-17.png',
+  './rom-guides/guide-18.png',
+  './rom-guides/guide-19.png'
 ];
 
 self.addEventListener('install', event => {

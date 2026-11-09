@@ -610,6 +610,7 @@ body.rom-mode #viewMenuWrap{display:none!important}
 }
 
 </style>
+  <link rel="stylesheet" href="./rom-guides-v30.css?v=30">
 </head>
 <body>
 <div class="device">
@@ -1029,6 +1030,11 @@ function renderROMGallery(){
     const edit=document.createElement('button');edit.type='button';edit.className='rom-slot-edit';edit.title='Crop or replace this capture';edit.setAttribute('aria-label','Edit '+def.label);edit.textContent='✎';
     edit.addEventListener('click',e=>{e.stopPropagation();openFrameEditMenu(v.uid,edit)});wrap.appendChild(edit)
    }
+   const info=document.createElement('button');info.type='button';info.className='rom-slot-info';
+   info.textContent='i';info.setAttribute('aria-label','How to measure '+def.label);
+   info.title='How to measure '+def.label;
+   info.addEventListener('click',event=>{event.preventDefault();event.stopPropagation();window.KineticaROMGuide30?.open(def.key,def.label,def.slot)});
+   wrap.appendChild(info);
    grid.appendChild(wrap)
   }
   section.append(heading,grid);fragment.appendChild(section)
@@ -2339,4 +2345,5 @@ updateModeUI();updateDocumentTitle();updateGallery();requestAnimationFrame(updat
 
 renderPalette();setTool('select');switchDocument(0);restoreCached();})();
 </script>
+<script src="./rom-guides-v30.js?v=30" defer></script>
 </body></html>
