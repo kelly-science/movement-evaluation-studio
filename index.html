@@ -501,7 +501,7 @@ body:not(.rom-mode) #romSelectWrap{display:none!important}
 .rom-slot-edit{position:absolute;top:4px;left:4px;background:#263444e8;color:#ebf4ff;border:1px solid #ffffff65;border-radius:6px;padding:3px;min-width:24px;min-height:24px;display:grid;place-items:center;font-size:12px}
 .rom-slot-edit:hover{background:#4d6683}
 body.rom-mode .movement-only{display:none!important}
-body.rom-mode [data-tool]:not([data-tool="text"]):not([data-tool="rom"]){display:none!important}
+body.rom-mode [data-tool]:not([data-tool="select"]):not([data-tool="text"]):not([data-tool="rom"]){display:none!important}
 body.rom-mode .rom-gallery{display:block}
 body.rom-mode #frameCategory{pointer-events:none}
 body.rom-mode .frame-properties{display:none!important}
@@ -613,7 +613,7 @@ body.rom-mode #viewMenuWrap{display:none!important}
 
 /* KINETICA JOINT ACTIONS v31 — exercise gallery, paused animation previews */
 body.joint-mode .movement-only,body.joint-mode #romGallery,body.joint-mode #romSelectWrap,body.joint-mode #viewMenuWrap{display:none!important}
-body.joint-mode [data-tool]:not([data-tool="joint"]):not([data-tool="rom"]){display:none!important}
+body.joint-mode [data-tool]:not([data-tool="select"]):not([data-tool="joint"]):not([data-tool="rom"]){display:none!important}
 body.joint-mode #frameProperties,body.joint-mode #frameCategory{display:none!important}
 body.joint-mode .joint-gallery{display:block!important}
 body.joint-mode .gallery-heading-title{font-size:14px}
@@ -1798,8 +1798,8 @@ if(isSelected&&a.type!=='bone'&&a.type!=='muscle'){const p=annotationAnchor(a);c
 c.restore()}
 function draw(){const v=current(),src=visibleSource(v),r=canvas.getBoundingClientRect();if(!src||!r.width||!r.height)return;ctx.setTransform(canvas.width/r.width,0,0,canvas.height/r.height,0,0);ctx.clearRect(0,0,r.width,r.height);ctx.fillStyle='#06080c';ctx.fillRect(0,0,r.width,r.height);try{ctx.drawImage(src,0,0,r.width,r.height)}catch(e){}if(v.preview)return;v.annotations.forEach((a,i)=>drawOne(ctx,a,r.width,r.height,{selected:i===selected}));if(draft)drawOne(ctx,draft,r.width,r.height);if(romDraft)drawOne(ctx,romDraft,r.width,r.height)}
 function setTool(t){
- if(projectType==='rom'&&!['text','rom'].includes(t))t='rom';
- if(projectType==='joint'&&!['joint','rom'].includes(t))t='joint';
+ if(projectType==='rom'&&!['select','text','rom'].includes(t))t='rom';
+ if(projectType==='joint'&&!['select','joint','rom'].includes(t))t='joint';
  rememberCreationFields();
  tool=t;selected=-1;romReposition=false;romDraft=null;romPointActive=0;
  document.querySelectorAll('[data-tool]').forEach(b=>{const on=b.dataset.tool===t;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on))});
