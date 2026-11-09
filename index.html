@@ -816,7 +816,7 @@ body.joint-mode .frame-buttons button{min-width:0}
       <button type="button" class="tactile" id="romNew" style="width:100%;min-height:39px;font-size:10px">＋ NEW ROM MEASUREMENT</button>
       <p class="field-tip">Included is the angle between the arms (0–180°). From straight is 180° minus the included angle. Use your lab's joint-specific convention.</p>
     </div>
-    <div class="fieldgroup hidden" id="jointFields"><label for="jointType">SYNOVIAL JOINT TYPE</label><select class="select-well" id="jointType"><option>Hinge</option><option>Ball-and-socket</option><option>Pivot</option><option>Condyloid</option><option>Saddle</option><option>Plane (gliding)</option></select></div>
+    <div class="fieldgroup hidden" id="jointFields"><label for="jointType">SYNOVIAL JOINT TYPE</label><select class="select-well" id="jointType"><option>Gliding</option><option selected>Hinge</option><option>Pivot</option><option>Ellipsoid</option><option>Saddle</option><option>Ball and Socket</option></select></div>
     <div class="fieldgroup hidden" id="muscleFields"><p class="field-tip">Use one color consistently for each named muscle. The export includes a color key.</p></div>
     <div class="fieldgroup hidden" id="arrowFields"><label for="movementType">MOVEMENT TYPE</label><select class="select-well" id="movementType"><option>Flexion</option><option>Extension</option><option>Abduction</option><option>Adduction</option><option>Rotation</option><option>Medial rotation</option><option>Lateral rotation</option><option>Circumduction</option><option>Dorsiflexion</option><option>Plantar flexion</option><option>Elevation</option><option>Depression</option><option>Pronation</option><option>Supination</option><option>Other</option></select><p class="field-tip">Drag the arrow toward the direction of movement.</p></div>
     <div class="fieldgroup hidden" id="styleFields">
@@ -878,6 +878,20 @@ const viewNames=['FRONTAL','SAGITTAL'];
 const frameCategories=['ROM','Muscles','Skeletal','Joints','Movement','Other'];
 let documentCounter=0;
 const newDocId=()=>`frame_${Date.now().toString(36)}_${(++documentCounter).toString(36)}_${Math.random().toString(36).slice(2,7)}`;
+// Kinetica v32: exact six synovial joint classes from the classroom lecture.
+// Preserve older annotations that stored textbook synonyms when projects are reopened.
+const LECTURE_SYNOVIAL_TYPES = Object.freeze(['Gliding','Hinge','Pivot','Ellipsoid','Saddle','Ball and Socket']);
+function canonicalSynovialType(value){
+ const raw=String(value??'').trim();
+ if(!raw)return 'Hinge';
+ const key=raw.toLowerCase().replace(/[\u2010-\u2015]/g,'-').replace(/\s+/g,' ').trim();
+ const aliases={
+  'plane (gliding)':'Gliding','plane':'Gliding','plane joint':'Gliding','gliding joint':'Gliding',
+  'condyloid':'Ellipsoid','condylar':'Ellipsoid','ellipsoidal':'Ellipsoid','ellipsoid joint':'Ellipsoid',
+  'ball-and-socket':'Ball and Socket','ball & socket':'Ball and Socket','ball and socket joint':'Ball and Socket','ball-and-socket joint':'Ball and Socket'
+ };
+ return aliases[key]||LECTURE_SYNOVIAL_TYPES.find(label=>label.toLowerCase()===key)||raw;
+}
 const help={select:'Tap any existing annotation or its label to edit or move it. You can do this with any drawing tool active.',joint:'Enter the joint name and select its synovial type, then tap the joint location.',bone:'Enter the bone name, then draw in empty space. Tap any existing annotation to edit or drag it.',muscle:'Enter a visible Set 1 or 2 muscle, then draw in empty space. Tap an existing trace to edit or move it.',arrow:'Choose a movement type, then drag an arrow on empty space. Tap an existing arrow to edit or move it.',text:'Enter a label, then tap the photo where you want it.',rom:'Place the fulcrum, stationary arm and moving arm. Drag the colored markers to adjust. Angles update live.'};
 let views=[makeView(0),makeView(1)],active=0,tool='select',selected=-1,drag=null,draft=null;
 
@@ -1195,7 +1209,7 @@ function populateInspector(){
  $('strokeWidthValue').textContent=Number($('strokeWidth').value)+' px';
  $('labelSize').value=String(item?.labelScale||preset?.labelScale||style.labelScale);
  $('labelInput').value=item?.label||preset?.label||'';
- if(type==='joint')$('jointType').value=item?.jointType||preset?.jointType||'Hinge';
+ if(type==='joint')$('jointType').value=canonicalSynovialType(item?.jointType||preset?.jointType||'Hinge');
  if(type==='arrow')$('movementType').value=item?.movement||preset?.movement||'Flexion';
  $('labelInput').placeholder=type==='joint'?'e.g., shoulder, knee':type==='bone'?'e.g., humerus, femur':type==='muscle'?'e.g., biceps brachii':type==='arrow'?'Optional: knee flexion':type==='rom'?'Optional: elbow ROM':'Annotation text';
  renderPalette();
@@ -1608,7 +1622,7 @@ const label=$('labelInput').value.trim().slice(0,120);
 if((tool==='bone'||tool==='muscle'||tool==='text'||tool==='joint')&&!label){toast('Enter an annotation label first.');$('labelInput').focus();return null}
 const style=toolStyles[tool]||toolStyles.text;
 const base={id:id(),type:tool,label,color:chosenColor||style.color,strokeWidth:Number($('strokeWidth').value)||style.width,labelScale:Number($('labelSize').value)||style.labelScale};
-if(tool==='joint'){base.jointType=$('jointType').value}
+if(tool==='joint'){base.jointType=canonicalSynovialType($('jointType').value)}
 if(tool==='muscle'){const existing=allAnnotations().find(a=>a.type==='muscle'&&a.label.toLowerCase()===label.toLowerCase());if(existing){base.color=existing.color}else{const used=new Set(allAnnotations().filter(a=>a.type==='muscle').map(a=>a.color));if(used.has(base.color))base.color=colors.find(c=>!used.has(c))||base.color;chosenColor=base.color;style.color=base.color;renderPalette()}}
 if(tool==='arrow'){base.movement=$('movementType').value;base.label=label||base.movement}
 if(tool==='rom'){base.label=label||'ROM';base.points=[null,null,null];base.angleMode=romMode}
@@ -1806,7 +1820,7 @@ function applySelectedProperty(property){
    if(!label&&a.type!=='rom')return; // Permit temporarily empty editing fields.
    a.label=label||'ROM';break;
   }
-  case 'jointType':if(a.type==='joint')a.jointType=$('jointType').value;break;
+  case 'jointType':if(a.type==='joint')a.jointType=canonicalSynovialType($('jointType').value);break;
   case 'movement':if(a.type==='arrow')a.movement=$('movementType').value;break;
   case 'color':a.color=chosenColor;break;
   case 'strokeWidth':a.strokeWidth=Number($('strokeWidth').value)||a.strokeWidth||4;break;
@@ -1945,7 +1959,7 @@ function hydrateProject(d){
   const plane=(src.plane==='SAGITTAL'||src.plane===1||src.plane==='Sagittal')?1:0;
   const category=frameCategories.includes(src.category)?src.category:'Other';
   const v=makeView(plane,category,String(src.name||'').slice(0,75));v.uid=String(src.uid||newDocId());if(romDefinitions.some(def=>def.key===src.romKey))v.romKey=src.romKey;if(jointKeys.has(src.jointKey))v.jointKey=src.jointKey;
-  v.annotations=Array.isArray(src.annotations)?src.annotations:[];
+  v.annotations=Array.isArray(src.annotations)?src.annotations.map(a=>a?.type==='joint'?{...a,jointType:canonicalSynovialType(a.jointType)}:a):[];
   v.frameLabel=String(src.frameLabel||'Captured frame');
   if(typeof src.cropBaseSrc==='string'&&/^data:image\/(jpeg|png|webp);base64,/i.test(src.cropBaseSrc))v.cropBaseSrc=src.cropBaseSrc;
   if(src.cropBounds&&[src.cropBounds.x,src.cropBounds.y,src.cropBounds.w,src.cropBounds.h].every(Number.isFinite))v.cropBounds={...src.cropBounds};
