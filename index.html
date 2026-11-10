@@ -470,6 +470,18 @@ body:not(.rom-mode) #romSelectWrap{display:none!important}
   color:#b9cfe3;padding:8px 10px 9px;border-bottom:1px solid #ffffff22}
 .rom-select-tier{font-size:10px;line-height:1.45;font-weight:850;letter-spacing:.075em;text-transform:uppercase;color:#b9d9f9;background:#25394c;padding:10px 13px;margin-top:10px;border-top:1px solid #52677c}
 .rom-select-tier:first-child{margin-top:0;border-top:0}
+/* KINETICA_V38_ADVANCED_ROM_ALL_TOGGLE: Advanced ROM master checkbox; same visual language as the slot checks. */
+.rom-select-tier.rom-select-tier-advanced{padding:10px 13px}
+.rom-select-tier-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:0;background:transparent;border:0;color:inherit;font:inherit;letter-spacing:inherit;
+  text-transform:inherit;text-align:left;cursor:pointer}
+.rom-select-tier-toggle:hover{color:#e3f1ff}
+.rom-select-tier-toggle:focus-visible{outline:2px solid #add5fa;outline-offset:5px;border-radius:2px}
+.rom-select-tier-toggle .rom-select-check{margin-left:auto}
+.rom-select-tier-toggle[aria-checked="true"] .rom-select-check,
+.rom-select-tier-toggle[aria-checked="mixed"] .rom-select-check{background:#567ca5;border-color:#add5fa;color:#f3f8ff}
+.rom-select-tier-toggle[aria-checked="mixed"] .rom-select-check{font-size:15px}
+
 .rom-select-heading{font-size:10px;font-weight:750;line-height:1.4;
   letter-spacing:.01em;color:#c8d9e9;padding:11px 9px 5px;
   border-top:1px solid #ffffff1b}
@@ -1015,6 +1027,7 @@ const romDefinitions=romGroups.flatMap((group,groupIndex)=>group[1].map((slot,sl
 // All 30 measurements newly added from ADV ROM Lab (pages 3–4) start off.
 // Stable rom-{groupIndex}-{slotIndex} keys preserve previously saved projects.
 const CORE_ROM_GROUP_COUNT=10;
+const advancedROMKeys=romDefinitions.filter(def=>def.groupIndex>=CORE_ROM_GROUP_COUNT).map(def=>def.key);
 const defaultROMKeys=()=>romDefinitions.filter(def=>def.groupIndex<CORE_ROM_GROUP_COUNT).map(def=>def.key);
 const allROMKeys=new Set(romDefinitions.map(def=>def.key));
 let enabledROMKeys=new Set(defaultROMKeys());
@@ -2438,13 +2451,35 @@ function refreshROMSelections(){
   b.setAttribute('aria-checked',String(on));
   b.querySelector('.rom-select-check').textContent=on?'✓':'';
  });
+ // Reflect all / some / none so individual switches keep the master in sync.
+ const master=$('romAdvancedToggle');
+ if(master){
+  const selected=advancedROMKeys.filter(key=>enabledROMKeys.has(key)).length;
+  const state=selected===advancedROMKeys.length?'true':selected===0?'false':'mixed';
+  master.setAttribute('aria-checked',state);
+  master.querySelector('.rom-select-check').textContent=state==='true'?'✓':state==='mixed'?'−':'';
+  master.title=selected+' of '+advancedROMKeys.length+' advanced measurements enabled';
+ }
 }
 function buildROMOptions(){
  const host=$('romSelectOptions'),frag=document.createDocumentFragment();
  for(const [index,group] of romGroups.entries()){
   if(index===0||index===CORE_ROM_GROUP_COUNT){
    const tier=document.createElement('div');tier.className='rom-select-tier';
-   tier.textContent=index===0?'Regular ROM Lab':'Additional Advanced ROM · Optional';
+   if(index===0){tier.textContent='Regular ROM Lab'}
+   else{
+    tier.classList.add('rom-select-tier-advanced');
+    const toggle=document.createElement('button');
+    toggle.type='button';toggle.id='romAdvancedToggle';toggle.className='rom-select-tier-toggle';
+    toggle.setAttribute('role','checkbox');toggle.setAttribute('aria-checked','false');
+    toggle.setAttribute('aria-label','Enable all Additional Advanced ROM measurements');
+    const label=document.createElement('span');label.textContent='Additional Advanced ROM';
+    const check=document.createElement('span');check.className='rom-select-check';
+    check.setAttribute('aria-hidden','true');
+    toggle.append(label,check);
+    toggle.addEventListener('click',toggleAllAdvancedROM);
+    tier.appendChild(toggle);
+   }
    frag.appendChild(tier);
   }
   const heading=document.createElement('div');heading.className='rom-select-heading';heading.textContent=group[0];frag.appendChild(heading);
@@ -2458,6 +2493,22 @@ function buildROMOptions(){
   });
  }
  host.replaceChildren(frag);refreshROMSelections();
+}
+function toggleAllAdvancedROM(){
+ if(projectType!=='rom')return;
+ const areAllEnabled=advancedROMKeys.every(key=>enabledROMKeys.has(key));
+ if(areAllEnabled){
+  // Preserve the app's existing invariant: at least one measurement is visible.
+  if(enabledROMKeys.size===advancedROMKeys.length){
+   toast('Keep at least one ROM measurement selected before disabling all Advanced ROM.');
+   return;
+  }
+  advancedROMKeys.forEach(key=>enabledROMKeys.delete(key));
+ }else advancedROMKeys.forEach(key=>enabledROMKeys.add(key));
+ if(current().romKey&&!isROMEnabled(current().romKey)){
+  const next=firstEnabledROMIndex(true);if(next>=0)switchDocument(next);
+ }
+ refreshROMSelections();updateGallery();updateUI();queueAutosave(true);
 }
 function toggleROMSelection(key){
  if(projectType!=='rom')return;
