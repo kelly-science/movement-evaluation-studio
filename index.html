@@ -425,6 +425,15 @@ body{padding:0;background:#30343b;color:var(--text)}
 .crop-dialog-footer button:hover{background:#5c7693}
 @media(max-width:600px){.crop-dialog{padding:13px}.crop-dialog-footer button{flex:1}.crop-stage{max-height:54vh}.crop-stage canvas{max-height:52vh}}
 
+/* Kinetica Studio v37 — red destructive photo actions, independent of annotation deletion. */
+.menu-dropdown .menu-action.menu-danger:not(:disabled),
+.frame-edit-menu button.frame-menu-danger:not(:disabled){color:#ffaaaa}
+.menu-dropdown .menu-action.menu-danger:hover:not(:disabled),
+.menu-dropdown .menu-action.menu-danger:focus-visible,
+.frame-edit-menu button.frame-menu-danger:hover:not(:disabled),
+.frame-edit-menu button.frame-menu-danger:focus-visible{background:#69353d;color:#ffe1e1}
+.menu-dropdown .menu-action.menu-danger:disabled{color:#a7aeb8;opacity:.45}
+
 /* Kinetica Studio v20 — viewport-centered header notifications and precise pill spacing.
    The toast is fixed to the viewport center on X, while JS aligns Y to the
    sticky header's actual on-screen center (including wrapped mobile headers). */
@@ -779,6 +788,7 @@ body.joint-mode .frame-buttons button{min-width:0}
           <button type="button" class="menu-action" id="menuCropImage">Crop Image…</button>
           <button type="button" class="menu-action" data-click="deleteBtn" data-mirror="deleteBtn">Delete Selected</button>
           <button type="button" class="menu-action" data-click="clearBtn" data-mirror="clearBtn">Clear Current Plane…</button>
+          <button type="button" class="menu-action menu-danger" id="menuDeletePhoto" aria-label="Delete current photo and its annotations">Delete Photo…</button>
         </div>
       </div>
       <div class="menu-wrap" id="viewMenuWrap">
@@ -909,6 +919,7 @@ body.joint-mode .frame-buttons button{min-width:0}
 <div id="frameEditMenu" class="frame-edit-menu hidden" role="menu" aria-label="Frame editing options">
   <button type="button" id="cropFrameOption" role="menuitem">Crop image…</button>
   <button type="button" id="replaceFrameOption" role="menuitem">Choose another frame…</button>
+  <button type="button" id="deleteFramePhotoOption" class="frame-menu-danger" role="menuitem">Delete Photo…</button>
   <p id="frameEditMessage">Choose a crop or select a different frame.</p>
 </div>
 <dialog id="cropDialog" class="crop-dialog" aria-labelledby="cropTitle">
@@ -1503,6 +1514,11 @@ $('cropFrameOption').addEventListener('click',()=>{
 });
 $('replaceFrameOption').addEventListener('click',()=>{
  const idx=views.findIndex(v=>v.uid===editMenuTargetId);closeFrameEditMenu();if(idx>=0){showROMPhonePage('editor',{index:idx});reopenCapturedFrame(idx);}
+});
+$('deleteFramePhotoOption').addEventListener('click',()=>{
+ const uid=editMenuTargetId;closeFrameEditMenu();
+ const v=views.find(item=>item.uid===uid);
+ if(v)deleteCurrentPhoto(v);
 });
 document.addEventListener('pointerdown',e=>{
  if(!$('frameEditMenu').classList.contains('hidden')&&!e.target.closest('#frameEditMenu')&&!e.target.closest('.gallery-edit'))closeFrameEditMenu();
@@ -2550,6 +2566,7 @@ shortcutsDialog.addEventListener('click',event=>{
 function syncMenuActions(){
   document.querySelectorAll('[data-click]').forEach(button=>{button.disabled=$(button.dataset.click).disabled});
   $('menuCropImage').disabled=!current().frameSrc;
+  $('menuDeletePhoto').disabled=!(current().frameSrc||current().preview||current().source);
   document.querySelectorAll('[data-plane-menu]').forEach(button=>{
     const currentPlane=Number(button.dataset.planeMenu)===current().plane;
     button.setAttribute('aria-current',currentPlane?'true':'false');
@@ -2575,6 +2592,7 @@ $('menuCropImage').addEventListener('click',()=>{
  if(isROMPhone()&&romPhonePage==='gallery')showROMPhonePage('editor',{index:active});
  openCropEditor(active);
 });
+$('menuDeletePhoto').addEventListener('click',()=>{closeMenus();deleteCurrentPhoto(current());});
 $('closeAnnotations').addEventListener('click',closeAnnotations);
 $('doneAnnotations').addEventListener('click',closeAnnotations);
 annotationsDialog.addEventListener('click',event=>{if(event.target===annotationsDialog)closeAnnotations()});
@@ -2752,6 +2770,30 @@ function updateFrameProperties(){
 }
 $('frameName').addEventListener('input',e=>{current().name=e.target.value.slice(0,75);updateGallery();queueAutosave()});
 $('frameCategory').addEventListener('change',e=>{current().category=e.target.value;updateGallery();queueAutosave()});
+function deleteCurrentPhoto(v=current()){
+ const idx=views.indexOf(v);
+ if(idx<0)return false;
+ if(!v.frameSrc&&!v.preview&&!v.source){toast('There is no photo or video frame to delete.');return false}
+ if(!confirm('Delete Photo?\n\nThis will permanently remove the current photo or video frame and ALL of its annotations. This cannot be undone. Other measurements and photos will be preserved.'))return false;
+ // Keep this document's identity (especially required ROM and Joint Actions slots).
+ // Only the captured media and annotations belong to the deletion.
+ if(inlineLabel)finishInlineLabel('cancel');
+ disposeSource(v);
+ v.frameSrc=null;v.frameImg=null;v.frameLabel='';v.preview=false;
+ v.cropBaseSrc=null;v.cropBounds=null;v.replacementApproved=false;
+ v.annotations=[];
+ undo=[];redo=[];selected=-1;draft=null;romDraft=null;drag=null;
+ romReposition=false;romPointActive=0;
+ pendingNew=null;
+ if(v===current()){
+   populateInspector();syncCanvas();updateFrameProperties();updateUI();draw();
+ }else{
+   updateGallery();updateUI();
+ }
+ queueAutosave(true);
+ toast('Photo deleted. The measurement and other photos are preserved.');
+ return true;
+}
 function deleteFrame(uid){
  const i=views.findIndex(v=>v.uid===uid);if(i<0)return;
  const v=views[i];if(!confirm('Delete this '+viewNames[v.plane].toLowerCase()+' '+v.category+' frame and all its annotations?'))return;
