@@ -682,8 +682,21 @@ body.joint-mode .frame-buttons button{min-width:0}
 .save-center-note{font-size:12px;line-height:1.55;color:#aebfcd;border-top:1px solid #ffffff20;padding-top:12px}
 @media(max-width:540px){.save-center-actions{grid-template-columns:1fr}.save-center-dialog{max-height:91dvh}.save-center-head{padding:14px 16px}.save-center-body{padding:13px 16px}.save-center-preview{max-height:30vh}.save-center-preview img{max-height:27vh}}
 
+/* Kinetica v35 — direct-on-canvas text editing for every annotation tool. */
+.canvas-label-editor{
+ position:absolute;z-index:18;display:block;max-width:calc(100% - 8px);
+ min-height:34px;padding:5px 9px;border-radius:8px;
+ border:2px solid #9dceff;background:#192a3beF;color:#f4f9ff;
+ box-shadow:0 0 0 3px #79bfff44,0 7px 20px #0009;
+ font:650 16px/1.25 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+ outline:none;caret-color:#b5dcff;touch-action:manipulation;
+}
+.canvas-label-editor::placeholder{color:#a7bed2;opacity:1}
+.canvas-label-editor:focus{outline:0}
+@media(prefers-reduced-motion:reduce){.canvas-label-editor{transition:none}}
 </style>
   <link rel="stylesheet" href="./rom-guides-v30.css?v=30">
+<meta name="kinetica-release" content="v35-inline-annotation-editing">
 </head>
 <body>
 <div class="device">
@@ -813,7 +826,7 @@ body.joint-mode .frame-buttons button{min-width:0}
     <div class="joint-gallery" id="jointGallery" hidden aria-label="Joint Actions exercise gallery"></div>
   </aside>
 <section class="center" aria-label="Movement canvas">
-  <div class="bezel"><div class="oled"><div class="screen-head"><span id="screenTitle">FRONTAL PLANE · NO FRAME</span><span class="screen-tag" id="screenTag">STANDBY</span></div><div id="stage" class="stage empty-screen"><div class="empty" id="empty"><div class="empty-symbol">⌁</div><h3>CAPTURE YOUR PEAK MOVEMENT</h3><p>Upload a frontal- or sagittal-plane screenshot, or scrub a slow-motion video and choose the exact peak frame.</p></div><div id="pictureFrame" class="picture-frame hidden"><canvas id="canvas" aria-label="Movement photo and interactive anatomical annotations"></canvas><div id="overlayNotice" class="screen-overlay hidden"></div></div></div></div></div>
+  <div class="bezel"><div class="oled"><div class="screen-head"><span id="screenTitle">FRONTAL PLANE · NO FRAME</span><span class="screen-tag" id="screenTag">STANDBY</span></div><div id="stage" class="stage empty-screen"><div class="empty" id="empty"><div class="empty-symbol">⌁</div><h3>CAPTURE YOUR PEAK MOVEMENT</h3><p>Upload a frontal- or sagittal-plane screenshot, or scrub a slow-motion video and choose the exact peak frame.</p></div><div id="pictureFrame" class="picture-frame hidden"><canvas id="canvas" aria-label="Movement photo and interactive anatomical annotations"></canvas><input id="canvasLabelEditor" type="text" class="canvas-label-editor hidden" maxlength="120" autocomplete="off" spellcheck="false" aria-label="Annotation label. Press Enter to finish, Escape to cancel" placeholder="Type annotation name, then Enter"><div id="overlayNotice" class="screen-overlay hidden"></div></div></div></div></div>
   <div class="frame-properties" id="frameProperties">
     <label>Frame name<input id="frameName" type="text" maxlength="75" placeholder="e.g., Frontal ROM" autocomplete="off"></label>
     <label>Category<select id="frameCategory"><option value="ROM">ROM</option><option value="Muscles">Muscles</option><option value="Skeletal">Skeletal</option><option value="Joints">Joints</option><option value="Movement">Movement</option><option value="Other">Other</option></select></label>
@@ -856,7 +869,7 @@ body.joint-mode .frame-buttons button{min-width:0}
 </div>
   <dialog class="checklist-dialog annotation-dialog" id="annotationsDialog" aria-labelledby="annotationsTitle">
     <div class="dialog-header"><div><div class="dialog-overline">CURRENT PLANE</div><h2 id="annotationsTitle">MANAGE ANNOTATIONS</h2></div><button class="tactile dialog-close" type="button" id="closeAnnotations" aria-label="Close annotations">✕</button></div>
-    <p class="dialog-description">Choose an annotation to edit its appearance or label in Tool Options. Use Edit → Delete Selected to remove it.</p>
+    <p class="dialog-description">Choose an annotation to adjust its options. Tap its label directly on the photo to rename it; drag the annotation to move it.</p>
     <div id="annotationList" class="selected-list"><p class="hint">No annotations yet.</p></div>
     <div class="dialog-footer"><button class="tactile primary" id="doneAnnotations" type="button">DONE</button></div>
   </dialog>
@@ -871,6 +884,8 @@ body.joint-mode .frame-buttons button{min-width:0}
     <div><span>Save project locally</span><kbd>⌘ / Ctrl + S</kbd></div>
     <div><span>Undo</span><kbd>⌘ / Ctrl + Z</kbd></div>
     <div><span>Redo</span><kbd>⌘ / Ctrl + Shift + Z</kbd></div>
+    <div><span>Finish naming annotation</span><kbd>Enter</kbd></div>
+    <div><span>Cancel naming annotation</span><kbd>Esc</kbd></div>
     <div><span>Delete selected annotation</span><kbd>Delete / Backspace</kbd></div>
     <div><span>Deselect / close menu</span><kbd>Esc</kbd></div>
   </div>
@@ -939,7 +954,7 @@ function canonicalSynovialType(value){
  };
  return aliases[key]||LECTURE_SYNOVIAL_TYPES.find(label=>label.toLowerCase()===key)||raw;
 }
-const help={select:'Tap any existing annotation or its label to edit or move it. You can do this with any drawing tool active.',joint:'Enter the joint name and select its synovial type, then tap the joint location.',bone:'Enter the bone name, then draw in empty space. Tap any existing annotation to edit or drag it.',muscle:'Enter a visible Set 1 or 2 muscle, then draw in empty space. Tap an existing trace to edit or move it.',arrow:'Choose a movement type, then drag an arrow on empty space. Tap an existing arrow to edit or move it.',text:'Enter a label, then tap the photo where you want it.',rom:'Place the fulcrum, stationary arm and moving arm. Drag the colored markers to adjust. Angles update live.'};
+const help={select:'Tap an existing label to rename it, or drag any annotation to reposition it.',joint:'Tap the joint location, type its name on the photo, then press Enter. Tap another location to label another joint.',bone:'Trace the bone, type its name on the photo, then press Enter. The tool remains ready for another bone.',muscle:'Trace the muscle, type its name on the photo, then press Enter. Use the same name/color consistently.',arrow:'Select the movement type, drag an arrow, then confirm or edit its label with Enter.',text:'Tap the photo, type the label directly on it, and press Enter. Tap elsewhere for the next label.',rom:'Place the fulcrum, stationary arm and moving arm, then confirm or name the measurement with Enter. Markers remain draggable.'};
 let views=[makeView(0),makeView(1)],active=0,tool='select',selected=-1,drag=null,draft=null;
 
 // Slots from the Regular Anatomy ROM handout (pages 1–2) plus additional
@@ -1244,9 +1259,9 @@ function populateInspector(){
  const mode=type==='select'?'none':type;
  $('inspectorTitle').textContent=inspectorNames[type]+' OPTIONS';
  $('inspectorHelp').textContent=item?'Editing selected '+item.type+' annotation. Changes appear immediately.':type==='select'?'Select an annotation on the photo or choose Edit → Manage Annotations.':'';
- ['nameField','jointFields','muscleFields','arrowFields','styleFields','romFields'].forEach(i=>$(i).classList.toggle('hidden',i==='nameField'||i==='styleFields'?mode==='none':(i==='jointFields'&&mode!=='joint'||i==='muscleFields'&&mode!=='muscle'||i==='arrowFields'&&mode!=='arrow'||i==='romFields'&&mode!=='rom')));
+ ['nameField','jointFields','muscleFields','arrowFields','styleFields','romFields'].forEach(i=>$(i).classList.toggle('hidden',i==='nameField'?(!item||mode==='none'):i==='styleFields'?mode==='none':(i==='jointFields'&&mode!=='joint'||i==='muscleFields'&&mode!=='muscle'||i==='arrowFields'&&mode!=='arrow'||i==='romFields'&&mode!=='rom')));
  $('strokeField').classList.toggle('hidden',!['bone','muscle','arrow','rom'].includes(type));
- $('inspectorFootnote').textContent=item?'Changes appear immediately and are included in project saves and exports.':'Tip: Drawing controls are saved automatically with each new annotation.';
+ $('inspectorFootnote').textContent=item?'Tap the annotation label on the photo to rename; other settings apply automatically.':'Place the object on the photo first, then type its label and press Enter.';
  if(type==='select')return;
  if(type==='rom'){romMode=item?.angleMode||romDraft?.angleMode||romMode;romPointActive=romPointActive??0;updateROMInspector();}
  const style=toolStyles[type]||toolStyles.text;
@@ -1356,8 +1371,8 @@ function remember(before,index=active,mergeKey=null){
  redo=[];updateUI();
 }
 function replaceAnnotation(index,items){views[index].annotations=deepcopy(items);selected=-1;populateInspector();updateUI();draw()}
-function undoAction(){const entry=undo.pop();if(!entry)return;redo.push(entry);active=entry.index;selected=-1;replaceAnnotation(active,entry.before);switchDocument(active)}
-function redoAction(){const entry=redo.pop();if(!entry)return;undo.push(entry);active=entry.index;selected=-1;replaceAnnotation(active,entry.after);switchDocument(active)}
+function undoAction(){if(inlineLabel){finishInlineLabel('cancel');return}const entry=undo.pop();if(!entry)return;redo.push(entry);active=entry.index;selected=-1;replaceAnnotation(active,entry.before);switchDocument(active)}
+function redoAction(){if(inlineLabel){finishInlineLabel('cancel');return}const entry=redo.pop();if(!entry)return;undo.push(entry);active=entry.index;selected=-1;replaceAnnotation(active,entry.after);switchDocument(active)}
 function disposeSource(v){if(v.source?.video){v.source.video.pause();v.source.video.removeAttribute('src');v.source.video.load();v.source.video.remove()}if(v.source?.url)URL.revokeObjectURL(v.source.url);v.source=null;v.preview=false}
 function addImageToView(v,src,label){const im=new Image();im.onload=()=>{v.frameImg=im;v.frameSrc=src;v.frameLabel=label||'Captured frame';v.preview=false;updateGallery();if(v===current()){selected=-1;syncCanvas();updateFrameProperties();updateUI();draw()}else queueAutosave()};im.onerror=()=>toast('This image could not be decoded.');im.src=src}
 function saveSnapshot(source,w,h){const limit=2200,scale=Math.min(1,limit/Math.max(w,h)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(w*scale));c.height=Math.max(1,Math.round(h*scale));c.getContext('2d').drawImage(source,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.91)}
@@ -1607,13 +1622,14 @@ function visibleSource(v){if(v.preview&&v.source?.ready)return v.source.video;if
 function sourceSize(v){const s=visibleSource(v);if(!s)return{w:16,h:9};return s instanceof HTMLVideoElement?{w:s.videoWidth,h:s.videoHeight}:{w:s.naturalWidth,h:s.naturalHeight}}
 function switchDocument(index){
  if(index<0||index>=views.length)return;
+ if(inlineLabel)finishInlineLabel(inlineLabelInput.value.trim()?'save':'cancel');
  active=index;selected=-1;draft=null;romDraft=null;romPointActive=0;romReposition=false;drag=null;
  document.querySelectorAll('[data-plane]').forEach(b=>{const yes=Number(b.dataset.plane)===current().plane;b.classList.toggle('active',yes);b.setAttribute('aria-pressed',String(yes))});
  populateInspector();syncCanvas();updateFrameProperties();updateUI();draw();
 }
 function switchPlane(plane){const index=views.findIndex(v=>v.plane===plane&&v.frameSrc);const empty=views.findIndex(v=>v.plane===plane);switchDocument(index>=0?index:empty)}
 function syncCanvas(){const v=current(),source=visibleSource(v);$('empty').classList.toggle('hidden',!!source);$('pictureFrame').classList.toggle('hidden',!source);$('stage').classList.toggle('empty-screen',!source);const{w,h}=sourceSize(v);$('pictureFrame').style.setProperty('--aspect',String(w/h));requestAnimationFrame(resizeCanvas)}
-function resizeCanvas(){const rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;const dpr=Math.min(2,devicePixelRatio||1);const w=Math.round(rect.width*dpr),h=Math.round(rect.height*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}draw()}
+function resizeCanvas(){const rect=canvas.getBoundingClientRect();if(!rect.width||!rect.height)return;const dpr=Math.min(2,devicePixelRatio||1);const w=Math.round(rect.width*dpr),h=Math.round(rect.height*dpr);if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}positionInlineLabel();draw()}
 function normalized(e){const r=canvas.getBoundingClientRect();return{x:clamp((e.clientX-r.left)/r.width),y:clamp((e.clientY-r.top)/r.height)}}
 function pointToCanvas(p,w,h){return{x:p.x*w,y:p.y*h}}
 function distanceToSegment(p,a,b){let dx=b.x-a.x,dy=b.y-a.y;let d=dx*dx+dy*dy;const t=d?clamp(((p.x-a.x)*dx+(p.y-a.y)*dy)/d):0;return Math.hypot(p.x-a.x-t*dx,p.y-a.y-t*dy)}
@@ -1665,14 +1681,13 @@ function hitTest(pos){
 }
 function translate(a,dx,dy){const b=deepcopy(a);const move=p=>({x:clamp(p.x+dx),y:clamp(p.y+dy)});if(b.points)b.points=b.points.map(p=>p?move(p):null);else if(b.type==='arrow'){b.from=move(b.from);b.to=move(b.to)}else{const p=move({x:b.x,y:b.y});b.x=p.x;b.y=p.y}return b}
 function makeAnnotation(){
-const label=$('labelInput').value.trim().slice(0,120);
-if((tool==='bone'||tool==='muscle'||tool==='text'||tool==='joint')&&!label){toast('Enter an annotation label first.');$('labelInput').focus();return null}
+const label=''; // Label is entered on the photo after the object is positioned.
 const style=toolStyles[tool]||toolStyles.text;
 const base={id:id(),type:tool,label,color:chosenColor||style.color,strokeWidth:Number($('strokeWidth').value)||style.width,labelScale:Number($('labelSize').value)||style.labelScale};
 if(tool==='joint'){base.jointType=canonicalSynovialType($('jointType').value)}
-if(tool==='muscle'){const existing=allAnnotations().find(a=>a.type==='muscle'&&a.label.toLowerCase()===label.toLowerCase());if(existing){base.color=existing.color}else{const used=new Set(allAnnotations().filter(a=>a.type==='muscle').map(a=>a.color));if(used.has(base.color))base.color=colors.find(c=>!used.has(c))||base.color;chosenColor=base.color;style.color=base.color;renderPalette()}}
-if(tool==='arrow'){base.movement=$('movementType').value;base.label=label||base.movement}
-if(tool==='rom'){base.label=label||'ROM';base.points=[null,null,null];base.angleMode=romMode}
+if(tool==='muscle'){/* Match existing muscle colors after the student types its name. */}
+if(tool==='arrow'){base.movement=$('movementType').value;base.label=base.movement}
+if(tool==='rom'){base.label='ROM';base.points=[null,null,null];base.angleMode=romMode}
 return base}
 
 function allAnnotations(){return views.flatMap(v=>v.annotations)}
@@ -1714,11 +1729,103 @@ function hitROMMarker(p){
 }
 function setROMPoint(i){romPointActive=i;romReposition=current().annotations[selected]?.type==='rom';updateROMInspector()}
 function newROM(){
+ if(inlineLabel)finishInlineLabel(inlineLabelInput.value.trim()?'save':'cancel');
  if(!current().frameSrc||current().preview){toast('Capture a frame before placing the goniometer.');return}
  romDraft=null;romPointActive=0;romReposition=false;selected=-1;
  setTool('rom');updateROMInspector();draw();
 }
 
+// Kinetica v35: Photoshop/Docs-style place → inline label → Enter → place next.
+// The editor belongs to one photo and stores one creation/edit operation as one Undo step.
+let inlineLabel=null;
+const inlineLabelInput=$('canvasLabelEditor');
+function inlineLabelPlaceholder(type){
+ return ({joint:'Joint name (e.g., knee)',bone:'Bone name (e.g., femur)',muscle:'Muscle name (e.g., deltoid)',arrow:'Movement label (optional)',text:'Type your label',rom:'ROM measurement name (optional)'})[type]||'Annotation name';
+}
+function positionInlineLabel(){
+ if(!inlineLabel)return;
+ const v=views[inlineLabel.doc],a=v?.annotations?.[inlineLabel.index];
+ if(!a||v!==current())return;
+ const r=canvas.getBoundingClientRect();if(r.width<=0||r.height<=0)return;
+ const b=labelHitBounds(a,r.width,r.height);
+ const anchor=annotationAnchor(a);
+ const left=b?.left??(anchor.x*r.width+12);
+ const top=b?.top??(anchor.y*r.height-25);
+ const preferred=Math.max((b?.width||0)+16,(inlineLabelInput.value.length*8)+38);
+ const width=Math.min(r.width-8,Math.max(140,Math.min(280,preferred)));
+ inlineLabelInput.style.width=width+'px';
+ inlineLabelInput.style.left=clamp(left,4,Math.max(4,r.width-width-4))+'px';
+ inlineLabelInput.style.top=clamp(top,4,Math.max(4,r.height-39))+'px';
+}
+function beginInlineLabel(index,before,{fresh=false}={}){
+ if(inlineLabel)finishInlineLabel('save');
+ const v=current(),a=v.annotations[index];if(!a)return;
+ inlineLabel={doc:active,index,fresh,before:deepcopy(before)};
+ selected=index;populateInspector();updateUI();draw();
+ inlineLabelInput.value=fresh&&['joint','bone','muscle','text'].includes(a.type)?'':String(a.label||'');
+ inlineLabelInput.placeholder=inlineLabelPlaceholder(a.type);
+ inlineLabelInput.classList.remove('hidden');
+ positionInlineLabel();
+ inlineLabelInput.focus({preventScroll:true});
+ if(inlineLabelInput.value)inlineLabelInput.select();
+}
+function finishInlineLabel(action='save'){
+ const s=inlineLabel;if(!s)return true;
+ const v=views[s.doc],a=v?.annotations?.[s.index];
+ const raw=inlineLabelInput.value.trim().slice(0,120);
+ const needed=a&&['joint','bone','muscle','text'].includes(a.type);
+ if(action==='save'&&needed&&!raw&&document.activeElement===inlineLabelInput){
+  toast('Type a label and press Enter, or press Escape to cancel.');
+  inlineLabelInput.focus({preventScroll:true});return false;
+ }
+ inlineLabel=null;inlineLabelInput.classList.add('hidden');inlineLabelInput.value='';
+ if(document.activeElement===inlineLabelInput)inlineLabelInput.blur();
+ if(a){
+  if(action!=='save'||(needed&&!raw)){
+   // Discard newly created objects, or restore an edited object's original label.
+   if(s.fresh)v.annotations.splice(s.index,1);
+   else v.annotations=deepcopy(s.before);
+  }else{
+   a.label=raw||(a.type==='arrow'?a.movement:'ROM');
+   if(a.type==='muscle'){
+    const previous=views.flatMap(z=>z.annotations).find(z=>z!==a&&z.type==='muscle'&&z.label.toLowerCase()===a.label.toLowerCase());
+    if(previous)a.color=previous.color;
+    else if(s.fresh){
+     const used=new Set(views.flatMap(z=>z.annotations).filter(z=>z!==a&&z.type==='muscle').map(z=>z.color));
+     if(used.has(a.color))a.color=colors.find(c=>!used.has(c))||a.color;
+    }
+   }
+   remember(s.before,s.doc);
+  }
+ }
+ selected=(action==='save'&&a&&(!needed||raw)&&s.doc===active)?s.index:-1;
+ romReposition=false;
+ // The completed object stays selected for inspector edits; the next
+ // click on an empty part of the canvas creates the next annotation immediately.
+ if(s.doc===active){populateInspector();updateUI();draw()}
+ else queueAutosave();
+ return true;
+}
+inlineLabelInput.addEventListener('keydown',e=>{
+ if(e.key==='Enter'){e.preventDefault();e.stopPropagation();finishInlineLabel('save')}
+ else if(e.key==='Escape'){e.preventDefault();e.stopPropagation();finishInlineLabel('cancel')}
+});
+inlineLabelInput.addEventListener('input',positionInlineLabel);
+inlineLabelInput.addEventListener('blur',()=>{
+ if(!inlineLabel)return;
+ // A click elsewhere commits a complete label; blank drafts are discarded.
+ if(!inlineLabelInput.value.trim())finishInlineLabel('cancel');
+ else finishInlineLabel('save');
+});
+function labelAtPoint(pos){
+ const r=canvas.getBoundingClientRect(),p={x:pos.x*r.width,y:pos.y*r.height};
+ const as=current().annotations;
+ for(let i=as.length-1;i>=0;i--){
+  const b=labelHitBounds(as[i],r.width,r.height);
+  if(b&&p.x>=b.left-5&&p.x<=b.left+b.width+5&&p.y>=b.top-5&&p.y<=b.top+b.height+5)return i;
+ }
+ return -1;
+}
 function onDown(e){
  const v=current();
  if(!v.frameSrc||v.preview){toast('Capture a photo or select USE THIS FRAME before annotating.');return}
@@ -1733,7 +1840,8 @@ function onDown(e){
  }
  // Existing annotations ALWAYS win over a new stroke, regardless of active tool.
  const marker=hitROMMarker(p);
- const hit=marker?.index??hitTest(p);
+ const textHit=marker? -1:labelAtPoint(p);
+ const hit=marker?.index??(textHit>=0?textHit:hitTest(p));
  if(hit>=0){
   rememberCreationFields();
   chooseSelected(hit); // Does not switch away from the currently chosen drawing tool.
@@ -1741,6 +1849,9 @@ function onDown(e){
    romPointActive=marker.point;
    drag={kind:'rommove',index:hit,point:marker.point,before};
    v.annotations[hit].points[marker.point]=p;updateROMInspector();
+  }else if(textHit===hit){
+   // Tap opens the inline text field; dragging the pill moves the annotation.
+   drag={kind:'editlabel',from:p,original:deepcopy(v.annotations[hit]),index:hit,before};
   }else{
    drag={kind:'move',from:p,original:deepcopy(v.annotations[hit]),index:hit,before};
   }
@@ -1757,7 +1868,8 @@ function onDown(e){
  }
  const a=makeAnnotation();if(!a)return;
  if(tool==='joint'||tool==='text'){
-  a.x=p.x;a.y=p.y;v.annotations.push(a);remember(before);updateUI();draw();return;
+  a.x=p.x;a.y=p.y;a.label=tool==='joint'?'Joint':'Label';
+  v.annotations.push(a);beginInlineLabel(v.annotations.length-1,before,{fresh:true});return;
  }
  if(tool==='arrow'){
   a.from=p;a.to=p;draft=a;drag={kind:'draw',before};
@@ -1776,17 +1888,39 @@ function onMove(e){
   }
   return;
  }
- e.preventDefault();const p=normalized(e),v=current();if(drag.kind==='move'){v.annotations[drag.index]=translate(drag.original,p.x-drag.from.x,p.y-drag.from.y)}else if(drag.kind==='rommove'){v.annotations[drag.index].points[drag.point]=p;updateROMInspector()}else if(drag.kind==='romdraft'){romDraft.points[drag.point]=p;updateROMInspector()}else if(draft){if(draft.type==='arrow')draft.to=p;else if(draft.points){const last=draft.points.at(-1);if(Math.hypot(last.x-p.x,last.y-p.y)>.0025)draft.points.push(p)}}draw()}
-function onUp(e){if(!drag)return;const d=drag;drag=null;canvas.style.cursor='crosshair';if(d.kind==='move'||d.kind==='rommove')remember(d.before);
-else if(d.kind==='romdraft'){
- if(romDraft?.points.every(Boolean)){
-  const finished=romDraft;romDraft=null;
-  current().annotations.push(finished);remember(d.before);
-  selected=current().annotations.length-1;
-  romPointActive=0;populateInspector();toast('ROM measurement saved. Tap a marker to edit it, or tap empty space for another.');
- }else{romPointActive=romDraft.points.findIndex(p=>!p);updateROMInspector()}
+ e.preventDefault();const p=normalized(e),v=current();
+ if(drag.kind==='editlabel'){
+  const r=canvas.getBoundingClientRect();
+  if(Math.hypot((p.x-drag.from.x)*r.width,(p.y-drag.from.y)*r.height)>=7)drag.kind='move';
+ }
+ if(drag.kind==='move'){v.annotations[drag.index]=translate(drag.original,p.x-drag.from.x,p.y-drag.from.y)}else if(drag.kind==='rommove'){v.annotations[drag.index].points[drag.point]=p;updateROMInspector()}else if(drag.kind==='romdraft'){romDraft.points[drag.point]=p;updateROMInspector()}else if(draft){if(draft.type==='arrow')draft.to=p;else if(draft.points){const last=draft.points.at(-1);if(Math.hypot(last.x-p.x,last.y-p.y)>.0025)draft.points.push(p)}}draw()}
+function onUp(e){
+ if(!drag)return;
+ const d=drag;drag=null;canvas.style.cursor='crosshair';
+ if(d.kind==='editlabel'){
+  beginInlineLabel(d.index,d.before,{fresh:false});return;
+ }
+ if(d.kind==='move'||d.kind==='rommove')remember(d.before);
+ else if(d.kind==='romdraft'){
+  if(romDraft?.points.every(Boolean)){
+   const finished=romDraft;romDraft=null;
+   current().annotations.push(finished);romPointActive=0;
+   beginInlineLabel(current().annotations.length-1,d.before,{fresh:true});return;
+  }else{romPointActive=romDraft.points.findIndex(p=>!p);updateROMInspector()}
+ }
+ else if(draft){
+  const a=draft;draft=null;
+  const size=sourceSize(current()),diag=(p,q)=>Math.hypot((p.x-q.x)*size.w,(p.y-q.y)*size.h);
+  const valid=a.type==='arrow'?diag(a.from,a.to)>=12:a.points.length>=3&&diag(a.points[0],a.points.at(-1))>=12;
+  if(valid){
+   if(a.type==='bone')a.label='Bone';
+   if(a.type==='muscle')a.label='Muscle';
+   current().annotations.push(a);
+   beginInlineLabel(current().annotations.length-1,d.before,{fresh:true});return;
+  }else toast('Drag farther to draw a trace or movement arrow.');
+ }
+ updateUI();draw();
 }
-else if(draft){const a=draft;draft=null;const size=sourceSize(current()),diag=(p,q)=>Math.hypot((p.x-q.x)*size.w,(p.y-q.y)*size.h);let valid=a.type==='arrow'?diag(a.from,a.to)>=12:a.points.length>=3&&diag(a.points[0],a.points.at(-1))>=12;if(valid){current().annotations.push(a);selected=-1;remember(d.before)}else toast('Drag farther to draw a trace or movement arrow.')}updateUI();draw()}
 canvas.addEventListener('pointerdown',onDown);canvas.addEventListener('pointermove',onMove);canvas.addEventListener('pointerup',onUp);canvas.addEventListener('pointercancel',()=>{
  if(drag?.kind==='rommove'||drag?.kind==='move')current().annotations=deepcopy(drag.before);
  if(drag?.kind==='romdraft'&&romDraft)romDraft.points[drag.point]=null;
@@ -1845,6 +1979,7 @@ if(isSelected&&a.type!=='bone'&&a.type!=='muscle'){const p=annotationAnchor(a);c
 c.restore()}
 function draw(){const v=current(),src=visibleSource(v),r=canvas.getBoundingClientRect();if(!src||!r.width||!r.height)return;ctx.setTransform(canvas.width/r.width,0,0,canvas.height/r.height,0,0);ctx.clearRect(0,0,r.width,r.height);ctx.fillStyle='#06080c';ctx.fillRect(0,0,r.width,r.height);try{ctx.drawImage(src,0,0,r.width,r.height)}catch(e){}if(v.preview)return;v.annotations.forEach((a,i)=>drawOne(ctx,a,r.width,r.height,{selected:i===selected}));if(draft)drawOne(ctx,draft,r.width,r.height);if(romDraft)drawOne(ctx,romDraft,r.width,r.height)}
 function setTool(t){
+ if(inlineLabel)finishInlineLabel(inlineLabelInput.value.trim()?'save':'cancel');
  if(projectType==='rom'&&!['select','text','rom'].includes(t))t='rom';
  if(projectType==='joint'&&!['select','joint','rom'].includes(t))t='joint';
  rememberCreationFields();
@@ -1878,8 +2013,8 @@ function applySelectedProperty(property){
  draw();
 }
 
-function removeSelected(){const v=current();if(selected<0)return;const before=deepcopy(v.annotations);v.annotations.splice(selected,1);selected=-1;populateInspector();remember(before);updateUI();draw()}
-function clearPlane(){const v=current();if(!v.annotations.length)return;if(!confirm('Clear all annotations in the current plane?'))return;const before=deepcopy(v.annotations);v.annotations=[];selected=-1;populateInspector();remember(before);updateUI();draw()}
+function removeSelected(){if(inlineLabel){finishInlineLabel('cancel');return}const v=current();if(selected<0)return;const before=deepcopy(v.annotations);v.annotations.splice(selected,1);selected=-1;populateInspector();remember(before);updateUI();draw()}
+function clearPlane(){if(inlineLabel)finishInlineLabel(inlineLabelInput.value.trim()?'save':'cancel');const v=current();if(!v.annotations.length)return;if(!confirm('Clear all annotations in the current plane?'))return;const before=deepcopy(v.annotations);v.annotations=[];selected=-1;populateInspector();remember(before);updateUI();draw()}
 function renderPalette(){
  const palette=$('palette');palette.replaceChildren();
  const type=inspectorType();const standard=['#ffffff','#e7e4a0','#b9dbfa','#fbc47a'];
