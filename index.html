@@ -694,9 +694,24 @@ body.joint-mode .frame-buttons button{min-width:0}
 .canvas-label-editor::placeholder{color:#a7bed2;opacity:1}
 .canvas-label-editor:focus{outline:0}
 @media(prefers-reduced-motion:reduce){.canvas-label-editor{transition:none}}
+
+/* Kinetica v36: unified optical size, white line-art glyphs on the existing blue selected state.
+   These rules apply to the shared annotation toolbar in all project types. */
+.toolbar-button svg{width:20px;height:20px;stroke-width:1.8;shape-rendering:geometricPrecision}
+.toolbar-button[data-tool="joint"] svg,
+.toolbar-button[data-tool="bone"] svg,
+.toolbar-button[data-tool="muscle"] svg,
+.toolbar-button[data-tool="rom"] svg{width:21px;height:21px;stroke-width:1.8}
+@media(max-width:450px){
+  .toolbar-button svg{width:19px;height:19px}
+  .toolbar-button[data-tool="joint"] svg,
+  .toolbar-button[data-tool="bone"] svg,
+  .toolbar-button[data-tool="muscle"] svg,
+  .toolbar-button[data-tool="rom"] svg{width:20px;height:20px}
+}
 </style>
   <link rel="stylesheet" href="./rom-guides-v30.css?v=30">
-<meta name="kinetica-release" content="v35-inline-annotation-editing">
+<meta name="kinetica-release" content="v36-clarified-toolbar-glyphs">
 </head>
 <body>
 <div class="device">
@@ -786,12 +801,12 @@ body.joint-mode .frame-buttons button{min-width:0}
     <div class="studio-toolbar-scroll" id="studioToolbarScroll" role="toolbar" aria-label="Movement Evaluation controls">
 <div class="toolbar-cluster" id="toolGrid" role="group" aria-label="Annotation tools">
         <button type="button" class="toolbar-button active" data-tool="select" title="Select / Move" aria-label="Select / Move" data-tooltip="Select / Move" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3l7.2 18 2.1-7.4 7.7-2.5L4 3z"/></svg></button>
-        <button type="button" class="toolbar-button" data-tool="joint" title="Joint Type" aria-label="Joint Type" data-tooltip="Joint Type" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="4"/><circle cx="16" cy="16" r="4"/><path d="M11 11l2 2"/></svg></button>
-        <button type="button" class="toolbar-button" data-tool="bone" title="Trace Bone" aria-label="Trace Bone" data-tooltip="Trace Bone" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 5a2 2 0 0 1 3 2l8 8a2 2 0 1 1 2 3 2 2 0 1 1-3-2l-8-8a2 2 0 1 1-3-3z"/></svg></button>
-        <button type="button" class="toolbar-button" data-tool="muscle" title="Trace Muscle" aria-label="Trace Muscle" data-tooltip="Trace Muscle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8c2-5 5-5 8-1s6 4 10-1M3 16c2-5 5-5 8-1s6 4 10-1M5 6l-2 2 2 2M19 4l2 2-2 2"/></svg></button>
+        <button type="button" class="toolbar-button" data-tool="joint" title="Joint Type" aria-label="Joint Type" data-tooltip="Joint Type" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.1v4.8c-1.4.55-2.2 1.65-2.2 2.9 0 1.25 1 1.9 2.15 1.28 1.2-.67 2.9-.67 4.1 0 1.15.62 2.15-.03 2.15-1.28 0-1.25-.8-2.35-2.2-2.9V2.1"/><path d="M10 21.9v-4.8c-1.4-.55-2.2-1.65-2.2-2.9 0-1.25 1-1.9 2.15-1.28 1.2.67 2.9.67 4.1 0 1.15-.62 2.15.03 2.15 1.28 0 1.25-.8 2.35-2.2 2.9v4.8"/><path d="M3.1 9.1 4.6 9.8M2.5 12h1.7M3.1 14.9l1.5-.7M20.9 9.1l-1.5.7M21.5 12h-1.7M20.9 14.9l-1.5-.7"/></svg></button>
+        <button type="button" class="toolbar-button" data-tool="bone" title="Trace Bone" aria-label="Trace Bone" data-tooltip="Trace Bone" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(-42 12 12)"><path d="M5.85 8.5a2.6 2.6 0 1 0-2.6 4.25 2.6 2.6 0 1 0 3.7 2.7c1-.42 9.1-.42 10.1 0a2.6 2.6 0 1 0 3.7-2.7 2.6 2.6 0 1 0-2.6-4.25 2.6 2.6 0 0 0-1.1 1.75H6.95A2.6 2.6 0 0 0 5.85 8.5Z"/></g></svg></button>
+        <button type="button" class="toolbar-button" data-tool="muscle" title="Trace Muscle" aria-label="Trace Muscle" data-tooltip="Trace Muscle" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><g transform="rotate(-45 12 12)"><path d="M3.5 12C6.8 6.1 12.8 5.5 20.5 12c-7.7 6.5-13.7 5.9-17 0Z"/><path d="M7.1 12c3.25-2.9 6.75-2.9 9.8 0-3.05 2.9-6.55 2.9-9.8 0Z"/><circle cx="2.4" cy="12" r="1.35"/><circle cx="21.6" cy="12" r="1.35"/></g></svg></button>
         <button type="button" class="toolbar-button" data-tool="arrow" title="Movement Arrow" aria-label="Movement Arrow" data-tooltip="Movement Arrow" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18 19 5M11 5h8v8"/></svg></button>
         <button type="button" class="toolbar-button" data-tool="text" title="Text Label" aria-label="Text Label" data-tooltip="Text Label" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6V4h16v2M12 4v16M8 20h8"/></svg></button>
-        <button type="button" class="toolbar-button" data-tool="rom" title="Range of Motion (ROM)" aria-label="Range of Motion (ROM)" data-tooltip="Range of Motion (ROM)" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20 10 5l11 15H4Z"/><path d="M9 17a5 5 0 0 1 4-4"/><circle cx="10" cy="20" r="1"/></svg></button>
+        <button type="button" class="toolbar-button" data-tool="rom" title="Range of Motion (ROM)" aria-label="Range of Motion (ROM)" data-tooltip="Range of Motion (ROM)" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.1 19.9H21M4.1 19.9 13.2 3.8"/><circle cx="4.1" cy="19.9" r="2"/><path d="M14.5 19.9a10.4 10.4 0 0 0-5.1-9"/><path d="M11.4 19.9v-1.35M10.8 16.7l1.2-.46M9.2 14.1l1.04-.85M12.65 18.1l1.25-.25"/></svg></button>
       </div>
       <span class="toolbar-divider" role="separator" aria-hidden="true"></span>
       <div class="toolbar-cluster" role="group" aria-label="Edit annotations">
