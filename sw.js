@@ -1,5 +1,5 @@
 // Offline-first shell for Movement Evaluation Studio. Version this key for every release.
-const CACHE_NAME = 'movement-evaluation-studio-shell-v40';
+const CACHE_NAME = 'movement-evaluation-studio-shell-v41';
 const SHELL = [
   './',
   './index.html',
@@ -8,8 +8,8 @@ const SHELL = [
   './icon-512.png?v=29',
   './icon-maskable-512.png?v=29',
   './apple-touch-icon.png?v=29',
-  './rom-guides-v30.css?v=30',
-  './rom-guides-v30.js?v=30',
+  './rom-guides-v30.css?v=41',
+  './rom-guides-v30.js?v=41',
   './rom-guides/guide-00.png',
   './rom-guides/guide-01.png',
   './rom-guides/guide-02.png',

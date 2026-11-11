@@ -7,9 +7,28 @@ dialog.id='romGuideDialog';dialog.className='rom-guide-dialog';
 dialog.setAttribute('aria-labelledby','romGuideTitle');
 dialog.innerHTML=`<div class="rom-guide-header"><span class="rom-guide-overline">ROM REFERENCE</span><button type="button" class="rom-guide-close" aria-label="Close ROM guide" title="Close">×</button></div><div class="rom-guide-content"><h2 id="romGuideTitle"></h2><div class="rom-guide-slot" id="romGuideSlot"></div><div class="rom-guide-figure"><img id="romGuideImage" alt="" loading="eager" draggable="false"></div><p class="rom-guide-description" id="romGuideDescription"></p><p class="rom-guide-instruction">Use the illustration as a reference for positioning. Place the fulcrum at the appropriate joint axis and align the two goniometer arms with the moving and stationary segments. Follow your lab’s joint-specific measurement convention.</p><div class="rom-guide-source" id="romGuideSource"></div></div>`;
 document.body.appendChild(dialog);
-const close=()=>dialog.close();
+// v41: fade both directions without prematurely removing the dialog from the top layer.
+const TRANSITION_MS=200;
+let closeTimer=0, openingFrame=0;
+const reduceMotion=()=>window.matchMedia?.('(prefers-reduced-motion: reduce)').matches===true;
+function finalizeClose(){
+ if(closeTimer){clearTimeout(closeTimer);closeTimer=0;}
+ if(openingFrame){cancelAnimationFrame(openingFrame);openingFrame=0;}
+ dialog.classList.remove('rom-guide-visible');
+ if(dialog.open)dialog.close();
+}
+function close(){
+ if(!dialog.open)return;
+ if(reduceMotion()){finalizeClose();return;}
+ dialog.classList.remove('rom-guide-visible');
+ if(openingFrame){cancelAnimationFrame(openingFrame);openingFrame=0;}
+ if(closeTimer)clearTimeout(closeTimer);
+ closeTimer=setTimeout(finalizeClose,TRANSITION_MS);
+}
 dialog.querySelector('.rom-guide-close').addEventListener('click',close);
 dialog.addEventListener('click',event=>{if(event.target===dialog)close()});
+dialog.addEventListener('cancel',event=>{event.preventDefault();close()});
+dialog.addEventListener('close',()=>{if(closeTimer){clearTimeout(closeTimer);closeTimer=0;}dialog.classList.remove('rom-guide-visible');});
 const slotNote=(text)=> {
   if (/^Left (?!Knee)/.test(text)) return 'Measure the left side.';
   if (/^Right (?!Knee)/.test(text)) return 'Measure the right side.';
@@ -28,7 +47,18 @@ function open(key,fullLabel,slot) {
   $('romGuideSource').textContent='Illustration: '+data[2];
   const img=$('romGuideImage');img.src='./rom-guides/guide-'+String(group).padStart(2,'0')+'.png';
   img.alt='Measurement illustration for '+data[0]+' from the supplied '+data[2];
-  if(!dialog.open)dialog.showModal();
+  if(closeTimer){clearTimeout(closeTimer);closeTimer=0;}
+  if(!dialog.open){
+    dialog.classList.remove('rom-guide-visible');
+    dialog.showModal();
+    // Ensure initial transparent style is committed before beginning the entrance.
+    void dialog.offsetWidth;
+    if(openingFrame)cancelAnimationFrame(openingFrame);
+    openingFrame=requestAnimationFrame(()=>{openingFrame=0;if(dialog.open)dialog.classList.add('rom-guide-visible');});
+  } else {
+    if(openingFrame){cancelAnimationFrame(openingFrame);openingFrame=0;}
+    dialog.classList.add('rom-guide-visible');
+  }
 }
 window.KineticaROMGuide30=Object.freeze({open});
 })();

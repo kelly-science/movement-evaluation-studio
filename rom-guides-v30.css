@@ -10,8 +10,15 @@
 .rom-guide-dialog {position:fixed;width:min(530px,calc(100vw - 24px));max-height:min(86dvh,850px);
  margin:auto;padding:0;overflow:auto;overscroll-behavior:contain;color:#edf5fc;
  background:#303841;border:1px solid #8199b1;border-radius:16px;box-shadow:0 28px 75px #000b;}
-.rom-guide-dialog[open] {display:block;}
-.rom-guide-dialog::backdrop {background:rgba(5,10,17,.76);backdrop-filter:blur(2px);}
+/* v41: animate the ROM reference sheet and its modal backdrop, including dismissal. */
+.rom-guide-dialog{opacity:0;transform:translateY(10px) scale(.985);
+ transition:opacity 200ms ease,transform 200ms cubic-bezier(.2,.75,.2,1);}
+.rom-guide-dialog[open]{display:block;}
+.rom-guide-dialog[open].rom-guide-visible{opacity:1;transform:translateY(0) scale(1);}
+
+.rom-guide-dialog::backdrop{background:rgba(5,10,17,0);-webkit-backdrop-filter:blur(0px);backdrop-filter:blur(0px);
+ transition:background-color 200ms ease,-webkit-backdrop-filter 200ms ease,backdrop-filter 200ms ease;}
+.rom-guide-dialog.rom-guide-visible::backdrop{background:rgba(5,10,17,.76);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);}
 .rom-guide-header {position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;
  gap:14px;background:#3a444f;padding:12px 17px;border-bottom:1px solid #ffffff2b;}
 .rom-guide-overline {color:#b8d4eb;font-size:10px;font-weight:850;letter-spacing:.14em;}
@@ -31,4 +38,7 @@
 @media(max-width:600px) { .rom-slot-info{width:32px;height:32px;right:7px;bottom:7px;font-size:16px;}
  .rom-guide-dialog{max-height:85dvh;} .rom-guide-content{padding:16px;} .rom-guide-figure {min-height:150px;}
  .rom-guide-figure img{max-height:30dvh;} .rom-guide-content h2{font-size:16px;}}
-@media(prefers-reduced-motion:reduce) {.rom-guide-dialog{scroll-behavior:auto;}}
+@media(prefers-reduced-motion:reduce){
+ .rom-guide-dialog{scroll-behavior:auto;transition:none!important;transform:none!important;opacity:1!important;}
+ .rom-guide-dialog::backdrop{transition:none!important;}
+}

@@ -70,10 +70,10 @@ body{background:var(--device);padding:0}
 .style-heading output{font-size:11px;color:var(--lcd);font-weight:750}
 .style-row input[type=range]{width:100%;accent-color:var(--lcd);margin:6px 0 0}
 #styleFields .palette{margin-bottom:4px}
-#inspectorFootnote{border-top:1px solid #ffffff19;padding-top:14px;margin-top:16px}
+
 .annotation-dialog .selected-list{max-height:52dvh;margin:15px 0;gap:9px}
 .annotation-dialog .annotation-chip{min-height:44px;font-size:12px;padding:12px}
-@media(max-width:1250px){.right{grid-column:1/-1;display:block;max-width:800px}.right .tool-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}.right .tool-fields #inspectorFootnote{grid-column:1/-1}}
+@media(max-width:1250px){.right{grid-column:1/-1;display:block;max-width:800px}.right .tool-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}}
 @media(max-width:790px){.right{display:block;max-width:none}.right .tool-fields{display:block}}
 /* ROM inspector: three markers, recessed readout and measurement mode */
 .rom-point-list{display:grid;gap:10px;margin:9px 0 17px}
@@ -125,7 +125,7 @@ body{background:var(--device);padding:0}
 .center,.right{min-width:0}
 .picture-frame{width:min(100%,calc(69vh * var(--aspect,1.7778)))}
 @media(max-width:1250px){.right{grid-column:auto;max-width:none;display:block}.right .tool-fields{display:block}}
-@media(max-width:1030px){.workbench{display:grid;grid-template-columns:minmax(0,1fr)}.center{grid-column:1;order:1;width:100%}.right{grid-column:1;order:2;width:100%;max-width:none}.right .tool-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}.right .tool-fields #inspectorFootnote{grid-column:1/-1}}
+@media(max-width:1030px){.workbench{display:grid;grid-template-columns:minmax(0,1fr)}.center{grid-column:1;order:1;width:100%}.right{grid-column:1;order:2;width:100%;max-width:none}.right .tool-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px}}
 @media(max-width:790px){.studio-toolbar{margin:0 -4px 14px;top:56px}.studio-toolbar-scroll{padding:8px 7px 10px;gap:10px}.toolbar-button{width:42px;height:42px;min-width:42px}.workbench{display:grid;grid-template-columns:minmax(0,1fr)}.center{order:1}.right{order:2}.right .tool-fields{display:block}}
 @media(max-width:450px){.menu-bar{min-height:52px}.studio-toolbar{top:52px;margin:0 -3px 13px}.toolbar-section-label{display:none}.toolbar-button{width:43px;height:43px;min-width:43px}.studio-toolbar-scroll{gap:9px;padding:7px 4px 10px}.toolbar-cluster{gap:7px}}
 
@@ -229,7 +229,7 @@ body{padding:0;background:#30343b;color:var(--text)}
 .checklist-dialog{border-radius:12px;background:#343b44;box-shadow:0 28px 80px #000a}
 /* Responsive, with the gallery preserved beside the working image on Chromebooks. */
 @media(max-width:1280px){.workbench{grid-template-columns:175px minmax(0,1fr) 235px;gap:14px}.gallery-photo-surface{height:95px}}
-@media(max-width:1060px){.workbench{grid-template-columns:170px minmax(0,1fr);gap:15px}.plane-gallery{grid-column:1;grid-row:1 / span 2}.center{grid-column:2;grid-row:1;order:initial;width:100%}.right{grid-column:2;grid-row:2;order:initial;max-width:none;width:100%}.right .tool-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 17px}.right .tool-fields #inspectorFootnote{grid-column:1/-1}}
+@media(max-width:1060px){.workbench{grid-template-columns:170px minmax(0,1fr);gap:15px}.plane-gallery{grid-column:1;grid-row:1 / span 2}.center{grid-column:2;grid-row:1;order:initial;width:100%}.right{grid-column:2;grid-row:2;order:initial;max-width:none;width:100%}.right .tool-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 17px}}
 @media(max-width:750px){.document-header{padding:9px 8px;gap:10px;min-height:62px}.document-title-input{font-size:17px}.document-subtitle{font-size:9px}.document-icon{width:29px;height:35px}.document-icon svg{width:18px}.document-student{gap:5px}.document-student label{display:none}.document-student input{width:112px;font-size:11px;padding:7px 8px}.menu-bar{padding:3px 4px}.studio-toolbar{margin-bottom:12px}.workbench{display:flex;flex-direction:column;gap:15px}.plane-gallery{position:static;order:1;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:0 12px;padding:0 0 4px}.gallery-heading{grid-column:1/-1;padding-bottom:8px}.gallery-heading p{margin-top:3px}.gallery-group{border-top:1px solid #ffffff23;padding:12px 2px}.gallery-note{display:none}.gallery-add,.gallery-photo-card{min-height:90px}.gallery-photo-card{min-height:unset}.gallery-photo-surface{height:96px}.center{order:2;width:100%}.right{order:3;display:block;width:100%}.right .tool-fields{display:block}.stage{min-height:250px;padding:7px}.picture-frame{width:min(100%,calc(51svh * var(--aspect,1.7778)))}}
 @media(max-width:450px){.device{padding:0 9px 24px}.document-header{margin:0 -2px;padding:8px 5px}.document-identity{gap:7px}.document-title-input{font-size:15px}.document-subtitle{display:none}.document-student input{width:97px}.menu-bar{margin:0 -2px;padding:3px 1px}.studio-toolbar{margin:0 -2px 10px}.studio-toolbar-scroll{padding:5px 6px 6px}.toolbar-section-label{display:none}.toolbar-cluster{gap:1px}.toolbar-button{height:33px;width:34px;min-width:34px}.toolbar-button svg{width:18px;height:18px}.gallery-photo-surface{height:76px}.gallery-add{min-height:101px}.gallery-heading-title{font-size:12px}}
 
@@ -732,13 +732,13 @@ body.joint-mode .frame-buttons button{min-width:0}
 }
 /* v40: face-privacy blur inspector. */
 .blur-settings{display:flex;flex-direction:column;gap:13px}
-.blur-settings .blur-note{font-size:11px;line-height:1.55;color:#adc2d4;margin:0}
+
 .blur-settings input[type="range"]{width:100%;accent-color:#a6d5ff}
 .blur-settings .blur-range-heading{display:flex;justify-content:space-between;gap:8px;align-items:center}
 .blur-settings output{color:#acd7ff;font-weight:700}
 </style>
-  <link rel="stylesheet" href="./rom-guides-v30.css?v=30">
-<meta name="kinetica-release" content="v36-clarified-toolbar-glyphs">
+  <link rel="stylesheet" href="./rom-guides-v30.css?v=41">
+<meta name="kinetica-release" content="v41-inspector-rom-guide-polish">
 </head>
 <body>
 <div class="device">
@@ -834,7 +834,7 @@ body.joint-mode .frame-buttons button{min-width:0}
         <button type="button" class="toolbar-button" data-tool="arrow" title="Movement Arrow" aria-label="Movement Arrow" data-tooltip="Movement Arrow" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18 19 5M11 5h8v8"/></svg></button>
         <button type="button" class="toolbar-button" data-tool="text" title="Text Label" aria-label="Text Label" data-tooltip="Text Label" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6V4h16v2M12 4v16M8 20h8"/></svg></button>
         <button type="button" class="toolbar-button" data-tool="rom" title="Range of Motion (ROM)" aria-label="Range of Motion (ROM)" data-tooltip="Range of Motion (ROM)" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.1 19.9H21M4.1 19.9 13.2 3.8"/><circle cx="4.1" cy="19.9" r="2"/><path d="M14.5 19.9a10.4 10.4 0 0 0-5.1-9"/><path d="M11.4 19.9v-1.35M10.8 16.7l1.2-.46M9.2 14.1l1.04-.85M12.65 18.1l1.25-.25"/></svg></button>
-        <button type="button" class="toolbar-button" data-tool="blur" title="Blur / Hide Face" aria-label="Blur / Hide Face" data-tooltip="Blur / Hide Face" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3" stroke-dasharray="2.5 2.5"/><path d="M8 9h8M7 12h10M8 15h8" stroke-opacity=".8"/></svg></button>
+        <button type="button" class="toolbar-button" data-tool="blur" title="Blur" aria-label="Blur" data-tooltip="Blur" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3" stroke-dasharray="2.5 2.5"/><path d="M8 9h8M7 12h10M8 15h8" stroke-opacity=".8"/></svg></button>
       </div>
       <span class="toolbar-divider" role="separator" aria-hidden="true"></span>
       <div class="toolbar-cluster" role="group" aria-label="Edit annotations">
@@ -878,7 +878,7 @@ body.joint-mode .frame-buttons button{min-width:0}
 </section>
 <aside class="right" aria-label="Advanced annotation settings">
   <h2 id="inspectorTitle">SELECT TOOL</h2>
-  <p class="hint" id="inspectorHelp">Choose a drawing tool or select an existing annotation to edit its properties.</p>
+  <p class="hint" id="inspectorHelp"></p>
   <div class="tool-fields" id="toolFields">
     <div class="fieldgroup hidden" id="nameField"><label for="labelInput">ANNOTATION LABEL</label><input class="input-well" id="labelInput" placeholder="Enter an anatomical label" autocomplete="off"></div>
     <div class="fieldgroup hidden" id="romFields">
@@ -894,26 +894,26 @@ body.joint-mode .frame-buttons button{min-width:0}
         <button type="button" class="tactile active" data-rom-mode="included" aria-pressed="true">INCLUDED</button>
         <button type="button" class="tactile" data-rom-mode="straight" aria-pressed="false">FROM STRAIGHT</button>
       </div>
-      <p class="field-tip" id="romGuide">Select the fulcrum, then the stationary and moving arms. Tap the photo; drag markers to refine.</p>
+      
       <button type="button" class="tactile" id="romNew" style="width:100%;min-height:39px;font-size:10px">＋ NEW ROM MEASUREMENT</button>
-      <p class="field-tip">Included is the angle between the arms (0–180°). From straight is 180° minus the included angle. Use your lab's joint-specific convention.</p>
+      
     </div>
     <div class="fieldgroup hidden" id="jointFields"><label for="jointType">SYNOVIAL JOINT TYPE</label><select class="select-well" id="jointType"><option>Gliding</option><option selected>Hinge</option><option>Pivot</option><option>Ellipsoid</option><option>Saddle</option><option>Ball and Socket</option></select></div>
-    <div class="fieldgroup hidden" id="muscleFields"><p class="field-tip">Use one color consistently for each named muscle. The export includes a color key.</p></div>
-    <div class="fieldgroup hidden" id="arrowFields"><label for="movementType">MOVEMENT TYPE</label><select class="select-well" id="movementType"><option>Flexion</option><option>Extension</option><option>Abduction</option><option>Adduction</option><option>Rotation</option><option>Medial rotation</option><option>Lateral rotation</option><option>Circumduction</option><option>Dorsiflexion</option><option>Plantar flexion</option><option>Elevation</option><option>Depression</option><option>Pronation</option><option>Supination</option><option>Other</option></select><p class="field-tip">Drag the arrow toward the direction of movement.</p></div>
-    <div class="fieldgroup hidden blur-settings" id="blurFields" aria-label="Blur face settings">
+    
+    <div class="fieldgroup hidden" id="arrowFields"><label for="movementType">MOVEMENT TYPE</label><select class="select-well" id="movementType"><option>Flexion</option><option>Extension</option><option>Abduction</option><option>Adduction</option><option>Rotation</option><option>Medial rotation</option><option>Lateral rotation</option><option>Circumduction</option><option>Dorsiflexion</option><option>Plantar flexion</option><option>Elevation</option><option>Depression</option><option>Pronation</option><option>Supination</option><option>Other</option></select></div>
+    <div class="fieldgroup hidden blur-settings" id="blurFields" aria-label="Blur settings">
       <label for="blurShape">BLUR REGION SHAPE</label>
       <select id="blurShape" class="select-well"><option value="oval">Oval</option><option value="rectangle">Rectangle</option></select>
       <div class="blur-range-heading"><label for="blurStrength">BLUR STRENGTH</label><output for="blurStrength" id="blurStrengthValue">32 px</output></div>
       <input id="blurStrength" type="range" min="14" max="72" step="2" value="32">
-      <p class="blur-note">Drag over the face. Select the blur to move it, or drag its square handle to resize. The export hides the original pixels, but editable project backups still contain the original photo.</p>
+      
     </div>
     <div class="fieldgroup hidden" id="styleFields">
       <label id="colorLabel">ANNOTATION COLOR</label><div class="palette" id="palette" role="group" aria-label="Choose annotation color"></div>
       <div id="strokeField" class="style-row"><div class="style-heading"><label for="strokeWidth">LINE THICKNESS</label><output for="strokeWidth" id="strokeWidthValue">5 px</output></div><input id="strokeWidth" type="range" min="1" max="12" step="0.5" value="5"></div>
       <div class="style-row"><label for="labelSize">LABEL SIZE</label><select id="labelSize" class="select-well"><option value="0.8">Small</option><option value="1" selected>Normal</option><option value="1.3">Large</option><option value="1.6">Extra large</option></select></div>
     </div>
-    <p class="field-tip" id="inspectorFootnote">Select a drawing tool to adjust its options.</p>
+    
   </div>
 </aside>
 </div>
@@ -1305,16 +1305,16 @@ function rememberCreationFields(){
 }
 
 const toolStyles={joint:{color:'#e7e4a0',width:3,labelScale:1},bone:{color:'#b9dbfa',width:4.4,labelScale:1},muscle:{color:colors[0],width:5.5,labelScale:1},arrow:{color:'#fbc47a',width:4,labelScale:1},text:{color:'#ffffff',width:3,labelScale:1},rom:{color:'#b9ddff',width:4,labelScale:1},blur:{color:'#acd7ff',width:3,labelScale:1}};
-const inspectorNames={select:'SELECT ANNOTATION',joint:'SYNOVIAL JOINT',bone:'BONE TRACE',muscle:'MUSCLE TRACE',arrow:'MOVEMENT ARROW',text:'TEXT LABEL',rom:'RANGE OF MOTION',blur:'FACE BLUR'};
+const inspectorNames={select:'SELECT ANNOTATION',joint:'SYNOVIAL JOINT',bone:'BONE TRACE',muscle:'MUSCLE TRACE',arrow:'MOVEMENT ARROW',text:'TEXT LABEL',rom:'RANGE OF MOTION',blur:'BLUR'};
 function inspectorType(){return current().annotations[selected]?.type||tool}
 function populateInspector(){
  const item=current().annotations[selected],type=item?.type||tool;
  const mode=type==='select'?'none':type;
  $('inspectorTitle').textContent=inspectorNames[type]+' OPTIONS';
- $('inspectorHelp').textContent=item?'Editing selected '+item.type+' annotation. Changes appear immediately.':type==='select'?'Select an annotation on the photo or choose Edit → Manage Annotations.':'';
- ['nameField','jointFields','muscleFields','arrowFields','styleFields','romFields','blurFields'].forEach(i=>$(i).classList.toggle('hidden',i==='nameField'?(!item||mode==='none'||mode==='blur'):i==='styleFields'?(mode==='none'||mode==='blur'):(i==='jointFields'&&mode!=='joint'||i==='muscleFields'&&mode!=='muscle'||i==='arrowFields'&&mode!=='arrow'||i==='romFields'&&mode!=='rom'||i==='blurFields'&&mode!=='blur')));
+ $('inspectorHelp').textContent=type==='select'?'Select an annotation on the photo or choose Edit → Manage Annotations.':'';
+ ['nameField','jointFields','arrowFields','styleFields','romFields','blurFields'].forEach(i=>$(i).classList.toggle('hidden',i==='nameField'?(!item||mode==='none'||mode==='blur'):i==='styleFields'?(mode==='none'||mode==='blur'):(i==='jointFields'&&mode!=='joint'||i==='arrowFields'&&mode!=='arrow'||i==='romFields'&&mode!=='rom'||i==='blurFields'&&mode!=='blur')));
  $('strokeField').classList.toggle('hidden',!['bone','muscle','arrow','rom'].includes(type));
- $('inspectorFootnote').textContent=type==='blur'?'Blurs are editable until export. Submit the PNG rather than a project backup to hide faces.':item?'Tap the annotation label on the photo to rename; other settings apply automatically.':'Place the object on the photo first, then type its label and press Enter.';
+ 
  if(type==='select')return;
  if(type==='rom'){romMode=item?.angleMode||romDraft?.angleMode||romMode;romPointActive=romPointActive??0;updateROMInspector();}
  if(type==='blur'){
@@ -1758,7 +1758,7 @@ if(tool==='joint'){base.jointType=canonicalSynovialType($('jointType').value)}
 if(tool==='muscle'){/* Match existing muscle colors after the student types its name. */}
 if(tool==='arrow'){base.movement=$('movementType').value;base.label=base.movement}
 if(tool==='rom'){base.label='ROM';base.points=[null,null,null];base.angleMode=romMode}
-if(tool==='blur'){base.label='Face blur';base.color='#acd7ff';base.shape=blurShapeMode;base.blurStrength=blurStrengthMode}
+if(tool==='blur'){base.label='Blur';base.color='#acd7ff';base.shape=blurShapeMode;base.blurStrength=blurStrengthMode}
 return base}
 
 function allAnnotations(){return views.flatMap(v=>v.annotations)}
@@ -1786,10 +1786,6 @@ function updateROMInspector(){
  $('romReadingTitle').textContent=mode==='included'?'INCLUDED ANGLE':'FROM STRAIGHT';
  $('romReading').textContent=angles?angles[mode].toFixed(1)+'°':'—';
  $('romReadingStatus').textContent=angles?'MEASUREMENT READY':a?.points?.every(Boolean)?'MOVE ARMS FARTHER APART':'PLACE THREE MARKERS';
- const names=['fulcrum','stationary arm','moving arm'];
- $('romGuide').textContent=current().annotations[selected]?.type==='rom'
-  ?'Editing saved ROM: select a marker and tap a new location, or drag its circle on the image.'
-  :'Tap or drag to position the '+names[romPointActive]+'. Select another marker at any time.';
 }
 function hitROMMarker(p){
  const r=canvas.getBoundingClientRect();let best=null,dist=27;
@@ -2149,7 +2145,7 @@ $('videoControls').classList.toggle('hidden',!(s&&v.preview));$('cancelFrameBtn'
 $('overlayNotice').classList.toggle('hidden',!v.preview);$('overlayNotice').textContent=v.preview?'VIDEO PREVIEW · CAPTURE FRAME BEFORE ANNOTATING':'';
 updateGallery();
 $('clearBtn').disabled=!v.annotations.length;$('deleteBtn').disabled=selected<0;$('undoBtn').disabled=!undo.length;$('redoBtn').disabled=!redo.length;$('menuExportPlane').disabled=!v.frameSrc;$('menuExportPoster').disabled=projectType==='rom'?!views.some(z=>z.romKey&&romSlotComplete(z)):projectType==='joint'?!views.some(z=>z.jointKey&&z.frameSrc):!movementViews().some(z=>z.frameSrc);
-const list=$('annotationList');list.replaceChildren();if(v.annotations.length===0){const p=document.createElement('p');p.className='hint';p.textContent='No annotations yet.';list.appendChild(p)}v.annotations.forEach((a,i)=>{const b=document.createElement('button');b.className='annotation-chip'+(selected===i?' active':'');const dot=document.createElement('span');dot.className='led on';dot.style.color=a.color;const label=document.createElement('span');label.className='name';label.textContent=a.type==='blur'?'Face blur':a.label+(a.type==='joint'?' · '+a.jointType:'');const typ=document.createElement('small');typ.textContent=a.type.toUpperCase();b.append(dot,label,typ);b.onclick=()=>{rememberCreationFields();chooseSelected(i);if(annotationsDialog.open)closeAnnotations()};list.appendChild(b)});
+const list=$('annotationList');list.replaceChildren();if(v.annotations.length===0){const p=document.createElement('p');p.className='hint';p.textContent='No annotations yet.';list.appendChild(p)}v.annotations.forEach((a,i)=>{const b=document.createElement('button');b.className='annotation-chip'+(selected===i?' active':'');const dot=document.createElement('span');dot.className='led on';dot.style.color=a.color;const label=document.createElement('span');label.className='name';label.textContent=a.type==='blur'?'Blur':a.label+(a.type==='joint'?' · '+a.jointType:'');const typ=document.createElement('small');typ.textContent=a.type.toUpperCase();b.append(dot,label,typ);b.onclick=()=>{rememberCreationFields();chooseSelected(i);if(annotationsDialog.open)closeAnnotations()};list.appendChild(b)});
 syncMenuActions();
 $('canvasHelp').textContent=canAnnotate?help[tool]:v.preview?'Select USE THIS FRAME to freeze the video before drawing.':'Choose a photo or video for the active plane.';updateROMInspector();queueAutosave()}
 // Cache a privacy-safe gallery thumbnail when the photo has blur regions.
@@ -3045,5 +3041,5 @@ updateModeUI();updateDocumentTitle();updateGallery();requestAnimationFrame(updat
 
 renderPalette();setTool('select');switchDocument(0);restoreCached();})();
 </script>
-<script src="./rom-guides-v30.js?v=30" defer></script>
+<script src="./rom-guides-v30.js?v=41" defer></script>
 </body></html>
