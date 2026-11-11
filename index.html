@@ -767,8 +767,7 @@ body.joint-mode .frame-buttons button{min-width:0}
           <button type="button" class="menu-action" id="menuNew">New Project</button>
           <button type="button" class="menu-action" id="menuOpenProject">Open Project…</button>
           <button type="button" class="menu-action" id="menuSaveLocal">Save <span class="menu-shortcut">⌘/Ctrl S</span></button>
-          <button type="button" class="menu-action" id="menuSaveProject">Save / Share Project Backup…</button>
-          <button type="button" class="menu-action" id="menuLastExport">Reopen Saved Submission…</button>
+          <button type="button" class="menu-action" id="menuSaveProject">Backup Project</button>
           <div class="menu-separator" role="separator"></div>
           <div class="project-type-wrap" id="projectTypeWrap">
             <button type="button" class="menu-action project-type-trigger" id="projectTypeTrigger" aria-haspopup="true" aria-expanded="false" aria-controls="projectTypeSubmenu">Project Type <span class="submenu-caret" aria-hidden="true">›</span></button>
@@ -2284,7 +2283,7 @@ function beginSaveCenter(title){
 }
 async function nextExportRender(){return new Promise(resolve=>setTimeout(resolve,15));}
 async function openSaveCenterForBackup(){
- if(!beginSaveCenter('Save editable project backup'))return;
+ if(!beginSaveCenter('Backup Project'))return;
  try{
   const blob=new Blob([JSON.stringify(serializeProject())],{type:'application/json'});
   await setPreparedExport([{name:safeName()+'-kinetica-backup.json',blob,type:'application/json'}],'backup');
@@ -2371,16 +2370,7 @@ async function makeZip(files){
  return new Blob([...parts,...central,eocd],{type:'application/zip'});
 }
 
-$('menuLastExport').onclick=async()=>{
- closeMenus();if(!beginSaveCenter('Previously prepared submission'))return;
- try{
-  if(!localDB||!localDB.objectStoreNames.contains('exports'))throw Error('Local export cache unavailable');
-  const rec=await new Promise((resolve,reject)=>{const tx=localDB.transaction('exports','readonly'),q=tx.objectStore('exports').get('latest-image');q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error)});
-  if(!rec?.files?.length)throw Error('No previous saved PNG submission found on this device');
-  await setPreparedExport(rec.files,'image',false);
-  $('saveCenterNote').textContent='Recovered from this browser’s local cache. Copy or save the image outside this browser before clearing site data.';
- }catch(e){exportMessage(e.message);$('saveCenterPreview').textContent='Use File → Export to create an image first.'}finally{exportBusy=false;}
-};
+
 
 // Top menu bar: use the existing application actions rather than duplicating logic.
 const menuButtons=[...document.querySelectorAll('.menu-trigger')];
