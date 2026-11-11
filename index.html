@@ -741,9 +741,16 @@ body.joint-mode .frame-buttons button{min-width:0}
 .smart-shape-fields.hidden,#smartShapeOptions.hidden{display:none!important}
 .smart-shape-fields .style-row{margin-top:8px}
 .smart-shape-fields select{width:100%}
+/* Kinetica v44: manual 2D wireframe skeleton, no ML model or telemetry SDK. */
+.skeleton-checks{display:grid;gap:10px;margin:12px 0 15px}
+.skeleton-check{display:flex!important;align-items:center;gap:9px;letter-spacing:normal!important;font-weight:600!important;font-size:12px!important;color:#e1e9f0!important;margin:0!important}
+.skeleton-check input{width:17px;height:17px;accent-color:#83bce6}
+.skeleton-actions{display:flex;flex-wrap:wrap;gap:8px}
+.skeleton-actions .tactile{flex:1;min-height:37px;padding:6px 9px;font-size:11px}
+.skeleton-small-note{font-size:11px;line-height:1.45;color:#b6c8d6;margin:8px 0 13px}
 </style>
   <link rel="stylesheet" href="./rom-guides-v30.css?v=41">
-<meta name="kinetica-release" content="v41-inspector-rom-guide-polish">
+<meta name="kinetica-release" content="v44-manual-wireframe-skeleton">
 </head>
 <body>
 <div class="device">
@@ -839,6 +846,7 @@ body.joint-mode .frame-buttons button{min-width:0}
         <button type="button" class="toolbar-button" data-tool="arrow" title="Movement Arrow" aria-label="Movement Arrow" data-tooltip="Movement Arrow" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18 19 5M11 5h8v8"/></svg></button>
         <button type="button" class="toolbar-button" data-tool="text" title="Text Label" aria-label="Text Label" data-tooltip="Text Label" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6V4h16v2M12 4v16M8 20h8"/></svg></button>
         <button type="button" class="toolbar-button" data-tool="rom" title="Range of Motion (ROM)" aria-label="Range of Motion (ROM)" data-tooltip="Range of Motion (ROM)" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.1 19.9H21M4.1 19.9 13.2 3.8"/><circle cx="4.1" cy="19.9" r="2"/><path d="M14.5 19.9a10.4 10.4 0 0 0-5.1-9"/><path d="M11.4 19.9v-1.35M10.8 16.7l1.2-.46M9.2 14.1l1.04-.85M12.65 18.1l1.25-.25"/></svg></button>
+        <button type="button" class="toolbar-button" data-tool="skeleton" title="Wireframe Skeleton" aria-label="Wireframe Skeleton" data-tooltip="Wireframe Skeleton" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="3.5" r="1.8"/><path d="M12 5.4v4.2M6.3 9l5.7.6 5.7-.6M6.3 9l-2 4 1.1 3.4M17.7 9l2 4-1.1 3.4M12 9.6v5M9 14.6h6M9 14.6l-1.4 4.1-1.1 3M15 14.6l1.4 4.1 1.1 3"/><circle cx="6.3" cy="9" r="1"/><circle cx="17.7" cy="9" r="1"/><circle cx="9" cy="14.6" r="1"/><circle cx="15" cy="14.6" r="1"/></svg></button>
         <button type="button" class="toolbar-button" data-tool="blur" title="Blur" aria-label="Blur" data-tooltip="Blur" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3" stroke-dasharray="2.5 2.5"/><path d="M8 9h8M7 12h10M8 15h8" stroke-opacity=".8"/></svg></button>
       </div>
       <span class="toolbar-divider" role="separator" aria-hidden="true"></span>
@@ -916,6 +924,16 @@ body.joint-mode .frame-buttons button{min-width:0}
       <div class="blur-range-heading"><label for="blurStrength">BLUR STRENGTH</label><output for="blurStrength" id="blurStrengthValue">32 px</output></div>
       <input id="blurStrength" type="range" min="14" max="72" step="2" value="32">
       
+    </div>
+    <div class="fieldgroup hidden skeleton-settings" id="skeletonFields" aria-label="Wireframe skeleton controls">
+      <label>MANUAL POSE OVERLAY</label>
+      <p class="skeleton-small-note">Approximate body landmarks, not X-ray bone positions. Angles are estimated from this 2D photo.</p>
+      <label for="skeletonAngleMode">JOINT ANGLES</label>
+      <select id="skeletonAngleMode" class="select-well"><option value="selected">Selected joint</option><option value="all">All eligible joints</option><option value="off">Hidden</option></select>
+      <div class="skeleton-checks"><label class="skeleton-check"><input id="skeletonVisible" type="checkbox" checked> Show wireframe</label><label class="skeleton-check"><input id="skeletonMarkers" type="checkbox" checked> Show joint markers</label></div>
+      <div class="style-row"><div class="style-heading"><label for="skeletonOpacity">OVERLAY OPACITY</label><output id="skeletonOpacityValue" for="skeletonOpacity">85%</output></div><input id="skeletonOpacity" type="range" min="20" max="100" step="5" value="85"></div>
+      <div class="skeleton-actions"><button id="skeletonFlip" type="button" class="tactile">Flip Horizontal</button><button id="skeletonReset" type="button" class="tactile">Reset Pose</button></div>
+      <p class="skeleton-small-note">Drag landmarks to align the body. Drag a segment to move everything; use the square handle to scale.</p>
     </div>
     <div class="fieldgroup hidden" id="styleFields">
       <label id="colorLabel">ANNOTATION COLOR</label><div class="palette" id="palette" role="group" aria-label="Choose annotation color"></div>
@@ -1024,7 +1042,7 @@ function canonicalSynovialType(value){
  };
  return aliases[key]||LECTURE_SYNOVIAL_TYPES.find(label=>label.toLowerCase()===key)||raw;
 }
-const help={select:'Tap an existing label to rename it, or drag any annotation to reposition it.',joint:'Tap the joint location, type its name on the photo, then press Enter. Tap another location to label another joint.',bone:'Smart Shape: click two endpoints or drag once, adjust the blue, teal, and orange handles, then name the bone. Freeform is available in the inspector.',muscle:'Smart Shape: click two endpoints or drag once, adjust width and curve, then name the muscle. Choose fusiform, flat, or fan shapes in the inspector.',arrow:'Drag or tap two points, then adjust the arrow path and bend handle. Press Enter to label the movement.',text:'Tap the photo, type the label directly on it, and press Enter. Tap elsewhere for the next label.',rom:'Place the fulcrum, stationary arm and moving arm, then confirm or name the measurement with Enter. Markers remain draggable.',blur:'Drag an oval or rectangle over a face. Move or resize the region; exports flatten the blur into the image.'};
+const help={select:'Tap an existing label to rename it, or drag any annotation to reposition it.',joint:'Tap the joint location, type its name on the photo, then press Enter. Tap another location to label another joint.',bone:'Smart Shape: click two endpoints or drag once, adjust the blue, teal, and orange handles, then name the bone. Freeform is available in the inspector.',muscle:'Smart Shape: click two endpoints or drag once, adjust width and curve, then name the muscle. Choose fusiform, flat, or fan shapes in the inspector.',arrow:'Drag or tap two points, then adjust the arrow path and bend handle. Press Enter to label the movement.',text:'Tap the photo, type the label directly on it, and press Enter. Tap elsewhere for the next label.',rom:'Place the fulcrum, stationary arm and moving arm, then confirm or name the measurement with Enter. Markers remain draggable.',blur:'Drag an oval or rectangle over a face. Move or resize the region; exports flatten the blur into the image.',skeleton:'Tap the photo to place a skeleton. Drag a landmark to match the photo; use the inspector for optional angles.'};
 let views=[makeView(0),makeView(1)],active=0,tool='select',selected=-1,drag=null,draft=null,smartPending=null;
 
 // Slots from the Regular Anatomy ROM handout (pages 1–2) plus additional
@@ -1323,7 +1341,7 @@ function rememberCreationFields(){
  };
 }
 
-const toolStyles={joint:{color:'#e7e4a0',width:3,labelScale:1},bone:{color:'#b9dbfa',width:4.4,labelScale:1},muscle:{color:colors[0],width:5.5,labelScale:1},arrow:{color:'#fbc47a',width:4,labelScale:1},text:{color:'#ffffff',width:3,labelScale:1},rom:{color:'#b9ddff',width:4,labelScale:1},blur:{color:'#acd7ff',width:3,labelScale:1}};
+const toolStyles={joint:{color:'#e7e4a0',width:3,labelScale:1},bone:{color:'#b9dbfa',width:4.4,labelScale:1},muscle:{color:colors[0],width:5.5,labelScale:1},arrow:{color:'#fbc47a',width:4,labelScale:1},text:{color:'#ffffff',width:3,labelScale:1},rom:{color:'#b9ddff',width:4,labelScale:1},blur:{color:'#acd7ff',width:3,labelScale:1},skeleton:{color:'#96d6ff',width:3,labelScale:1}};
 const anatomyShapeDefaults={bone:{mode:'smart',family:'long',width:.082,bend:0},muscle:{mode:'smart',family:'fusiform',width:.14,bend:0}};
 const anatomyFamilies={bone:[['long','Long Bone'],['broad','Broad / Irregular']],muscle:[['fusiform','Fusiform'],['flat','Broad / Flat'],['fan','Fan-Shaped']]};
 // Smart Movement Arrows: selectable geometric paths, with a draggable bend grip.
@@ -1338,15 +1356,24 @@ function suggestedArrowPath(movement){
 function initialArrowBend(path){return path==='arc'?.28:path==='curved'?.18:0;}
 
 const isSmart=a=>!!a&&['bone','muscle'].includes(a.type)&&a.shapeMode==='smart'&&Array.isArray(a.points)&&a.points.length===2&&a.points.every(Boolean);
-const inspectorNames={select:'SELECT ANNOTATION',joint:'SYNOVIAL JOINT',bone:'BONE SHAPE',muscle:'MUSCLE SHAPE',arrow:'MOVEMENT ARROW',text:'TEXT LABEL',rom:'RANGE OF MOTION',blur:'BLUR'};
+const inspectorNames={select:'SELECT ANNOTATION',joint:'SYNOVIAL JOINT',bone:'BONE SHAPE',muscle:'MUSCLE SHAPE',arrow:'MOVEMENT ARROW',text:'TEXT LABEL',rom:'RANGE OF MOTION',blur:'BLUR',skeleton:'WIREFRAME SKELETON'};
 function inspectorType(){return current().annotations[selected]?.type||tool}
 function populateInspector(){
  const item=current().annotations[selected],type=item?.type||tool;
  const mode=type==='select'?'none':type;
  $('inspectorTitle').textContent=inspectorNames[type]+' OPTIONS';
  $('inspectorHelp').textContent=type==='select'?'Select an annotation on the photo or choose Edit → Manage Annotations.':'';
- ['nameField','jointFields','arrowFields','styleFields','romFields','blurFields'].forEach(i=>$(i).classList.toggle('hidden',i==='nameField'?(!item||mode==='none'||mode==='blur'):i==='styleFields'?(mode==='none'||mode==='blur'):(i==='jointFields'&&mode!=='joint'||i==='arrowFields'&&mode!=='arrow'||i==='romFields'&&mode!=='rom'||i==='blurFields'&&mode!=='blur')));
+ ['nameField','jointFields','arrowFields','styleFields','romFields','blurFields','skeletonFields'].forEach(i=>$(i).classList.toggle('hidden',i==='nameField'?(!item||mode==='none'||mode==='blur'||mode==='skeleton'):i==='styleFields'?(mode==='none'||mode==='blur'):(i==='jointFields'&&mode!=='joint'||i==='arrowFields'&&mode!=='arrow'||i==='romFields'&&mode!=='rom'||i==='blurFields'&&mode!=='blur'||i==='skeletonFields'&&mode!=='skeleton')));
  $('smartShapeFields').classList.toggle('hidden',!['bone','muscle'].includes(type));
+ if(type==='skeleton'){
+  const sk=item?.type==='skeleton'?item:null;
+  $('skeletonAngleMode').value=sk?.angleMode||'selected';
+  $('skeletonVisible').checked=sk?.visible!==false;
+  $('skeletonMarkers').checked=sk?.showMarkers!==false;
+  $('skeletonOpacity').value=String(Math.round((sk?.opacity??.85)*100));
+  $('skeletonOpacityValue').textContent=$('skeletonOpacity').value+'%';
+  $('skeletonFlip').disabled=!sk;$('skeletonReset').disabled=!sk;
+ }
  if(type==='bone'||type==='muscle'){
   const config=anatomyShapeDefaults[type],mode=item?(isSmart(item)?'smart':'freeform'):config.mode;
   $('anatomyDrawMode').value=mode;
@@ -1360,6 +1387,7 @@ function populateInspector(){
   $('smartShapeOptions').classList.toggle('hidden',mode!=='smart');
  }
  $('strokeField').classList.toggle('hidden',!['bone','muscle','arrow','rom'].includes(type)||(isSmart(item)||(!item&&['bone','muscle'].includes(type)&&anatomyShapeDefaults[type].mode==='smart')));
+ $('labelSize').closest('.style-row').classList.toggle('hidden',type==='skeleton');
  if(type==='arrow'){
   const path=item?(item.arrowPath||'straight'):arrowSettings.path;
   const bend=item?(Number.isFinite(Number(item.arrowBend))?Number(item.arrowBend):0):arrowSettings.bend;
@@ -1369,7 +1397,7 @@ function populateInspector(){
   $('arrowCurveField').classList.toggle('hidden',path==='straight');
  }
  
- if(type==='select')return;
+ if(type==='select'||type==='skeleton'){if(type==='skeleton'){chosenColor=item?.color||toolStyles.skeleton.color;renderPalette();}return;}
  if(type==='rom'){romMode=item?.angleMode||romDraft?.angleMode||romMode;romPointActive=romPointActive??0;updateROMInspector();}
  if(type==='blur'){
   $('blurShape').value=item?.shape||blurShapeMode;
@@ -1709,6 +1737,7 @@ function reframeAnnotation(a,oldRect,newRect){
  if(a.from)out.from=reframePoint(a.from,oldRect,newRect);
  if(a.to)out.to=reframePoint(a.to,oldRect,newRect);
  if(Array.isArray(a.points))out.points=a.points.map(p=>reframePoint(p,oldRect,newRect));
+ if(a.type==='skeleton'&&a.landmarks){out.landmarks=Object.fromEntries(Object.entries(a.landmarks).map(([key,point])=>[key,reframePoint(point,oldRect,newRect)]));if(a.initialLandmarks)out.initialLandmarks=Object.fromEntries(Object.entries(a.initialLandmarks).map(([key,point])=>[key,reframePoint(point,oldRect,newRect)]))}
  return out;
 }
 $('cropApply').onclick=()=>{
@@ -1884,7 +1913,98 @@ function updateArrowHandle(original,kind,p,w,h){
  a.arrowBend=Math.round(clamp(offset/g.short,-.55,.55)*100)/100;
  return a;
 }
-function annotationAnchor(a){if(a.type==='blur')return{x:(a.from.x+a.to.x)/2,y:(a.from.y+a.to.y)/2};if(a.type==='rom')return a.points?.[0]||a.points?.find(Boolean)||{x:0,y:0};if(a.type==='joint'||a.type==='text')return{x:a.x,y:a.y};if(a.type==='arrow')return{x:(a.from.x+a.to.x)/2,y:(a.from.y+a.to.y)/2};return a.points.at(-1)||{x:0,y:0}}
+// v44 MANUAL SKELETON. No model loading or network requests. Coordinates are
+// image-relative so the overlay survives canvas resize, cropping, save and export.
+const SKELETON_TEMPLATE=Object.freeze({
+ head:[0,-.40],neck:[0,-.30],
+ leftShoulder:[-.13,-.28],rightShoulder:[.13,-.28],
+ leftElbow:[-.22,-.11],rightElbow:[.22,-.11],
+ leftWrist:[-.25,.07],rightWrist:[.25,.07],
+ leftHip:[-.09,.03],rightHip:[.09,.03],
+ leftKnee:[-.10,.24],rightKnee:[.10,.24],
+ leftAnkle:[-.11,.45],rightAnkle:[.11,.45]
+});
+const SKELETON_SEGMENTS=[['head','neck'],['neck','leftShoulder'],['neck','rightShoulder'],
+ ['leftShoulder','rightShoulder'],['leftShoulder','leftElbow'],['leftElbow','leftWrist'],
+ ['rightShoulder','rightElbow'],['rightElbow','rightWrist'],
+ ['leftShoulder','leftHip'],['rightShoulder','rightHip'],['leftHip','rightHip'],
+ ['leftHip','leftKnee'],['leftKnee','leftAnkle'],['rightHip','rightKnee'],['rightKnee','rightAnkle']];
+const SKELETON_ANGLES={
+ leftShoulder:['neck','leftShoulder','leftElbow'],rightShoulder:['neck','rightShoulder','rightElbow'],
+ leftElbow:['leftShoulder','leftElbow','leftWrist'],rightElbow:['rightShoulder','rightElbow','rightWrist'],
+ leftHip:['leftShoulder','leftHip','leftKnee'],rightHip:['rightShoulder','rightHip','rightKnee'],
+ leftKnee:['leftHip','leftKnee','leftAnkle'],rightKnee:['rightHip','rightKnee','rightAnkle']
+};
+function initialSkeleton(center,w,h){
+ const y=clamp(center.y,.40,.54),x=clamp(center.x,.23,.77),aspect=Math.min(1.4,h/Math.max(1,w));
+ const entries=Object.entries(SKELETON_TEMPLATE).map(([k,q])=>[k,{x:clamp(x+q[0]*aspect*.82,.015,.985),y:clamp(y+q[1]*.88,.015,.985)}]);
+ return Object.fromEntries(entries);
+}
+function skeletonExtents(a){
+ const pts=Object.values(a.landmarks||{});if(!pts.length)return null;
+ const xs=pts.map(q=>q.x),ys=pts.map(q=>q.y);
+ const left=Math.min(...xs),right=Math.max(...xs),top=Math.min(...ys),bottom=Math.max(...ys);
+ return{left,right,top,bottom,cx:(left+right)/2,cy:(top+bottom)/2};
+}
+function skeletonScaleHandle(a){const e=skeletonExtents(a);return e?{x:clamp(e.right+.025,.025,.99),y:clamp(e.bottom+.025,.025,.99)}:null}
+function skeletonHandleAt(a,p,w,h){
+ const px=p.x*w,py=p.y*h;
+ const ext=skeletonScaleHandle(a);
+ if(ext&&Math.hypot(px-ext.x*w,py-ext.y*h)<17)return{kind:'scale'};
+ for(const [joint,q] of Object.entries(a.landmarks||{})){
+  if(Math.hypot(px-q.x*w,py-q.y*h)<17)return{kind:'joint',joint};
+ }
+ return null;
+}
+function skeletonHit(a,p,w,h){
+ if(a.visible===false||!a.landmarks)return false;
+ if(skeletonHandleAt(a,p,w,h))return true;
+ const q={x:p.x*w,y:p.y*h};
+ for(const [u,v] of SKELETON_SEGMENTS){const k=a.landmarks[u],l=a.landmarks[v];if(!k||!l)continue;
+  if(distanceToSegment(q,{x:k.x*w,y:k.y*h},{x:l.x*w,y:l.y*h})<17)return true;
+ }return false;
+}
+function scaleSkeleton(original,p){
+ const a=deepcopy(original),e=skeletonExtents(original);if(!e)return a;
+ const start=skeletonScaleHandle(original),length=Math.max(.025,Math.hypot((start.x-e.cx)*canvas.clientWidth,(start.y-e.cy)*canvas.clientHeight));
+ const now=Math.hypot((p.x-e.cx)*canvas.clientWidth,(p.y-e.cy)*canvas.clientHeight);
+ const factor=clamp(now/length,.35,3);
+ for(const [key,q] of Object.entries(original.landmarks))a.landmarks[key]={x:clamp(e.cx+(q.x-e.cx)*factor,.005,.995),y:clamp(e.cy+(q.y-e.cy)*factor,.005,.995)};
+ return a;
+}
+function skeletonIncludedAngle(a,joint,w,h){
+ const triple=SKELETON_ANGLES[joint];if(!triple)return null;
+ const [start,middle,end]=triple.map(key=>a.landmarks?.[key]);if(!start||!middle||!end)return null;
+ const ux=(start.x-middle.x)*w,uy=(start.y-middle.y)*h,vx=(end.x-middle.x)*w,vy=(end.y-middle.y)*h;
+ const n=Math.hypot(ux,uy)*Math.hypot(vx,vy);return n>4?Math.acos(clamp((ux*vx+uy*vy)/n,-1,1))*180/Math.PI:null;
+}
+function drawSkeleton(c,a,w,h,isSelected,scale){
+ if(a.visible===false||!a.landmarks)return;
+ const p=k=>{const q=a.landmarks[k];return q?{x:q.x*w,y:q.y*h}:null};
+ c.save();c.globalAlpha=clamp(Number(a.opacity??.85),.2,1);c.lineJoin='round';c.lineCap='round';
+ for(const [u,v] of SKELETON_SEGMENTS){const s=p(u),e=p(v);if(!s||!e)continue;
+  c.beginPath();c.moveTo(s.x,s.y);c.lineTo(e.x,e.y);c.lineWidth=5*scale;c.strokeStyle='#091520d0';c.stroke();
+  c.lineWidth=2.4*scale;c.strokeStyle=a.color||'#96d6ff';c.stroke();
+ }
+ const points=Object.entries(a.landmarks);
+ if(a.showMarkers!==false||isSelected)for(const [key,q] of points){
+  const r=key===a.selectedJoint&&isSelected?7.2:4.8;
+  c.beginPath();c.arc(q.x*w,q.y*h,r*scale,0,Math.PI*2);c.fillStyle=key===a.selectedJoint&&isSelected?'#ffb56e':'#d9f2ff';c.fill();
+  c.lineWidth=1.7*scale;c.strokeStyle='#16304a';c.stroke();
+ }
+ const names=a.angleMode==='all'?Object.keys(SKELETON_ANGLES):a.angleMode==='off'?[]:[a.selectedJoint||'leftKnee'];
+ for(const name of names){const angle=skeletonIncludedAngle(a,name,w,h),q=p(name);if(angle===null||!q)continue;
+  const short=name.replace(/([a-z])([A-Z])/g,'$1 $2').replace(/^./,m=>m.toUpperCase());
+  const msg=a.angleMode==='all'?`${name.startsWith('left')?'L':'R'} ${angle.toFixed(0)}°`:`${short}: ${angle.toFixed(0)}° (2D est.)`;
+  textPill(c,msg,q.x+8*scale,q.y-5*scale,'#c4eaff',Math.min(scale,.95),w,h);
+ }
+ if(isSelected){const q=skeletonScaleHandle(a);if(q){
+  const size=7*scale;c.fillStyle='#172f43';c.strokeStyle='#fff';c.lineWidth=1.8*scale;
+  c.fillRect(q.x*w-size,q.y*h-size,size*2,size*2);c.strokeRect(q.x*w-size,q.y*h-size,size*2,size*2);
+ }}c.restore();
+}
+
+function annotationAnchor(a){if(a.type==='skeleton'){const joints=Object.values(a.landmarks||{});return joints.length?{x:joints.reduce((s,p)=>s+p.x,0)/joints.length,y:joints.reduce((s,p)=>s+p.y,0)/joints.length}:{x:.5,y:.5}}if(a.type==='blur')return{x:(a.from.x+a.to.x)/2,y:(a.from.y+a.to.y)/2};if(a.type==='rom')return a.points?.[0]||a.points?.find(Boolean)||{x:0,y:0};if(a.type==='joint'||a.type==='text')return{x:a.x,y:a.y};if(a.type==='arrow')return{x:(a.from.x+a.to.x)/2,y:(a.from.y+a.to.y)/2};return a.points.at(-1)||{x:0,y:0}}
 function labelHitBounds(a,w,h){
  const scale=Math.max(.75,Math.min(1.35,w/750)),labelScale=scale*(a.labelScale||1);
  let anchor=null,label='';
@@ -1916,6 +2036,7 @@ function hitTest(pos){
  for(let k=v.annotations.length-1;k>=0;k--){
   const a=v.annotations[k],bounds=labelHitBounds(a,r.width,r.height);
   if(bounds&&p.x>=bounds.left-7&&p.x<=bounds.left+bounds.width+7&&p.y>=bounds.top-7&&p.y<=bounds.top+bounds.height+7)return k;
+  if(a.type==='skeleton'){if(skeletonHit(a,pos,r.width,r.height))return k;continue}
   if(isSmart(a)&&smartBodyHit(a,p,r.width,r.height))return k;
   const at=annotationAnchor(a),anchor={x:at.x*r.width,y:at.y*r.height};
   let dist=a.type==='arrow'?Infinity:Math.hypot(anchor.x-p.x,anchor.y-p.y);
@@ -1940,7 +2061,7 @@ function hitTest(pos){
  }
  return -1;
 }
-function translate(a,dx,dy){const b=deepcopy(a);const move=p=>({x:clamp(p.x+dx),y:clamp(p.y+dy)});if(b.points)b.points=b.points.map(p=>p?move(p):null);else if(b.type==='arrow'||b.type==='blur'){b.from=move(b.from);b.to=move(b.to)}else{const p=move({x:b.x,y:b.y});b.x=p.x;b.y=p.y}return b}
+function translate(a,dx,dy){const b=deepcopy(a);const move=p=>({x:clamp(p.x+dx),y:clamp(p.y+dy)});if(b.type==='skeleton'&&b.landmarks)b.landmarks=Object.fromEntries(Object.entries(b.landmarks).map(([k,p])=>[k,move(p)]));else if(b.points)b.points=b.points.map(p=>p?move(p):null);else if(b.type==='arrow'||b.type==='blur'){b.from=move(b.from);b.to=move(b.to)}else{const p=move({x:b.x,y:b.y});b.x=p.x;b.y=p.y}return b}
 function makeAnnotation(){
 const label=''; // Label is entered on the photo after the object is positioned.
 const style=toolStyles[tool]||toolStyles.text;
@@ -1955,6 +2076,7 @@ if(tool==='bone'||tool==='muscle'){
 if(tool==='arrow'){base.movement=$('movementType').value;base.label=base.movement;base.arrowPath=arrowSettings.path;base.arrowBend=arrowSettings.bend}
 if(tool==='rom'){base.label='ROM';base.points=[null,null,null];base.angleMode=romMode}
 if(tool==='blur'){base.label='Blur';base.color='#acd7ff';base.shape=blurShapeMode;base.blurStrength=blurStrengthMode}
+if(tool==='skeleton'){base.label='Manual skeleton';base.color='#96d6ff';base.opacity=.85;base.showMarkers=true;base.visible=true;base.angleMode='selected';base.selectedJoint='leftKnee'}
 return base}
 
 function allAnnotations(){return views.flatMap(v=>v.annotations)}
@@ -2104,6 +2226,12 @@ function onDown(e){
   else draft.points[1]=d<15?smartDefaultEnd(smartPending.start):p;
   finishSmartShape(draft,smartPending.before);return;
  }
+ // The selected skeleton has draggable landmark and scale handles.
+ const sk=current().annotations[selected];
+ if(sk?.type==='skeleton'&&sk.visible!==false){
+  const handle=skeletonHandleAt(sk,p,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
+  if(handle){drag={kind:handle.kind==='scale'?'skeleton-scale':handle.kind==='joint'?'skeleton-joint':'move',index:selected,joint:handle.joint,from:p,original:deepcopy(sk),before};canvas.setPointerCapture(e.pointerId);canvas.style.cursor='grabbing';return}
+ }
  // Resize / bend selected shape using the four visible handles.
  const handle=anatomyHandleAt(p);
  if(handle){drag={kind:'smart-handle',index:selected,handle:handle.kind,original:deepcopy(v.annotations[selected]),before};canvas.setPointerCapture(e.pointerId);canvas.style.cursor='grabbing';return}
@@ -2123,7 +2251,11 @@ function onDown(e){
  if(hit>=0){
   rememberCreationFields();
   chooseSelected(hit); // Does not switch away from the currently chosen drawing tool.
-  if(marker){
+  if(v.annotations[hit]?.type==='skeleton'&&v.annotations[hit].visible!==false){
+   const s=v.annotations[hit],handle=skeletonHandleAt(s,p,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
+   drag={kind:handle?.kind==='joint'?'skeleton-joint':handle?.kind==='scale'?'skeleton-scale':'move',index:hit,joint:handle?.joint,from:p,original:deepcopy(s),before};
+   if(handle?.joint)s.selectedJoint=handle.joint;
+  }else if(marker){
    romPointActive=marker.point;
    drag={kind:'rommove',index:hit,point:marker.point,before};
    v.annotations[hit].points[marker.point]=p;updateROMInspector();
@@ -2140,6 +2272,12 @@ function onDown(e){
  // Blank canvas is still used to make a new annotation with the active tool.
  if(selected>=0){selected=-1;romReposition=false;if(tool==='rom')romPointActive=0;populateInspector();updateUI()}
  if(tool==='select'){drag=null;draw();return}
+ if(tool==='skeleton'){
+  const old=v.annotations.findIndex(a=>a.type==='skeleton');
+  if(old>=0){chooseSelected(old);toast('One skeleton per photo. Select its landmarks to adjust.');return}
+  const a=makeAnnotation();a.landmarks=initialSkeleton(p,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);a.initialLandmarks=deepcopy(a.landmarks);
+  v.annotations.push(a);selected=v.annotations.length-1;populateInspector();remember(before);draw();return;
+ }
  if(tool==='blur'){
   const a=makeAnnotation();a.from=p;a.to=p;draft=a;drag={kind:'blur-draw',before};
   canvas.setPointerCapture(e.pointerId);draw();return;
@@ -2185,7 +2323,11 @@ function onMove(e){
   const r=canvas.getBoundingClientRect();
   if(Math.hypot((p.x-drag.from.x)*r.width,(p.y-drag.from.y)*r.height)>=7)drag.kind='move';
  }
- if(drag.kind==='move'){v.annotations[drag.index]=translate(drag.original,p.x-drag.from.x,p.y-drag.from.y)}else if(drag.kind==='arrow-handle'){
+ if(drag.kind==='move'){v.annotations[drag.index]=translate(drag.original,p.x-drag.from.x,p.y-drag.from.y)}else if(drag.kind==='skeleton-joint'){
+  const sk=deepcopy(drag.original);sk.landmarks[drag.joint]={x:clamp(p.x,.005,.995),y:clamp(p.y,.005,.995)};sk.selectedJoint=drag.joint;v.annotations[drag.index]=sk;
+ }else if(drag.kind==='skeleton-scale'){
+  v.annotations[drag.index]=scaleSkeleton(drag.original,p);
+ }else if(drag.kind==='arrow-handle'){
   v.annotations[drag.index]=updateArrowHandle(drag.original,drag.handle,p,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
   populateInspector();
  }else if(drag.kind==='smart-handle'){
@@ -2202,7 +2344,7 @@ function onUp(e){
  if(d.kind==='editlabel'){
   beginInlineLabel(d.index,d.before,{fresh:false});return;
  }
- if(d.kind==='move'||d.kind==='rommove'||d.kind==='blur-resize'||d.kind==='smart-handle'||d.kind==='arrow-handle')remember(d.before);
+ if(d.kind==='move'||d.kind==='rommove'||d.kind==='blur-resize'||d.kind==='smart-handle'||d.kind==='arrow-handle'||d.kind==='skeleton-joint'||d.kind==='skeleton-scale')remember(d.before);
  else if(d.kind==='smart-create'){
   const a=draft;if(!a)return;
   const r=canvas.getBoundingClientRect(),q=a.points[1];
@@ -2248,7 +2390,7 @@ function onUp(e){
  updateUI();draw();
 }
 canvas.addEventListener('pointerdown',onDown);canvas.addEventListener('pointermove',onMove);canvas.addEventListener('pointerup',onUp);canvas.addEventListener('pointercancel',()=>{
- if(drag?.kind==='rommove'||drag?.kind==='move'||drag?.kind==='blur-resize'||drag?.kind==='smart-handle'||drag?.kind==='arrow-handle')current().annotations=deepcopy(drag.before);
+ if(drag?.kind==='rommove'||drag?.kind==='move'||drag?.kind==='blur-resize'||drag?.kind==='smart-handle'||drag?.kind==='arrow-handle'||drag?.kind==='skeleton-joint'||drag?.kind==='skeleton-scale')current().annotations=deepcopy(drag.before);
  if(drag?.kind==='romdraft'&&romDraft)romDraft.points[drag.point]=null;
  draft=null;smartPending=null;drag=null;canvas.style.cursor='crosshair';populateInspector();updateUI();draw();
 });
@@ -2272,6 +2414,7 @@ function textPill(c,text,x,y,color,scale=1,w=0,h=0){
 }
 function shortenText(c,t,max){if(c.measureText(t).width<=max)return t;let a=t;while(a.length>2&&c.measureText(a+'…').width>max)a=a.slice(0,-1);return a+'…'}
 function drawOne(c,a,w,h,opts={}){const scale=opts.scale||Math.max(.75,Math.min(1.35,w/750));const labelScale=scale*(a.labelScale||1);const isSelected=opts.selected;const x=p=>p.x*w,y=p=>p.y*h;
+if(a.type==='skeleton'){drawSkeleton(c,a,w,h,!!isSelected,scale);return}
 if(a.type==='blur'){
  const src=opts.source;
  if(!a.from||!a.to)return;
@@ -2442,6 +2585,18 @@ for(const [id,field,event] of [['anatomyDrawMode','mode','change'],['anatomyShap
  $(id).addEventListener(event,()=>updateAnatomyShapeControls(field));
 }
 for(const id of ['anatomyShapeWidth','anatomyShapeBend'])$(id).addEventListener('pointerdown',()=>inspectorEditSession++);
+// Manual pose controls are applied only to the current skeleton, never to another project.
+function changeSkeletonSetting(fn,mergeKey){
+ const a=current().annotations[selected];if(a?.type!=='skeleton')return;
+ const before=deepcopy(current().annotations);fn(a);
+ remember(before,active,mergeKey?`skeleton:${a.id}:${mergeKey}`:null);draw();
+}
+$('skeletonAngleMode').addEventListener('change',()=>changeSkeletonSetting(a=>{a.angleMode=$('skeletonAngleMode').value},null));
+$('skeletonVisible').addEventListener('change',()=>changeSkeletonSetting(a=>{a.visible=$('skeletonVisible').checked},null));
+$('skeletonMarkers').addEventListener('change',()=>changeSkeletonSetting(a=>{a.showMarkers=$('skeletonMarkers').checked},null));
+$('skeletonOpacity').addEventListener('input',()=>{const value=Number($('skeletonOpacity').value);$('skeletonOpacityValue').textContent=value+'%';changeSkeletonSetting(a=>{a.opacity=value/100},'opacity')});
+$('skeletonFlip').addEventListener('click',()=>changeSkeletonSetting(a=>{const pts=Object.values(a.landmarks),cx=pts.reduce((t,q)=>t+q.x,0)/pts.length;for(const q of pts)q.x=clamp(2*cx-q.x,.005,.995)},null));
+$('skeletonReset').addEventListener('click',()=>changeSkeletonSetting(a=>{a.landmarks=deepcopy(a.initialLandmarks||initialSkeleton({x:.5,y:.51},canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height));a.selectedJoint='leftKnee'},null));
 function removeSelected(){if(inlineLabel){finishInlineLabel('cancel');return}const v=current();if(selected<0)return;const before=deepcopy(v.annotations);v.annotations.splice(selected,1);selected=-1;populateInspector();remember(before);updateUI();draw()}
 function clearPlane(){if(inlineLabel)finishInlineLabel(inlineLabelInput.value.trim()?'save':'cancel');const v=current();if(!v.annotations.length)return;if(!confirm('Clear all annotations in the current plane?'))return;const before=deepcopy(v.annotations);v.annotations=[];selected=-1;populateInspector();remember(before);updateUI();draw()}
 function renderPalette(){
@@ -2466,7 +2621,7 @@ $('videoControls').classList.toggle('hidden',!(s&&v.preview));$('cancelFrameBtn'
 $('overlayNotice').classList.toggle('hidden',!v.preview);$('overlayNotice').textContent=v.preview?'VIDEO PREVIEW · CAPTURE FRAME BEFORE ANNOTATING':'';
 updateGallery();
 $('clearBtn').disabled=!v.annotations.length;$('deleteBtn').disabled=selected<0;$('undoBtn').disabled=!undo.length;$('redoBtn').disabled=!redo.length;$('menuExportPlane').disabled=!v.frameSrc;$('menuExportPoster').disabled=projectType==='rom'?!views.some(z=>z.romKey&&romSlotComplete(z)):projectType==='joint'?!views.some(z=>z.jointKey&&z.frameSrc):!movementViews().some(z=>z.frameSrc);
-const list=$('annotationList');list.replaceChildren();if(v.annotations.length===0){const p=document.createElement('p');p.className='hint';p.textContent='No annotations yet.';list.appendChild(p)}v.annotations.forEach((a,i)=>{const b=document.createElement('button');b.className='annotation-chip'+(selected===i?' active':'');const dot=document.createElement('span');dot.className='led on';dot.style.color=a.color;const label=document.createElement('span');label.className='name';label.textContent=a.type==='blur'?'Blur':a.label+(a.type==='joint'?' · '+a.jointType:'');const typ=document.createElement('small');typ.textContent=a.type.toUpperCase();b.append(dot,label,typ);b.onclick=()=>{rememberCreationFields();chooseSelected(i);if(annotationsDialog.open)closeAnnotations()};list.appendChild(b)});
+const list=$('annotationList');list.replaceChildren();if(v.annotations.length===0){const p=document.createElement('p');p.className='hint';p.textContent='No annotations yet.';list.appendChild(p)}v.annotations.forEach((a,i)=>{const b=document.createElement('button');b.className='annotation-chip'+(selected===i?' active':'');const dot=document.createElement('span');dot.className='led on';dot.style.color=a.color;const label=document.createElement('span');label.className='name';label.textContent=a.type==='blur'?'Blur':a.type==='skeleton'?'Manual skeleton':a.label+(a.type==='joint'?' · '+a.jointType:'');const typ=document.createElement('small');typ.textContent=a.type.toUpperCase();b.append(dot,label,typ);b.onclick=()=>{rememberCreationFields();chooseSelected(i);if(annotationsDialog.open)closeAnnotations()};list.appendChild(b)});
 syncMenuActions();
 $('canvasHelp').textContent=canAnnotate?help[tool]:v.preview?'Select USE THIS FRAME to freeze the video before drawing.':'Choose a photo or video for the active plane.';updateROMInspector();queueAutosave()}
 // Cache a privacy-safe gallery thumbnail when the photo has blur regions.
