@@ -741,6 +741,12 @@ body.joint-mode .frame-buttons button{min-width:0}
 .smart-shape-fields.hidden,#smartShapeOptions.hidden{display:none!important}
 .smart-shape-fields .style-row{margin-top:8px}
 .smart-shape-fields select{width:100%}
+/* Kinetica v45: draggable whole-pose grip, muscle transparency, anchored callout labels. */
+#skeletonMove.active{background:#466d91;border-color:#9bcfff;color:#f7fbff}
+#skeletonMove:disabled,#resetLabelPosition:disabled{opacity:.4}
+.muscle-opacity-row{margin:12px 0 4px}
+.label-anchor-actions{margin:9px 0 4px}
+.label-anchor-actions .tactile{min-height:36px;width:100%;font-size:11px}
 /* Kinetica v44: manual 2D wireframe skeleton, no ML model or telemetry SDK. */
 .skeleton-checks{display:grid;gap:10px;margin:12px 0 15px}
 .skeleton-check{display:flex!important;align-items:center;gap:9px;letter-spacing:normal!important;font-weight:600!important;font-size:12px!important;color:#e1e9f0!important;margin:0!important}
@@ -750,7 +756,7 @@ body.joint-mode .frame-buttons button{min-width:0}
 .skeleton-small-note{font-size:11px;line-height:1.45;color:#b6c8d6;margin:8px 0 13px}
 </style>
   <link rel="stylesheet" href="./rom-guides-v30.css?v=41">
-<meta name="kinetica-release" content="v44-manual-wireframe-skeleton">
+<meta name="kinetica-release" content="v45-skeleton-move-muscle-opacity-label-callouts">
 </head>
 <body>
 <div class="device">
@@ -932,8 +938,9 @@ body.joint-mode .frame-buttons button{min-width:0}
       <select id="skeletonAngleMode" class="select-well"><option value="selected">Selected joint</option><option value="all">All eligible joints</option><option value="off">Hidden</option></select>
       <div class="skeleton-checks"><label class="skeleton-check"><input id="skeletonVisible" type="checkbox" checked> Show wireframe</label><label class="skeleton-check"><input id="skeletonMarkers" type="checkbox" checked> Show joint markers</label></div>
       <div class="style-row"><div class="style-heading"><label for="skeletonOpacity">OVERLAY OPACITY</label><output id="skeletonOpacityValue" for="skeletonOpacity">85%</output></div><input id="skeletonOpacity" type="range" min="20" max="100" step="5" value="85"></div>
+      <div class="skeleton-actions"><button id="skeletonMove" type="button" class="tactile" aria-pressed="false">Move Entire Skeleton</button></div>
       <div class="skeleton-actions"><button id="skeletonFlip" type="button" class="tactile">Flip Horizontal</button><button id="skeletonReset" type="button" class="tactile">Reset Pose</button></div>
-      <p class="skeleton-small-note">Drag landmarks to align the body. Drag a segment to move everything; use the square handle to scale.</p>
+      <p class="skeleton-small-note">Drag the center four-arrow grip to reposition the entire pose. Use Move Entire Skeleton to drag from anywhere; tap again to return to individual joint editing.</p>
     </div>
     <div class="fieldgroup hidden" id="styleFields">
       <label id="colorLabel">ANNOTATION COLOR</label><div class="palette" id="palette" role="group" aria-label="Choose annotation color"></div>
@@ -947,8 +954,10 @@ body.joint-mode .frame-buttons button{min-width:0}
           <div class="style-row"><div class="style-heading"><label for="anatomyShapeBend">CURVATURE</label><output for="anatomyShapeBend" id="anatomyShapeBendValue">0%</output></div><input id="anatomyShapeBend" type="range" min="-25" max="25" step="1" value="0"></div>
         </div>
       </div>
+      <div class="style-row muscle-opacity-row hidden" id="muscleOpacityField"><div class="style-heading"><label for="muscleOpacity">MUSCLE OPACITY</label><output for="muscleOpacity" id="muscleOpacityValue">70%</output></div><input id="muscleOpacity" type="range" min="10" max="100" step="5" value="70"></div>
       <div id="strokeField" class="style-row"><div class="style-heading"><label for="strokeWidth">LINE THICKNESS</label><output for="strokeWidth" id="strokeWidthValue">5 px</output></div><input id="strokeWidth" type="range" min="1" max="12" step="0.5" value="5"></div>
       <div class="style-row"><label for="labelSize">LABEL SIZE</label><select id="labelSize" class="select-well"><option value="0.8">Small</option><option value="1" selected>Normal</option><option value="1.3">Large</option><option value="1.6">Extra large</option></select></div>
+      <div class="label-anchor-actions hidden" id="labelAnchorActions"><button type="button" id="resetLabelPosition" class="tactile">Reset Label Position</button></div>
     </div>
     
   </div>
@@ -1327,6 +1336,7 @@ let undo=[],redo=[],chosenColor=colors[0],nextID=1;
 let blurShapeMode='oval',blurStrengthMode=32;
 let romDraft=null,romPointActive=0,romMode='included',romReposition=false;
 let inspectorEditSession=0;
+let skeletonMoveArmed=false;
 // Settings for a new annotation should survive temporarily inspecting another object.
 const creationFields={};
 function rememberCreationFields(){
@@ -1341,7 +1351,7 @@ function rememberCreationFields(){
  };
 }
 
-const toolStyles={joint:{color:'#e7e4a0',width:3,labelScale:1},bone:{color:'#b9dbfa',width:4.4,labelScale:1},muscle:{color:colors[0],width:5.5,labelScale:1},arrow:{color:'#fbc47a',width:4,labelScale:1},text:{color:'#ffffff',width:3,labelScale:1},rom:{color:'#b9ddff',width:4,labelScale:1},blur:{color:'#acd7ff',width:3,labelScale:1},skeleton:{color:'#96d6ff',width:3,labelScale:1}};
+const toolStyles={joint:{color:'#e7e4a0',width:3,labelScale:1},bone:{color:'#b9dbfa',width:4.4,labelScale:1},muscle:{color:colors[0],width:5.5,labelScale:1,opacity:.7},arrow:{color:'#fbc47a',width:4,labelScale:1},text:{color:'#ffffff',width:3,labelScale:1},rom:{color:'#b9ddff',width:4,labelScale:1},blur:{color:'#acd7ff',width:3,labelScale:1},skeleton:{color:'#96d6ff',width:3,labelScale:1}};
 const anatomyShapeDefaults={bone:{mode:'smart',family:'long',width:.082,bend:0},muscle:{mode:'smart',family:'fusiform',width:.14,bend:0}};
 const anatomyFamilies={bone:[['long','Long Bone'],['broad','Broad / Irregular']],muscle:[['fusiform','Fusiform'],['flat','Broad / Flat'],['fan','Fan-Shaped']]};
 // Smart Movement Arrows: selectable geometric paths, with a draggable bend grip.
@@ -1365,6 +1375,10 @@ function populateInspector(){
  $('inspectorHelp').textContent=type==='select'?'Select an annotation on the photo or choose Edit → Manage Annotations.':'';
  ['nameField','jointFields','arrowFields','styleFields','romFields','blurFields','skeletonFields'].forEach(i=>$(i).classList.toggle('hidden',i==='nameField'?(!item||mode==='none'||mode==='blur'||mode==='skeleton'):i==='styleFields'?(mode==='none'||mode==='blur'):(i==='jointFields'&&mode!=='joint'||i==='arrowFields'&&mode!=='arrow'||i==='romFields'&&mode!=='rom'||i==='blurFields'&&mode!=='blur'||i==='skeletonFields'&&mode!=='skeleton')));
  $('smartShapeFields').classList.toggle('hidden',!['bone','muscle'].includes(type));
+ $('muscleOpacityField').classList.toggle('hidden',type!=='muscle');
+ $('muscleOpacity').value=String(Math.round((item?.type==='muscle'?(item.opacity??.7):(toolStyles.muscle.opacity??.7))*100));
+ $('muscleOpacityValue').textContent=$('muscleOpacity').value+'%';
+ $('labelAnchorActions').classList.toggle('hidden',!item||!['joint','text','bone','muscle','arrow','rom'].includes(item.type));
  if(type==='skeleton'){
   const sk=item?.type==='skeleton'?item:null;
   $('skeletonAngleMode').value=sk?.angleMode||'selected';
@@ -1373,6 +1387,7 @@ function populateInspector(){
   $('skeletonOpacity').value=String(Math.round((sk?.opacity??.85)*100));
   $('skeletonOpacityValue').textContent=$('skeletonOpacity').value+'%';
   $('skeletonFlip').disabled=!sk;$('skeletonReset').disabled=!sk;
+  $('skeletonMove').disabled=!sk;$('skeletonMove').classList.toggle('active',!!sk&&skeletonMoveArmed);$('skeletonMove').setAttribute('aria-pressed',String(!!sk&&skeletonMoveArmed));
  }
  if(type==='bone'||type==='muscle'){
   const config=anatomyShapeDefaults[type],mode=item?(isSmart(item)?'smart':'freeform'):config.mode;
@@ -1736,6 +1751,7 @@ function reframeAnnotation(a,oldRect,newRect){
  }
  if(a.from)out.from=reframePoint(a.from,oldRect,newRect);
  if(a.to)out.to=reframePoint(a.to,oldRect,newRect);
+ if(a.labelPosition)out.labelPosition=reframePoint(a.labelPosition,oldRect,newRect);
  if(Array.isArray(a.points))out.points=a.points.map(p=>reframePoint(p,oldRect,newRect));
  if(a.type==='skeleton'&&a.landmarks){out.landmarks=Object.fromEntries(Object.entries(a.landmarks).map(([key,point])=>[key,reframePoint(point,oldRect,newRect)]));if(a.initialLandmarks)out.initialLandmarks=Object.fromEntries(Object.entries(a.initialLandmarks).map(([key,point])=>[key,reframePoint(point,oldRect,newRect)]))}
  return out;
@@ -1947,10 +1963,16 @@ function skeletonExtents(a){
  return{left,right,top,bottom,cx:(left+right)/2,cy:(top+bottom)/2};
 }
 function skeletonScaleHandle(a){const e=skeletonExtents(a);return e?{x:clamp(e.right+.025,.025,.99),y:clamp(e.bottom+.025,.025,.99)}:null}
+function skeletonMoveGrip(a){
+ const p=a.landmarks||{};const points=['leftShoulder','rightShoulder','leftHip','rightHip'].map(k=>p[k]).filter(Boolean);
+ if(!points.length)return null;
+ return{x:points.reduce((n,v)=>n+v.x,0)/points.length,y:points.reduce((n,v)=>n+v.y,0)/points.length};
+}
 function skeletonHandleAt(a,p,w,h){
  const px=p.x*w,py=p.y*h;
  const ext=skeletonScaleHandle(a);
- if(ext&&Math.hypot(px-ext.x*w,py-ext.y*h)<17)return{kind:'scale'};
+ if(ext&&Math.hypot(px-ext.x*w,py-ext.y*h)<21)return{kind:'scale'};
+ const grip=skeletonMoveGrip(a);if(grip&&Math.hypot(px-grip.x*w,py-grip.y*h)<24)return{kind:'move'};
  for(const [joint,q] of Object.entries(a.landmarks||{})){
   if(Math.hypot(px-q.x*w,py-q.y*h)<17)return{kind:'joint',joint};
  }
@@ -1998,38 +2020,65 @@ function drawSkeleton(c,a,w,h,isSelected,scale){
   const msg=a.angleMode==='all'?`${name.startsWith('left')?'L':'R'} ${angle.toFixed(0)}°`:`${short}: ${angle.toFixed(0)}° (2D est.)`;
   textPill(c,msg,q.x+8*scale,q.y-5*scale,'#c4eaff',Math.min(scale,.95),w,h);
  }
- if(isSelected){const q=skeletonScaleHandle(a);if(q){
+ if(isSelected){
+  const grip=skeletonMoveGrip(a);if(grip){
+   const gx=grip.x*w,gy=grip.y*h;
+   c.beginPath();c.arc(gx,gy,13*scale,0,Math.PI*2);c.fillStyle='#234664';c.fill();c.strokeStyle='#d2efff';c.lineWidth=2*scale;c.stroke();
+   c.beginPath();c.moveTo(gx-8*scale,gy);c.lineTo(gx+8*scale,gy);c.moveTo(gx,gy-8*scale);c.lineTo(gx,gy+8*scale);c.strokeStyle='#fff';c.lineWidth=1.8*scale;c.stroke();
+   for(const [vx,vy] of [[-8,0],[8,0],[0,-8],[0,8]]){c.beginPath();const hx=gx+vx*scale,hy=gy+vy*scale; if(vx){c.moveTo(hx-(vx>0?3:-3)*scale,hy-3*scale);c.lineTo(hx,hy);c.lineTo(hx-(vx>0?3:-3)*scale,hy+3*scale)}else{c.moveTo(hx-3*scale,hy-(vy>0?3:-3)*scale);c.lineTo(hx,hy);c.lineTo(hx+3*scale,hy-(vy>0?3:-3)*scale)}c.stroke()}
+  }
+  const q=skeletonScaleHandle(a);if(q){
   const size=7*scale;c.fillStyle='#172f43';c.strokeStyle='#fff';c.lineWidth=1.8*scale;
   c.fillRect(q.x*w-size,q.y*h-size,size*2,size*2);c.strokeRect(q.x*w-size,q.y*h-size,size*2,size*2);
  }}c.restore();
 }
 
 function annotationAnchor(a){if(a.type==='skeleton'){const joints=Object.values(a.landmarks||{});return joints.length?{x:joints.reduce((s,p)=>s+p.x,0)/joints.length,y:joints.reduce((s,p)=>s+p.y,0)/joints.length}:{x:.5,y:.5}}if(a.type==='blur')return{x:(a.from.x+a.to.x)/2,y:(a.from.y+a.to.y)/2};if(a.type==='rom')return a.points?.[0]||a.points?.find(Boolean)||{x:0,y:0};if(a.type==='joint'||a.type==='text')return{x:a.x,y:a.y};if(a.type==='arrow')return{x:(a.from.x+a.to.x)/2,y:(a.from.y+a.to.y)/2};return a.points.at(-1)||{x:0,y:0}}
-function labelHitBounds(a,w,h){
- const scale=Math.max(.75,Math.min(1.35,w/750)),labelScale=scale*(a.labelScale||1);
- let anchor=null,label='';
- if(a.type==='joint'){anchor={x:a.x*w,y:a.y*h};label=`${a.label} · ${a.jointType}`}
- else if(a.type==='text'){anchor={x:a.x*w,y:a.y*h};label=a.label}
- else if(a.type==='arrow'){anchor=pointToCanvas(a.to,w,h);label=a.label||a.movement}
+// Labels have an anatomical anchor and an independently movable callout box.
+// labelPosition is an optional normalized coordinate. Older documents without it
+// use the original label location, preserving existing saved projects.
+function annotationLabelInfo(a,w,h){
+ let base=null,label='';const anchor=annotationAnchor(a);
+ if(a.type==='joint'){base={x:a.x,y:a.y};label=`${a.label} · ${a.jointType}`}
+ else if(a.type==='text'){base={x:a.x,y:a.y};label=a.label}
+ else if(a.type==='arrow'){base=a.to;label=a.label||a.movement}
  else if(a.type==='bone'||a.type==='muscle'){
-  if(!a.points?.length)return null;
-  anchor=pointToCanvas(a.points.at(-1),w,h);label=a.label;
+  if(!a.points?.length)return null;base=a.points.at(-1);label=a.label;
  }else if(a.type==='rom'){
-  const [f,s,m]=(a.points||[]).map(p=>p?pointToCanvas(p,w,h):null);
+  const [f,s,m]=(a.points||[]).map(q=>q?pointToCanvas(q,w,h):null);
   if(!f||!s||!m)return null;
   const va=Math.atan2(s.y-f.y,s.x-f.x),vb=Math.atan2(m.y-f.y,m.x-f.x);
   let delta=vb-va;while(delta>Math.PI)delta-=2*Math.PI;while(delta< -Math.PI)delta+=2*Math.PI;
+  const scale=Math.max(.75,Math.min(1.35,w/750));
   const radius=Math.max(19*scale,Math.min(65*scale,Math.hypot(s.x-f.x,s.y-f.y)*.36,Math.hypot(m.x-f.x,m.y-f.y)*.36));
   const mid=va+delta/2;
-  anchor={x:f.x+Math.cos(mid)*(radius+28*scale),y:f.y+Math.sin(mid)*(radius+28*scale)};
+  base={x:(f.x+Math.cos(mid)*(radius+28*scale))/w,y:(f.y+Math.sin(mid)*(radius+28*scale))/h};
   const sx=s.x-f.x,sy=s.y-f.y,mx=m.x-f.x,my=m.y-f.y,den=Math.hypot(sx,sy)*Math.hypot(mx,my);
   if(den<=4)return null;
   const included=Math.acos(clamp((sx*mx+sy*my)/den,-1,1))*180/Math.PI;
   const measured=a.angleMode==='straight'?180-included:included;
   label=(a.label||'ROM')+' · '+measured.toFixed(1)+'°'+(a.angleMode==='straight'?' (from straight)':' (included)');
  }
- if(!anchor||!label)return null;
- return textPillLayout(ctx,label,anchor.x,anchor.y,labelScale,w,h);
+ if(!base||!anchor||!label)return null;
+ return {anchor,base,label};
+}
+function labelHitBounds(a,w,h,c=ctx,scaleOverride=null){
+ const info=annotationLabelInfo(a,w,h);if(!info)return null;
+ const scale=scaleOverride??Math.max(.75,Math.min(1.35,w/750));
+ const pos=a.labelPosition||info.base;
+ return textPillLayout(c,info.label,pos.x*w,pos.y*h,scale*(a.labelScale||1),w,h);
+}
+function drawAnnotationCallout(c,a,w,h,scale){
+ const info=annotationLabelInfo(a,w,h);if(!info)return;
+ const pos=a.labelPosition||info.base;
+ const b=labelHitBounds(a,w,h,c,scale),anchor={x:info.anchor.x*w,y:info.anchor.y*h};if(!b)return;
+ // Attach the connector to the nearest point of the actual text rectangle.
+ const edge={x:clamp(anchor.x,b.left,b.left+b.width),y:clamp(anchor.y,b.top,b.top+b.height)};
+ c.save();c.beginPath();c.moveTo(anchor.x,anchor.y);c.lineTo(edge.x,edge.y);
+ c.lineWidth=Math.max(1.15,1.6*scale);c.strokeStyle=a.color||'#b9ddff';c.stroke();
+ c.beginPath();c.arc(anchor.x,anchor.y,3.4*scale,0,Math.PI*2);c.fillStyle='#101a25';c.fill();
+ c.strokeStyle=a.color||'#b9ddff';c.lineWidth=1.7*scale;c.stroke();c.restore();
+ textPill(c,info.label,pos.x*w,pos.y*h,a.color||'#f2f8ff',scale*(a.labelScale||1),w,h);
 }
 function hitTest(pos){
  const v=current(),r=canvas.getBoundingClientRect(),p={x:pos.x*r.width,y:pos.y*r.height};
@@ -2061,7 +2110,7 @@ function hitTest(pos){
  }
  return -1;
 }
-function translate(a,dx,dy){const b=deepcopy(a);const move=p=>({x:clamp(p.x+dx),y:clamp(p.y+dy)});if(b.type==='skeleton'&&b.landmarks)b.landmarks=Object.fromEntries(Object.entries(b.landmarks).map(([k,p])=>[k,move(p)]));else if(b.points)b.points=b.points.map(p=>p?move(p):null);else if(b.type==='arrow'||b.type==='blur'){b.from=move(b.from);b.to=move(b.to)}else{const p=move({x:b.x,y:b.y});b.x=p.x;b.y=p.y}return b}
+function translate(a,dx,dy){const b=deepcopy(a);const move=p=>({x:clamp(p.x+dx),y:clamp(p.y+dy)});if(b.labelPosition)b.labelPosition=move(b.labelPosition);if(b.type==='skeleton'&&b.landmarks)b.landmarks=Object.fromEntries(Object.entries(b.landmarks).map(([k,p])=>[k,move(p)]));else if(b.points)b.points=b.points.map(p=>p?move(p):null);else if(b.type==='arrow'||b.type==='blur'){b.from=move(b.from);b.to=move(b.to)}else{const p=move({x:b.x,y:b.y});b.x=p.x;b.y=p.y}return b}
 function makeAnnotation(){
 const label=''; // Label is entered on the photo after the object is positioned.
 const style=toolStyles[tool]||toolStyles.text;
@@ -2072,7 +2121,7 @@ if(tool==='bone'||tool==='muscle'){
   base.shapeMode='smart';base.shapeFamily=cfg.family;base.shapeWidth=cfg.width;base.shapeBend=cfg.bend;
  }
  }
- if(tool==='muscle'){/* Match existing muscle colors after the student types its name. */}
+ if(tool==='muscle'){base.opacity=toolStyles.muscle.opacity??.7;/* Match existing muscle colors after the student types its name. */}
 if(tool==='arrow'){base.movement=$('movementType').value;base.label=base.movement;base.arrowPath=arrowSettings.path;base.arrowBend=arrowSettings.bend}
 if(tool==='rom'){base.label='ROM';base.points=[null,null,null];base.angleMode=romMode}
 if(tool==='blur'){base.label='Blur';base.color='#acd7ff';base.shape=blurShapeMode;base.blurStrength=blurStrengthMode}
@@ -2229,8 +2278,16 @@ function onDown(e){
  // The selected skeleton has draggable landmark and scale handles.
  const sk=current().annotations[selected];
  if(sk?.type==='skeleton'&&sk.visible!==false){
+  if(skeletonMoveArmed){drag={kind:'move',index:selected,from:p,original:deepcopy(sk),before};canvas.setPointerCapture(e.pointerId);canvas.style.cursor='move';return}
   const handle=skeletonHandleAt(sk,p,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
   if(handle){drag={kind:handle.kind==='scale'?'skeleton-scale':handle.kind==='joint'?'skeleton-joint':'move',index:selected,joint:handle.joint,from:p,original:deepcopy(sk),before};canvas.setPointerCapture(e.pointerId);canvas.style.cursor='grabbing';return}
+ }
+ // Text boxes are independent grips, even when they overlap a smart-shape endpoint.
+ const earlyLabel=labelAtPoint(p);
+ if(earlyLabel>=0){
+  rememberCreationFields();chooseSelected(earlyLabel);
+  drag={kind:'editlabel',from:p,original:deepcopy(v.annotations[earlyLabel]),index:earlyLabel,before};
+  canvas.setPointerCapture(e.pointerId);canvas.style.cursor='grabbing';return;
  }
  // Resize / bend selected shape using the four visible handles.
  const handle=anatomyHandleAt(p);
@@ -2321,9 +2378,12 @@ function onMove(e){
  e.preventDefault();const p=normalized(e),v=current();
  if(drag.kind==='editlabel'){
   const r=canvas.getBoundingClientRect();
-  if(Math.hypot((p.x-drag.from.x)*r.width,(p.y-drag.from.y)*r.height)>=7)drag.kind='move';
+  if(Math.hypot((p.x-drag.from.x)*r.width,(p.y-drag.from.y)*r.height)>=7)drag.kind='label-move';
  }
- if(drag.kind==='move'){v.annotations[drag.index]=translate(drag.original,p.x-drag.from.x,p.y-drag.from.y)}else if(drag.kind==='skeleton-joint'){
+ if(drag.kind==='move'){v.annotations[drag.index]=translate(drag.original,p.x-drag.from.x,p.y-drag.from.y)}else if(drag.kind==='label-move'){
+  const base=annotationLabelInfo(drag.original,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height)?.base;
+  const q=drag.original.labelPosition||base;if(q){const updated=deepcopy(drag.original);updated.labelPosition={x:clamp(q.x+p.x-drag.from.x,.003,.995),y:clamp(q.y+p.y-drag.from.y,.003,.995)};v.annotations[drag.index]=updated}
+ }else if(drag.kind==='skeleton-joint'){
   const sk=deepcopy(drag.original);sk.landmarks[drag.joint]={x:clamp(p.x,.005,.995),y:clamp(p.y,.005,.995)};sk.selectedJoint=drag.joint;v.annotations[drag.index]=sk;
  }else if(drag.kind==='skeleton-scale'){
   v.annotations[drag.index]=scaleSkeleton(drag.original,p);
@@ -2344,7 +2404,7 @@ function onUp(e){
  if(d.kind==='editlabel'){
   beginInlineLabel(d.index,d.before,{fresh:false});return;
  }
- if(d.kind==='move'||d.kind==='rommove'||d.kind==='blur-resize'||d.kind==='smart-handle'||d.kind==='arrow-handle'||d.kind==='skeleton-joint'||d.kind==='skeleton-scale')remember(d.before);
+ if(d.kind==='move'||d.kind==='label-move'||d.kind==='rommove'||d.kind==='blur-resize'||d.kind==='smart-handle'||d.kind==='arrow-handle'||d.kind==='skeleton-joint'||d.kind==='skeleton-scale')remember(d.before);
  else if(d.kind==='smart-create'){
   const a=draft;if(!a)return;
   const r=canvas.getBoundingClientRect(),q=a.points[1];
@@ -2390,7 +2450,7 @@ function onUp(e){
  updateUI();draw();
 }
 canvas.addEventListener('pointerdown',onDown);canvas.addEventListener('pointermove',onMove);canvas.addEventListener('pointerup',onUp);canvas.addEventListener('pointercancel',()=>{
- if(drag?.kind==='rommove'||drag?.kind==='move'||drag?.kind==='blur-resize'||drag?.kind==='smart-handle'||drag?.kind==='arrow-handle'||drag?.kind==='skeleton-joint'||drag?.kind==='skeleton-scale')current().annotations=deepcopy(drag.before);
+ if(drag?.kind==='rommove'||drag?.kind==='move'||drag?.kind==='label-move'||drag?.kind==='blur-resize'||drag?.kind==='smart-handle'||drag?.kind==='arrow-handle'||drag?.kind==='skeleton-joint'||drag?.kind==='skeleton-scale')current().annotations=deepcopy(drag.before);
  if(drag?.kind==='romdraft'&&romDraft)romDraft.points[drag.point]=null;
  draft=null;smartPending=null;drag=null;canvas.style.cursor='crosshair';populateInspector();updateUI();draw();
 });
@@ -2459,7 +2519,7 @@ if(a.type==='rom'){
    const display=a.angleMode==='straight'?180-included:included;
    const suffix=a.angleMode==='straight'?' (from straight)':' (included)';
    const mid=va+delta/2;const lx=f.x+Math.cos(mid)*(r+28*scale),ly=f.y+Math.sin(mid)*(r+28*scale);
-   textPill(c,(a.label||'ROM')+' · '+display.toFixed(1)+'°'+suffix,lx,ly,a.color||'#b9ddff',labelScale,w,h)
+   // The complete angle label is rendered as a repositionable callout below.
   }
  }
  ps.forEach((p,i)=>{if(!p)return;c.beginPath();c.arc(p.x,p.y,10*scale,0,2*Math.PI);c.fillStyle='#030710d9';c.fill();c.beginPath();c.arc(p.x,p.y,7*scale,0,2*Math.PI);c.fillStyle=['#b9ddff','#4d9fe5','#ffb56e'][i];c.fill();c.lineWidth=1.8*scale;c.strokeStyle='#142432';c.stroke()});
@@ -2471,10 +2531,10 @@ if(isSmart(a)){
  for(let i=0;i<=N;i++)poly.push(g.edge(i/N,+1));
  for(let i=N;i>=0;i--)poly.push(g.edge(i/N,-1));
  c.beginPath();poly.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.closePath();
- c.fillStyle=a.color;c.globalAlpha=a.type==='muscle'?.43:.50;c.fill();c.globalAlpha=1;
+ c.fillStyle=a.color;c.globalAlpha=a.type==='muscle'?(clamp(Number(a.opacity??.7),.1,1)*.6):.50;c.fill();c.globalAlpha=a.type==='muscle'?clamp(Number(a.opacity??.7),.1,1):1;
  c.strokeStyle=a.color;c.lineWidth=Math.max(1.7,2.25*scale);c.stroke();
  if(a.type==='muscle'){
-  c.strokeStyle=a.color;c.globalAlpha=.67;c.lineWidth=1.25*scale;
+  c.strokeStyle=a.color;c.globalAlpha=clamp(Number(a.opacity??.7),.1,1)*.7;c.lineWidth=1.25*scale;
   for(const side of [-.43,0,.43]){c.beginPath();for(let i=2;i<=34;i++){
     const t=i/N,z=g.spine(t),v=g.halfWidth(t)*side,q={x:z.x+z.nx*v,y:z.y+z.ny*v};
     if(i===2)c.moveTo(q.x,q.y);else c.lineTo(q.x,q.y)
@@ -2482,7 +2542,7 @@ if(isSmart(a)){
  }else{
   const z=g.center(.5);c.fillStyle='#ffffff19';c.beginPath();c.arc(z.x,z.y,g.halfWidth(.5)*.45,0,Math.PI*2);c.fill();
  }
- const lab=a.points[1];if(a.label)textPill(c,a.label,x(lab),y(lab),a.color,labelScale,w,h);
+ c.globalAlpha=1;
  if(isSelected){
   c.strokeStyle='#ffffffa9';c.lineWidth=1.4*scale;c.setLineDash([5*scale,4*scale]);c.beginPath();poly.forEach((p,i)=>i?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y));c.closePath();c.stroke();c.setLineDash([]);
   for(const handle of anatomyHandles(a,w,h)){
@@ -2492,7 +2552,7 @@ if(isSmart(a)){
   }
  }
 }
-if((a.type==='bone'||a.type==='muscle')&&!isSmart(a)){if(!a.points?.length){c.restore();return}c.beginPath();a.points.forEach((p,i)=>i?c.lineTo(x(p),y(p)):c.moveTo(x(p),y(p)));if(isSelected){c.strokeStyle='#ffffff';c.lineWidth=8*scale;c.stroke()}c.strokeStyle=a.color;c.lineWidth=(a.strokeWidth||(a.type==='bone'?4.4:5.5))*scale;c.stroke();const p=a.points.at(-1);textPill(c,a.label,x(p),y(p),a.color,labelScale,w,h)}
+if((a.type==='bone'||a.type==='muscle')&&!isSmart(a)){if(!a.points?.length){c.restore();return}c.beginPath();a.points.forEach((p,i)=>i?c.lineTo(x(p),y(p)):c.moveTo(x(p),y(p)));if(isSelected){c.strokeStyle='#ffffff';c.lineWidth=8*scale;c.stroke()}c.strokeStyle=a.color;c.globalAlpha=a.type==='muscle'?clamp(Number(a.opacity??.7),.1,1):1;c.lineWidth=(a.strokeWidth||(a.type==='bone'?4.4:5.5))*scale;c.stroke();c.globalAlpha=1}
 if(a.type==='arrow'){
  const g=arrowGeometry(a,w,h);if(!g){c.restore();return}
  const drawPath=()=>{
@@ -2506,15 +2566,16 @@ if(a.type==='arrow'){
  const ang=g.tangent(),len=17*scale;
  c.beginPath();c.moveTo(g.end.x,g.end.y);c.lineTo(g.end.x-len*Math.cos(ang-.52),g.end.y-len*Math.sin(ang-.52));
  c.moveTo(g.end.x,g.end.y);c.lineTo(g.end.x-len*Math.cos(ang+.52),g.end.y-len*Math.sin(ang+.52));c.strokeStyle=a.color;c.stroke();
- textPill(c,a.label||a.movement,g.end.x,g.end.y,a.color,labelScale,w,h);
+ // Label rendered as independently draggable callout after path and handles.
  if(isSelected)for(const handle of arrowHandles(a,w,h)){
   c.beginPath();c.arc(handle.point.x,handle.point.y,Math.max(7,7*scale),0,Math.PI*2);c.fillStyle='#203140';c.fill();c.strokeStyle='#fff';c.lineWidth=1.5*scale;c.stroke();
   c.beginPath();c.arc(handle.point.x,handle.point.y,5.4*scale,0,Math.PI*2);
   c.fillStyle=handle.kind==='bend'?'#ffb56e':'#acd7ff';c.fill();
  }
 }
-if(a.type==='joint'){c.beginPath();c.arc(x(a),y(a),11*scale,0,2*Math.PI);c.fillStyle='#000c';c.fill();c.beginPath();c.arc(x(a),y(a),7*scale,0,2*Math.PI);c.strokeStyle=a.color;c.lineWidth=(a.strokeWidth||3)*scale;c.stroke();textPill(c,`${a.label} · ${a.jointType}`,x(a),y(a),a.color,labelScale,w,h)}
-if(a.type==='text'){textPill(c,a.label,x(a),y(a),a.color,labelScale,w,h)}
+if(a.type==='joint'){c.beginPath();c.arc(x(a),y(a),11*scale,0,2*Math.PI);c.fillStyle='#000c';c.fill();c.beginPath();c.arc(x(a),y(a),7*scale,0,2*Math.PI);c.strokeStyle=a.color;c.lineWidth=(a.strokeWidth||3)*scale;c.stroke();/* callout rendered below */}
+if(a.type==='text'){/* independent callout rendered below */}
+if(['joint','text','bone','muscle','arrow','rom'].includes(a.type))drawAnnotationCallout(c,a,w,h,scale);
 if(isSelected&&a.type!=='bone'&&a.type!=='muscle'){const p=annotationAnchor(a);c.beginPath();c.arc(x(p),y(p),17*scale,0,2*Math.PI);c.strokeStyle='#ffffffad';c.lineWidth=1.5*scale;c.setLineDash([4*scale,4*scale]);c.stroke()}
 c.restore()}
 function draw(){const v=current(),src=visibleSource(v),r=canvas.getBoundingClientRect();if(!src||!r.width||!r.height)return;ctx.setTransform(canvas.width/r.width,0,0,canvas.height/r.height,0,0);ctx.clearRect(0,0,r.width,r.height);ctx.fillStyle='#06080c';ctx.fillRect(0,0,r.width,r.height);try{ctx.drawImage(src,0,0,r.width,r.height)}catch(e){}if(v.preview)return;v.annotations.forEach((a,i)=>{if(a.type==='blur')drawOne(ctx,a,r.width,r.height,{selected:i===selected,source:src})});v.annotations.forEach((a,i)=>{if(a.type!=='blur')drawOne(ctx,a,r.width,r.height,{selected:i===selected})});if(draft)drawOne(ctx,draft,r.width,r.height,{source:src});if(romDraft)drawOne(ctx,romDraft,r.width,r.height)}
@@ -2523,12 +2584,12 @@ function setTool(t){
  if(projectType==='rom'&&!['select','text','rom','blur'].includes(t))t='rom';
  if(projectType==='joint'&&!['select','joint','rom','blur'].includes(t))t='joint';
  rememberCreationFields();
- tool=t;selected=-1;draft=null;smartPending=null;romReposition=false;romDraft=null;romPointActive=0;
+ skeletonMoveArmed=false;tool=t;selected=-1;draft=null;smartPending=null;romReposition=false;romDraft=null;romPointActive=0;
  document.querySelectorAll('[data-tool]').forEach(b=>{const on=b.dataset.tool===t;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on))});
  $('toolHint').textContent=help[t];populateInspector();updateUI();draw();
 }
 function chooseSelected(i){
- romDraft=null;romReposition=false;selected=i;const item=current().annotations[i];if(!item){populateInspector();updateUI();draw();return}
+ romDraft=null;romReposition=false;selected=i;const item=current().annotations[i];if(item?.type!=='skeleton')skeletonMoveArmed=false;if(!item){populateInspector();updateUI();draw();return}
  // Allow editing this item while any annotation tool remains active.
  populateInspector();updateUI();draw();
 }
@@ -2585,12 +2646,26 @@ for(const [id,field,event] of [['anatomyDrawMode','mode','change'],['anatomyShap
  $(id).addEventListener(event,()=>updateAnatomyShapeControls(field));
 }
 for(const id of ['anatomyShapeWidth','anatomyShapeBend'])$(id).addEventListener('pointerdown',()=>inspectorEditSession++);
+$('muscleOpacity').addEventListener('pointerdown',()=>inspectorEditSession++);
+$('muscleOpacity').addEventListener('input',()=>{
+ const value=Number($('muscleOpacity').value)/100;$('muscleOpacityValue').textContent=Math.round(value*100)+'%';
+ const a=current().annotations[selected];if(a?.type==='muscle'){const before=deepcopy(current().annotations);a.opacity=value;remember(before,active,`muscle-opacity:${a.id}:${inspectorEditSession}`);draw()}
+ else{toolStyles.muscle.opacity=value}
+});
+$('resetLabelPosition').addEventListener('click',()=>{
+ const a=current().annotations[selected];if(!a||!['joint','text','bone','muscle','arrow','rom'].includes(a.type))return;
+ const before=deepcopy(current().annotations);delete a.labelPosition;remember(before);draw();
+});
 // Manual pose controls are applied only to the current skeleton, never to another project.
 function changeSkeletonSetting(fn,mergeKey){
  const a=current().annotations[selected];if(a?.type!=='skeleton')return;
  const before=deepcopy(current().annotations);fn(a);
  remember(before,active,mergeKey?`skeleton:${a.id}:${mergeKey}`:null);draw();
 }
+$('skeletonMove').addEventListener('click',()=>{
+ if(current().annotations[selected]?.type!=='skeleton')return;
+ skeletonMoveArmed=!skeletonMoveArmed;populateInspector();canvas.style.cursor=skeletonMoveArmed?'move':'crosshair';draw();
+});
 $('skeletonAngleMode').addEventListener('change',()=>changeSkeletonSetting(a=>{a.angleMode=$('skeletonAngleMode').value},null));
 $('skeletonVisible').addEventListener('change',()=>changeSkeletonSetting(a=>{a.visible=$('skeletonVisible').checked},null));
 $('skeletonMarkers').addEventListener('change',()=>changeSkeletonSetting(a=>{a.showMarkers=$('skeletonMarkers').checked},null));
