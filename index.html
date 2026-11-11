@@ -905,7 +905,11 @@ body.joint-mode .frame-buttons button{min-width:0}
     </div>
     <div class="fieldgroup hidden" id="jointFields"><label for="jointType">SYNOVIAL JOINT TYPE</label><select class="select-well" id="jointType"><option>Gliding</option><option selected>Hinge</option><option>Pivot</option><option>Ellipsoid</option><option>Saddle</option><option>Ball and Socket</option></select></div>
     
-    <div class="fieldgroup hidden" id="arrowFields"><label for="movementType">MOVEMENT TYPE</label><select class="select-well" id="movementType"><option>Flexion</option><option>Extension</option><option>Abduction</option><option>Adduction</option><option>Rotation</option><option>Medial rotation</option><option>Lateral rotation</option><option>Circumduction</option><option>Dorsiflexion</option><option>Plantar flexion</option><option>Elevation</option><option>Depression</option><option>Pronation</option><option>Supination</option><option>Other</option></select></div>
+    <div class="fieldgroup hidden" id="arrowFields"><label for="movementType">MOVEMENT TYPE</label><select class="select-well" id="movementType"><option>Flexion</option><option>Extension</option><option>Abduction</option><option>Adduction</option><option>Rotation</option><option>Medial rotation</option><option>Lateral rotation</option><option>Circumduction</option><option>Dorsiflexion</option><option>Plantar flexion</option><option>Elevation</option><option>Depression</option><option>Pronation</option><option>Supination</option><option>Other</option></select>
+      <label for="arrowPath">ARROW PATH</label>
+      <select id="arrowPath" class="select-well" aria-label="Movement arrow path"><option value="straight">Straight</option><option value="curved">Curved</option><option value="arc">Rotation Arc</option></select>
+      <div id="arrowCurveField" class="style-row"><div class="style-heading"><label for="arrowBend">CURVATURE</label><output for="arrowBend" id="arrowBendValue">18%</output></div><input id="arrowBend" type="range" min="-55" max="55" step="1" value="18"></div>
+    </div>
     <div class="fieldgroup hidden blur-settings" id="blurFields" aria-label="Blur settings">
       <label for="blurShape">BLUR REGION SHAPE</label>
       <select id="blurShape" class="select-well"><option value="oval">Oval</option><option value="rectangle">Rectangle</option></select>
@@ -1020,7 +1024,7 @@ function canonicalSynovialType(value){
  };
  return aliases[key]||LECTURE_SYNOVIAL_TYPES.find(label=>label.toLowerCase()===key)||raw;
 }
-const help={select:'Tap an existing label to rename it, or drag any annotation to reposition it.',joint:'Tap the joint location, type its name on the photo, then press Enter. Tap another location to label another joint.',bone:'Smart Shape: click two endpoints or drag once, adjust the blue, teal, and orange handles, then name the bone. Freeform is available in the inspector.',muscle:'Smart Shape: click two endpoints or drag once, adjust width and curve, then name the muscle. Choose fusiform, flat, or fan shapes in the inspector.',arrow:'Select the movement type, drag an arrow, then confirm or edit its label with Enter.',text:'Tap the photo, type the label directly on it, and press Enter. Tap elsewhere for the next label.',rom:'Place the fulcrum, stationary arm and moving arm, then confirm or name the measurement with Enter. Markers remain draggable.',blur:'Drag an oval or rectangle over a face. Move or resize the region; exports flatten the blur into the image.'};
+const help={select:'Tap an existing label to rename it, or drag any annotation to reposition it.',joint:'Tap the joint location, type its name on the photo, then press Enter. Tap another location to label another joint.',bone:'Smart Shape: click two endpoints or drag once, adjust the blue, teal, and orange handles, then name the bone. Freeform is available in the inspector.',muscle:'Smart Shape: click two endpoints or drag once, adjust width and curve, then name the muscle. Choose fusiform, flat, or fan shapes in the inspector.',arrow:'Drag or tap two points, then adjust the arrow path and bend handle. Press Enter to label the movement.',text:'Tap the photo, type the label directly on it, and press Enter. Tap elsewhere for the next label.',rom:'Place the fulcrum, stationary arm and moving arm, then confirm or name the measurement with Enter. Markers remain draggable.',blur:'Drag an oval or rectangle over a face. Move or resize the region; exports flatten the blur into the image.'};
 let views=[makeView(0),makeView(1)],active=0,tool='select',selected=-1,drag=null,draft=null,smartPending=null;
 
 // Slots from the Regular Anatomy ROM handout (pages 1–2) plus additional
@@ -1322,6 +1326,17 @@ function rememberCreationFields(){
 const toolStyles={joint:{color:'#e7e4a0',width:3,labelScale:1},bone:{color:'#b9dbfa',width:4.4,labelScale:1},muscle:{color:colors[0],width:5.5,labelScale:1},arrow:{color:'#fbc47a',width:4,labelScale:1},text:{color:'#ffffff',width:3,labelScale:1},rom:{color:'#b9ddff',width:4,labelScale:1},blur:{color:'#acd7ff',width:3,labelScale:1}};
 const anatomyShapeDefaults={bone:{mode:'smart',family:'long',width:.082,bend:0},muscle:{mode:'smart',family:'fusiform',width:.14,bend:0}};
 const anatomyFamilies={bone:[['long','Long Bone'],['broad','Broad / Irregular']],muscle:[['fusiform','Fusiform'],['flat','Broad / Flat'],['fan','Fan-Shaped']]};
+// Smart Movement Arrows: selectable geometric paths, with a draggable bend grip.
+// Legacy arrows without arrowPath keep the original straight-line rendering.
+const arrowSettings={path:'curved',bend:.18};
+function suggestedArrowPath(movement){
+ const m=String(movement||'').toLowerCase();
+ if(/rotation|circumduction|pronation|supination/.test(m))return 'arc';
+ if(/flexion|extension|abduction|adduction/.test(m))return 'curved';
+ return 'straight';
+}
+function initialArrowBend(path){return path==='arc'?.28:path==='curved'?.18:0;}
+
 const isSmart=a=>!!a&&['bone','muscle'].includes(a.type)&&a.shapeMode==='smart'&&Array.isArray(a.points)&&a.points.length===2&&a.points.every(Boolean);
 const inspectorNames={select:'SELECT ANNOTATION',joint:'SYNOVIAL JOINT',bone:'BONE SHAPE',muscle:'MUSCLE SHAPE',arrow:'MOVEMENT ARROW',text:'TEXT LABEL',rom:'RANGE OF MOTION',blur:'BLUR'};
 function inspectorType(){return current().annotations[selected]?.type||tool}
@@ -1345,6 +1360,14 @@ function populateInspector(){
   $('smartShapeOptions').classList.toggle('hidden',mode!=='smart');
  }
  $('strokeField').classList.toggle('hidden',!['bone','muscle','arrow','rom'].includes(type)||(isSmart(item)||(!item&&['bone','muscle'].includes(type)&&anatomyShapeDefaults[type].mode==='smart')));
+ if(type==='arrow'){
+  const path=item?(item.arrowPath||'straight'):arrowSettings.path;
+  const bend=item?(Number.isFinite(Number(item.arrowBend))?Number(item.arrowBend):0):arrowSettings.bend;
+  $('arrowPath').value=path;
+  $('arrowBend').value=String(Math.round(bend*100));
+  $('arrowBendValue').textContent=$('arrowBend').value+'%';
+  $('arrowCurveField').classList.toggle('hidden',path==='straight');
+ }
  
  if(type==='select')return;
  if(type==='rom'){romMode=item?.angleMode||romDraft?.angleMode||romMode;romPointActive=romPointActive??0;updateROMInspector();}
@@ -1803,6 +1826,64 @@ function finishSmartShape(a,before){
  current().annotations.push(a);
  beginInlineLabel(current().annotations.length-1,before,{fresh:true});
 }
+// Three editable movement-arrow paths: line, quadratic curve, and circular arc.
+// Coordinates are normalized in the project and converted to display/export pixels here.
+function arrowGeometry(a,w,h){
+ if(!a?.from||!a?.to)return null;
+ const start=pointToCanvas(a.from,w,h),end=pointToCanvas(a.to,w,h);
+ const dx=end.x-start.x,dy=end.y-start.y,len=Math.hypot(dx,dy)||1;
+ const normal={x:-dy/len,y:dx/len},short=Math.max(1,Math.min(w,h));
+ const path=['straight','curved','arc'].includes(a.arrowPath)?a.arrowPath:'straight';
+ const bend=path==='straight'?0:clamp(Number(a.arrowBend)||0,-.55,.55)*short;
+ const mid={x:(start.x+end.x)/2,y:(start.y+end.y)/2};
+ const grip={x:mid.x+normal.x*bend,y:mid.y+normal.y*bend};
+ const control={x:mid.x+normal.x*bend*2,y:mid.y+normal.y*bend*2};
+ let circle=null;
+ if(path==='arc'&&Math.abs(bend)>3){
+  const [ax,ay,bx,by,cx,cy]=[start.x,start.y,grip.x,grip.y,end.x,end.y];
+  const determinant=2*(ax*(by-cy)+bx*(cy-ay)+cx*(ay-by));
+  if(Math.abs(determinant)>0.01){
+   const a2=ax*ax+ay*ay,b2=bx*bx+by*by,c2=cx*cx+cy*cy;
+   const center={x:(a2*(by-cy)+b2*(cy-ay)+c2*(ay-by))/determinant,y:(a2*(cx-bx)+b2*(ax-cx)+c2*(bx-ax))/determinant};
+   const radius=Math.hypot(ax-center.x,ay-center.y);
+   if(Number.isFinite(radius)&&radius<Math.max(w,h)*12){
+    const startAngle=Math.atan2(ay-center.y,ax-center.x),midAngle=Math.atan2(by-center.y,bx-center.x),endAngle=Math.atan2(cy-center.y,cx-center.x);
+    const turn=(theta)=>(theta+Math.PI*4)%(Math.PI*2);
+    const cwSpan=turn(endAngle-startAngle),cwMid=turn(midAngle-startAngle);
+    const span=cwMid<=cwSpan?cwSpan:-(turn(startAngle-endAngle));
+    circle={center,radius,startAngle,span};
+   }
+  }
+ }
+ const point=t=>{
+  if(path==='straight')return{x:start.x+dx*t,y:start.y+dy*t};
+  if(circle){const theta=circle.startAngle+circle.span*t;return{x:circle.center.x+circle.radius*Math.cos(theta),y:circle.center.y+circle.radius*Math.sin(theta)}}
+  return{x:(1-t)*(1-t)*start.x+2*(1-t)*t*control.x+t*t*end.x,y:(1-t)*(1-t)*start.y+2*(1-t)*t*control.y+t*t*end.y};
+ };
+ const tangent=()=>{
+  if(circle){const theta=circle.startAngle+circle.span;return theta+(circle.span<0?-Math.PI/2:Math.PI/2)}
+  return Math.atan2(end.y-(path==='straight'?start.y:control.y),end.x-(path==='straight'?start.x:control.x));
+ };
+ return{start,end,normal,short,mid,grip,control,circle,path,point,tangent};
+}
+function arrowHandles(a,w,h){
+ const g=arrowGeometry(a,w,h);if(!g)return[];
+ return[{kind:'start',point:g.start},{kind:'end',point:g.end},...(g.path==='straight'?[]:[{kind:'bend',point:g.grip}])];
+}
+function arrowHandleAt(pos){
+ const a=current().annotations[selected];if(a?.type!=='arrow')return null;
+ const r=canvas.getBoundingClientRect(),q=pointToCanvas(pos,r.width,r.height);
+ return arrowHandles(a,r.width,r.height).find(h=>Math.hypot(h.point.x-q.x,h.point.y-q.y)<19)||null;
+}
+function updateArrowHandle(original,kind,p,w,h){
+ const a=deepcopy(original);
+ if(kind==='start'||kind==='end'){a[kind==='start'?'from':'to']=p;return a}
+ const g=arrowGeometry(a,w,h);if(!g)return a;
+ const q=pointToCanvas(p,w,h);
+ const offset=(q.x-g.mid.x)*g.normal.x+(q.y-g.mid.y)*g.normal.y;
+ a.arrowBend=Math.round(clamp(offset/g.short,-.55,.55)*100)/100;
+ return a;
+}
 function annotationAnchor(a){if(a.type==='blur')return{x:(a.from.x+a.to.x)/2,y:(a.from.y+a.to.y)/2};if(a.type==='rom')return a.points?.[0]||a.points?.find(Boolean)||{x:0,y:0};if(a.type==='joint'||a.type==='text')return{x:a.x,y:a.y};if(a.type==='arrow')return{x:(a.from.x+a.to.x)/2,y:(a.from.y+a.to.y)/2};return a.points.at(-1)||{x:0,y:0}}
 function labelHitBounds(a,w,h){
  const scale=Math.max(.75,Math.min(1.35,w/750)),labelScale=scale*(a.labelScale||1);
@@ -1837,7 +1918,7 @@ function hitTest(pos){
   if(bounds&&p.x>=bounds.left-7&&p.x<=bounds.left+bounds.width+7&&p.y>=bounds.top-7&&p.y<=bounds.top+bounds.height+7)return k;
   if(isSmart(a)&&smartBodyHit(a,p,r.width,r.height))return k;
   const at=annotationAnchor(a),anchor={x:at.x*r.width,y:at.y*r.height};
-  let dist=Math.hypot(anchor.x-p.x,anchor.y-p.y);
+  let dist=a.type==='arrow'?Infinity:Math.hypot(anchor.x-p.x,anchor.y-p.y);
   if(a.points){
    const pts=a.points.filter(Boolean).map(q=>pointToCanvas(q,r.width,r.height));
    if(a.type==='rom'){
@@ -1851,7 +1932,10 @@ function hitTest(pos){
    if(p.x>=x1-4&&p.x<=x2+4&&p.y>=y1-4&&p.y<=y2+4)return k;
    continue;
   }
-  if(a.type==='arrow')dist=Math.min(dist,distanceToSegment(p,pointToCanvas(a.from,r.width,r.height),pointToCanvas(a.to,r.width,r.height)));
+  if(a.type==='arrow'){
+   const g=arrowGeometry(a,r.width,r.height);
+   if(g){let prior=g.point(0);for(let t=1;t<=36;t++){const next=g.point(t/36);dist=Math.min(dist,distanceToSegment(p,prior,next));prior=next}}
+  }
   if(dist<25)return k;
  }
  return -1;
@@ -1868,7 +1952,7 @@ if(tool==='bone'||tool==='muscle'){
  }
  }
  if(tool==='muscle'){/* Match existing muscle colors after the student types its name. */}
-if(tool==='arrow'){base.movement=$('movementType').value;base.label=base.movement}
+if(tool==='arrow'){base.movement=$('movementType').value;base.label=base.movement;base.arrowPath=arrowSettings.path;base.arrowBend=arrowSettings.bend}
 if(tool==='rom'){base.label='ROM';base.points=[null,null,null];base.angleMode=romMode}
 if(tool==='blur'){base.label='Blur';base.color='#acd7ff';base.shape=blurShapeMode;base.blurStrength=blurStrengthMode}
 return base}
@@ -2016,12 +2100,16 @@ function onDown(e){
   e.preventDefault();
   const r=canvas.getBoundingClientRect();
   const d=Math.hypot((p.x-smartPending.start.x)*r.width,(p.y-smartPending.start.y)*r.height);
-  draft.points[1]=d<15?smartDefaultEnd(smartPending.start):p;
+  if(tool==='arrow')draft.to=d<15?smartDefaultEnd(smartPending.start):p;
+  else draft.points[1]=d<15?smartDefaultEnd(smartPending.start):p;
   finishSmartShape(draft,smartPending.before);return;
  }
  // Resize / bend selected shape using the four visible handles.
  const handle=anatomyHandleAt(p);
  if(handle){drag={kind:'smart-handle',index:selected,handle:handle.kind,original:deepcopy(v.annotations[selected]),before};canvas.setPointerCapture(e.pointerId);canvas.style.cursor='grabbing';return}
+ // A selected movement arrow has direct start, end, and curvature handles.
+ const arrowHandle=arrowHandleAt(p);
+ if(arrowHandle){drag={kind:'arrow-handle',index:selected,handle:arrowHandle.kind,original:deepcopy(v.annotations[selected]),before};canvas.setPointerCapture(e.pointerId);canvas.style.cursor='grabbing';return}
  // Explicit ROM marker replacement takes priority over tapping another object.
  if(romReposition&&v.annotations[selected]?.type==='rom'){
   v.annotations[selected].points[romPointActive]=p;
@@ -2083,6 +2171,9 @@ function onDown(e){
 }
 function onMove(e){
  if(!drag){
+  if(smartPending&&draft&&tool==='arrow'&&e.pointerType!=='touch'){
+   draft.to=normalized(e);draw();return;
+  }
   if(e.pointerType!=='touch'&&current().frameSrc&&!current().preview){
    const p=normalized(e);
    canvas.style.cursor=(hitROMMarker(p)||hitTest(p)>=0)?'grab':'crosshair';
@@ -2094,7 +2185,10 @@ function onMove(e){
   const r=canvas.getBoundingClientRect();
   if(Math.hypot((p.x-drag.from.x)*r.width,(p.y-drag.from.y)*r.height)>=7)drag.kind='move';
  }
- if(drag.kind==='move'){v.annotations[drag.index]=translate(drag.original,p.x-drag.from.x,p.y-drag.from.y)}else if(drag.kind==='smart-handle'){
+ if(drag.kind==='move'){v.annotations[drag.index]=translate(drag.original,p.x-drag.from.x,p.y-drag.from.y)}else if(drag.kind==='arrow-handle'){
+  v.annotations[drag.index]=updateArrowHandle(drag.original,drag.handle,p,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
+  populateInspector();
+ }else if(drag.kind==='smart-handle'){
   v.annotations[drag.index]=editSmartHandle(drag.original,drag.handle,p,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
   populateInspector();
  }else if(drag.kind==='smart-create'&&draft){draft.points[1]=p}
@@ -2108,7 +2202,7 @@ function onUp(e){
  if(d.kind==='editlabel'){
   beginInlineLabel(d.index,d.before,{fresh:false});return;
  }
- if(d.kind==='move'||d.kind==='rommove'||d.kind==='blur-resize'||d.kind==='smart-handle')remember(d.before);
+ if(d.kind==='move'||d.kind==='rommove'||d.kind==='blur-resize'||d.kind==='smart-handle'||d.kind==='arrow-handle')remember(d.before);
  else if(d.kind==='smart-create'){
   const a=draft;if(!a)return;
   const r=canvas.getBoundingClientRect(),q=a.points[1];
@@ -2140,8 +2234,10 @@ function onUp(e){
    current().annotations.push(a);
    beginInlineLabel(current().annotations.length-1,d.before,{fresh:true});return;
   }else{
-   // A short tap should create a useful starting object, not an error.
-   if(a.type==='arrow')a.to=smartDefaultEnd(a.from);
+   // A short tap can use a second tap to position an arrow or anatomy shape.
+   if(a.type==='arrow'){
+    a.to=smartDefaultEnd(a.from);draft=a;smartPending={tool,before:d.before,start:a.from};draw();return;
+   }
    else if(a.points?.length){const start=a.points[0];const end=smartDefaultEnd(start);a.points=[start,{x:(start.x+end.x)/2,y:(start.y+end.y)/2},end]}
    if(a.type==='bone')a.label='Bone';
    if(a.type==='muscle')a.label='Muscle';
@@ -2152,7 +2248,7 @@ function onUp(e){
  updateUI();draw();
 }
 canvas.addEventListener('pointerdown',onDown);canvas.addEventListener('pointermove',onMove);canvas.addEventListener('pointerup',onUp);canvas.addEventListener('pointercancel',()=>{
- if(drag?.kind==='rommove'||drag?.kind==='move'||drag?.kind==='blur-resize'||drag?.kind==='smart-handle')current().annotations=deepcopy(drag.before);
+ if(drag?.kind==='rommove'||drag?.kind==='move'||drag?.kind==='blur-resize'||drag?.kind==='smart-handle'||drag?.kind==='arrow-handle')current().annotations=deepcopy(drag.before);
  if(drag?.kind==='romdraft'&&romDraft)romDraft.points[drag.point]=null;
  draft=null;smartPending=null;drag=null;canvas.style.cursor='crosshair';populateInspector();updateUI();draw();
 });
@@ -2254,7 +2350,26 @@ if(isSmart(a)){
  }
 }
 if((a.type==='bone'||a.type==='muscle')&&!isSmart(a)){if(!a.points?.length){c.restore();return}c.beginPath();a.points.forEach((p,i)=>i?c.lineTo(x(p),y(p)):c.moveTo(x(p),y(p)));if(isSelected){c.strokeStyle='#ffffff';c.lineWidth=8*scale;c.stroke()}c.strokeStyle=a.color;c.lineWidth=(a.strokeWidth||(a.type==='bone'?4.4:5.5))*scale;c.stroke();const p=a.points.at(-1);textPill(c,a.label,x(p),y(p),a.color,labelScale,w,h)}
-if(a.type==='arrow'){const ax=x(a.from),ay=y(a.from),bx=x(a.to),by=y(a.to),ang=Math.atan2(by-ay,bx-ax),len=17*scale;c.beginPath();c.moveTo(ax,ay);c.lineTo(bx,by);c.strokeStyle=isSelected?'#fff':a.color;c.lineWidth=(a.strokeWidth||4)*scale;c.stroke();c.beginPath();c.moveTo(bx,by);c.lineTo(bx-len*Math.cos(ang-.52),by-len*Math.sin(ang-.52));c.moveTo(bx,by);c.lineTo(bx-len*Math.cos(ang+.52),by-len*Math.sin(ang+.52));c.strokeStyle=a.color;c.stroke();textPill(c,a.label||a.movement,x(a.to),y(a.to),a.color,labelScale,w,h)}
+if(a.type==='arrow'){
+ const g=arrowGeometry(a,w,h);if(!g){c.restore();return}
+ const drawPath=()=>{
+  c.beginPath();c.moveTo(g.start.x,g.start.y);
+  if(g.path==='straight')c.lineTo(g.end.x,g.end.y);
+  else if(g.circle)c.arc(g.circle.center.x,g.circle.center.y,g.circle.radius,g.circle.startAngle,g.circle.startAngle+g.circle.span,g.circle.span<0);
+  else c.quadraticCurveTo(g.control.x,g.control.y,g.end.x,g.end.y);
+ };
+ if(isSelected){drawPath();c.strokeStyle='#ffffffb0';c.lineWidth=(a.strokeWidth||4)*scale+4*scale;c.stroke()}
+ drawPath();c.strokeStyle=a.color;c.lineWidth=(a.strokeWidth||4)*scale;c.stroke();
+ const ang=g.tangent(),len=17*scale;
+ c.beginPath();c.moveTo(g.end.x,g.end.y);c.lineTo(g.end.x-len*Math.cos(ang-.52),g.end.y-len*Math.sin(ang-.52));
+ c.moveTo(g.end.x,g.end.y);c.lineTo(g.end.x-len*Math.cos(ang+.52),g.end.y-len*Math.sin(ang+.52));c.strokeStyle=a.color;c.stroke();
+ textPill(c,a.label||a.movement,g.end.x,g.end.y,a.color,labelScale,w,h);
+ if(isSelected)for(const handle of arrowHandles(a,w,h)){
+  c.beginPath();c.arc(handle.point.x,handle.point.y,Math.max(7,7*scale),0,Math.PI*2);c.fillStyle='#203140';c.fill();c.strokeStyle='#fff';c.lineWidth=1.5*scale;c.stroke();
+  c.beginPath();c.arc(handle.point.x,handle.point.y,5.4*scale,0,Math.PI*2);
+  c.fillStyle=handle.kind==='bend'?'#ffb56e':'#acd7ff';c.fill();
+ }
+}
 if(a.type==='joint'){c.beginPath();c.arc(x(a),y(a),11*scale,0,2*Math.PI);c.fillStyle='#000c';c.fill();c.beginPath();c.arc(x(a),y(a),7*scale,0,2*Math.PI);c.strokeStyle=a.color;c.lineWidth=(a.strokeWidth||3)*scale;c.stroke();textPill(c,`${a.label} · ${a.jointType}`,x(a),y(a),a.color,labelScale,w,h)}
 if(a.type==='text'){textPill(c,a.label,x(a),y(a),a.color,labelScale,w,h)}
 if(isSelected&&a.type!=='bone'&&a.type!=='muscle'){const p=annotationAnchor(a);c.beginPath();c.arc(x(p),y(p),17*scale,0,2*Math.PI);c.strokeStyle='#ffffffad';c.lineWidth=1.5*scale;c.setLineDash([4*scale,4*scale]);c.stroke()}
@@ -2943,7 +3058,29 @@ $('labelInput').addEventListener('blur',()=>{
  if(a&&!$('labelInput').value.trim()&&a.type!=='rom')$('labelInput').value=a.label||'';
 });
 $('jointType').addEventListener('change',()=>applySelectedProperty('jointType'));
-$('movementType').addEventListener('change',()=>applySelectedProperty('movement'));
+$('movementType').addEventListener('change',()=>{
+ const a=current().annotations[selected];
+ if(a?.type==='arrow'){applySelectedProperty('movement');return}
+ arrowSettings.path=suggestedArrowPath($('movementType').value);arrowSettings.bend=initialArrowBend(arrowSettings.path);populateInspector();
+});
+$('arrowPath').addEventListener('change',()=>{
+ const path=$('arrowPath').value,a=current().annotations[selected],before=deepcopy(current().annotations);
+ if(a?.type==='arrow'){
+  a.arrowPath=path;
+  if(path!=='straight'&&!Number(a.arrowBend))a.arrowBend=initialArrowBend(path);
+  remember(before,active,'arrow:'+a.id+':path');
+ }else{arrowSettings.path=path;if(path!=='straight'&&!arrowSettings.bend)arrowSettings.bend=initialArrowBend(path)}
+ populateInspector();draw();
+});
+$('arrowBend').addEventListener('pointerdown',()=>inspectorEditSession++);
+$('arrowBend').addEventListener('input',()=>{
+ const bend=Number($('arrowBend').value)/100,a=current().annotations[selected];
+ if(a?.type==='arrow'){
+  const before=deepcopy(current().annotations);a.arrowBend=bend;
+  remember(before,active,'arrow:'+a.id+':bend:'+inspectorEditSession);
+ }else arrowSettings.bend=bend;
+ $('arrowBendValue').textContent=$('arrowBend').value+'%';draw();
+});
 $('strokeWidth').addEventListener('input',()=>updateStyleControl('strokeWidth'));
 $('labelSize').addEventListener('change',()=>updateStyleControl('labelScale'));
 $('blurShape').addEventListener('change',()=>{
