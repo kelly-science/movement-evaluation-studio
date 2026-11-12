@@ -2497,6 +2497,82 @@ function textPill(c,text,x,y,color,scale=1,w=0,h=0){
  c.restore();
 }
 function shortenText(c,t,max){if(c.measureText(t).width<=max)return t;let a=t;while(a.length>2&&c.measureText(a+'…').width>max)a=a.slice(0,-1);return a+'…'}
+// v47: CPU-backed portable face blur. Canvas2D `filter` is disabled in iOS WebKit.
+// This algorithm uses ImageData and ordinary 2D drawing; it works without CSS filters,
+// external models, servers, or GPU acceleration. Cached per image/shape/strength.
+const portableBlurCaches=new WeakMap();
+function portableBoxBlur(input,output,w,h,radius,horizontal){
+ const radiusPixels=Math.max(1,Math.min(96,Math.round(radius)));
+ const count=2*radiusPixels+1;
+ if(horizontal){
+  for(let yy=0;yy<h;yy++){
+   const row=yy*w*4;let red=0,green=0,blue=0,alpha=0;
+   for(let k=-radiusPixels;k<=radiusPixels;k++){
+    const j=row+Math.max(0,Math.min(w-1,k))*4;
+    red+=input[j];green+=input[j+1];blue+=input[j+2];alpha+=input[j+3];
+   }
+   for(let xx=0;xx<w;xx++){
+    const j=row+xx*4;
+    output[j]=red/count;output[j+1]=green/count;output[j+2]=blue/count;output[j+3]=alpha/count;
+    const after=row+Math.min(w-1,xx+radiusPixels+1)*4;
+    const before=row+Math.max(0,xx-radiusPixels)*4;
+    red+=input[after]-input[before];green+=input[after+1]-input[before+1];
+    blue+=input[after+2]-input[before+2];alpha+=input[after+3]-input[before+3];
+   }
+  }
+ }else{
+  for(let xx=0;xx<w;xx++){
+   let red=0,green=0,blue=0,alpha=0;
+   for(let k=-radiusPixels;k<=radiusPixels;k++){
+    const j=(Math.max(0,Math.min(h-1,k))*w+xx)*4;
+    red+=input[j];green+=input[j+1];blue+=input[j+2];alpha+=input[j+3];
+   }
+   for(let yy=0;yy<h;yy++){
+    const j=(yy*w+xx)*4;
+    output[j]=red/count;output[j+1]=green/count;output[j+2]=blue/count;output[j+3]=alpha/count;
+    const after=(Math.min(h-1,yy+radiusPixels+1)*w+xx)*4;
+    const before=(Math.max(0,yy-radiusPixels)*w+xx)*4;
+    red+=input[after]-input[before];green+=input[after+1]-input[before+1];
+    blue+=input[after+2]-input[before+2];alpha+=input[after+3]-input[before+3];
+   }
+  }
+ }
+}
+function portableBlurTexture(src,w,h,left,top,width,height,strength){
+ if(!src||!w||!h)return null;
+ const radius=Math.max(12,Math.min(170,Number(strength||32)*Math.max(.75,w/800)));
+ const pad=Math.ceil(radius*2.5);
+ const rx=Math.max(0,Math.floor(left-pad)),ry=Math.max(0,Math.floor(top-pad));
+ const farX=Math.min(w,Math.ceil(left+width+pad)),farY=Math.min(h,Math.ceil(top+height+pad));
+ const rw=farX-rx,rh=farY-ry;if(rw<=0||rh<=0)return null;
+ const key=[Math.round(w),Math.round(h),rx,ry,Math.round(rw),Math.round(rh),Math.round(radius)].join(':');
+ let cache=portableBlurCaches.get(src);
+ if(!cache){cache=new Map();portableBlurCaches.set(src,cache)}
+ if(cache.has(key))return cache.get(key);
+ // Limit each region's ImageData, even when the source is a 4K phone photo.
+ const downsample=Math.min(1,640/Math.max(rw,rh));
+ const bw=Math.max(2,Math.round(rw*downsample)),bh=Math.max(2,Math.round(rh*downsample));
+ const srcW=src.naturalWidth||src.videoWidth||src.width||w;
+ const srcH=src.naturalHeight||src.videoHeight||src.height||h;
+ const canvas=document.createElement('canvas');canvas.width=bw;canvas.height=bh;
+ const g=canvas.getContext('2d',{willReadFrequently:true});if(!g)return null;
+ g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';
+ g.drawImage(src,rx*srcW/w,ry*srcH/h,rw*srcW/w,rh*srcH/h,0,0,bw,bh);
+ const img=g.getImageData(0,0,bw,bh),scratch=new Uint8ClampedArray(img.data.length);
+ // Two horizontal+vertical passes approximate Gaussian blur on Safari and Chrome.
+ const boxRadius=Math.max(2,Math.min(96,Math.round(radius*downsample*.77)));
+ portableBoxBlur(img.data,scratch,bw,bh,boxRadius,true);
+ portableBoxBlur(scratch,img.data,bw,bh,boxRadius,false);
+ portableBoxBlur(img.data,scratch,bw,bh,boxRadius,true);
+ portableBoxBlur(scratch,img.data,bw,bh,boxRadius,false);
+ g.putImageData(img,0,0);
+ const result={canvas,x:rx,y:ry,w:rw,h:rh};
+ cache.set(key,result);
+ // Bounded per-photo cache prevents indefinite retention while resizing/moving.
+ while(cache.size>8)cache.delete(cache.keys().next().value);
+ return result;
+}
+
 function drawOne(c,a,w,h,opts={}){const scale=opts.scale||Math.max(.75,Math.min(1.35,w/750));const labelScale=scale*(a.labelScale||1);const isSelected=opts.selected;const x=p=>p.x*w,y=p=>p.y*h;
 if(a.type==='skeleton'){drawSkeleton(c,a,w,h,!!isSelected,scale);return}
 if(a.type==='blur'){
@@ -2508,14 +2584,14 @@ if(a.type==='blur'){
  c.save();
  c.beginPath();if(a.shape==='rectangle')c.rect(left,top,width,height);else c.ellipse(left+width/2,top+height/2,width/2,height/2,0,0,Math.PI*2);
  c.clip();
- // If CanvasFilter is unsupported, never silently leak the unblurred region.
- if(src&&typeof c.filter==='string'){
-  c.filter='blur('+Math.round((a.blurStrength||32)*Math.max(.75,w/800))+'px)';
-  c.drawImage(src,0,0,w,h);
-  c.filter='none';
- }else{
-  c.fillStyle='#222a32';c.fillRect(left,top,width,height);
- }
+ // Use the same pixel-based blur on Chromium and iOS WebKit. No Canvas2D filter.
+ // If pixel sampling fails, obscure the region rather than reveal the original face.
+ let painted=false;
+ try{
+  const blurred=portableBlurTexture(src,w,h,left,top,width,height,a.blurStrength);
+  if(blurred){c.imageSmoothingEnabled=true;c.drawImage(blurred.canvas,blurred.x,blurred.y,blurred.w,blurred.h);painted=true}
+ }catch(err){console.warn('Kinetica blur could not process photo:',err)}
+ if(!painted){c.fillStyle='#222a32';c.fillRect(left,top,width,height)}
  c.restore();
  if(isSelected){
   c.save();c.beginPath();if(a.shape==='rectangle')c.rect(left,top,width,height);else c.ellipse(left+width/2,top+height/2,width/2,height/2,0,0,Math.PI*2);
@@ -2767,7 +2843,8 @@ function board(page=0){
    const w=im.naturalWidth*fit,h=im.naturalHeight*fit;
    const ix=box.x+(box.w-w)/2,iy=box.y+(box.h-h)/2;
    q.drawImage(im,ix,iy,w,h);q.save();q.translate(ix,iy);
-   v.annotations.forEach(a=>drawOne(q,a,w,h,{scale:Math.max(.8,w/850)}));q.restore();
+   v.annotations.filter(a=>a.type==='blur').forEach(a=>drawOne(q,a,w,h,{scale:Math.max(.8,w/850),source:im}));
+   v.annotations.filter(a=>a.type!=='blur').forEach(a=>drawOne(q,a,w,h,{scale:Math.max(.8,w/850)}));q.restore();
   });
  }
  if(showKey){let y=head+rows*cardH+30;q.fillStyle='#2b353f';q.font='bold 29px system-ui';q.fillText('MUSCLE COLOR KEY',margin,y);
@@ -2805,7 +2882,9 @@ function romBoard(page=0){
   const box={x:x+20,y:y+110,w:cardW-40,h:cardH-195},im=v.frameImg;
   const scale=Math.min(box.w/im.naturalWidth,box.h/im.naturalHeight);
   const w=im.naturalWidth*scale,h=im.naturalHeight*scale,ix=box.x+(box.w-w)/2,iy=box.y+(box.h-h)/2;
-  q.drawImage(im,ix,iy,w,h);q.save();q.translate(ix,iy);v.annotations.filter(a=>['rom','text'].includes(a.type)).forEach(a=>drawOne(q,a,w,h,{scale:Math.max(.8,w/850)}));q.restore();
+  q.drawImage(im,ix,iy,w,h);q.save();q.translate(ix,iy);
+  v.annotations.filter(a=>a.type==='blur').forEach(a=>drawOne(q,a,w,h,{scale:Math.max(.8,w/850),source:im}));
+  v.annotations.filter(a=>['rom','text'].includes(a.type)).forEach(a=>drawOne(q,a,w,h,{scale:Math.max(.8,w/850)}));q.restore();
   const angles=v.annotations.filter(a=>a.type==='rom').map(a=>romAngleForView(v,a)).filter(a=>a!==null);
   q.fillStyle='#344b65';q.font='bold 26px system-ui';q.fillText(def.slot+'  ·  '+angles.map(n=>n.toFixed(1)+'°').join(' / '),x+22,y+cardH-47,cardW-44);
  });
