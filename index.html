@@ -754,6 +754,19 @@ body.joint-mode .frame-buttons button{min-width:0}
 .skeleton-actions{display:flex;flex-wrap:wrap;gap:8px}
 .skeleton-actions .tactile{flex:1;min-height:37px;padding:6px 9px;font-size:11px}
 .skeleton-small-note{font-size:11px;line-height:1.45;color:#b6c8d6;margin:8px 0 13px}
+
+/* Kinetica Studio v46 — offline setup and readiness. */
+.kin-offline-dialog{max-width:520px;width:calc(100vw - 28px);color:#edf5ff;background:#323a45;border:1px solid #7c8d9d88;border-radius:14px;padding:20px;max-height:88dvh;overflow:auto;box-shadow:0 25px 75px #000a}
+.kin-offline-dialog::backdrop{background:#07101baf;backdrop-filter:blur(3px)}
+.kin-offline-dialog p{color:#c5d6e6;font-size:13px;line-height:1.55}
+.kin-offline-dialog .kin-offline-progress{width:100%;height:13px;accent-color:#9bcdf9;display:block;margin:14px 0 10px}
+.kin-offline-dialog .kin-offline-count{color:#aed5f6;font-size:12px;font-variant-numeric:tabular-nums}
+.kin-offline-dialog .kin-offline-actions{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:9px;margin-top:18px}
+.kin-offline-dialog button{min-height:40px;padding:8px 14px;border-radius:8px;border:1px solid #849bad88;color:#f0f8ff;background:#405265;cursor:pointer;font-size:12px}
+.kin-offline-dialog button.kin-offline-primary{background:#527ea3;border-color:#aed3f4}
+.kin-offline-dialog button:disabled{opacity:.55;cursor:wait}
+.kin-offline-dialog h2{font-size:19px;margin:0;color:#f0f7ff}
+@media(max-width:450px){.kin-offline-dialog{padding:16px}.kin-offline-dialog .kin-offline-actions button{flex:1}}
 </style>
   <link rel="stylesheet" href="./rom-guides-v30.css?v=41">
 <meta name="kinetica-release" content="v45-skeleton-move-muscle-opacity-label-callouts">
@@ -792,6 +805,7 @@ body.joint-mode .frame-buttons button{min-width:0}
           <button type="button" class="menu-action" id="menuOpenProject">Open Project…</button>
           <button type="button" class="menu-action" id="menuSaveLocal">Save <span class="menu-shortcut">⌘/Ctrl S</span></button>
           <button type="button" class="menu-action" id="menuSaveProject">Backup Project</button>
+          <button type="button" class="menu-action" id="menuOfflineAccess">Make Available Offline…</button>
           <div class="menu-separator" role="separator"></div>
           <div class="project-type-wrap" id="projectTypeWrap">
             <button type="button" class="menu-action project-type-trigger" id="projectTypeTrigger" aria-haspopup="true" aria-expanded="false" aria-controls="projectTypeSubmenu">Project Type <span class="submenu-caret" aria-hidden="true">›</span></button>
@@ -1029,6 +1043,16 @@ body.joint-mode .frame-buttons button{min-width:0}
 <input type="file" id="projectInput" accept=".json,.movement.json,application/json" hidden>
 </div>
 <div id="videoDecodePool" aria-hidden="true"></div>
+
+<dialog id="kinOfflineDialog" class="kin-offline-dialog" aria-labelledby="kinOfflineTitle">
+  <div class="dialog-header"><div><div class="dialog-overline">KINETICA STUDIO</div><h2 id="kinOfflineTitle">Make Available Offline</h2></div><button type="button" id="kinOfflineCloseTop" aria-label="Close offline setup">✕</button></div>
+  <p>While connected to Wi-Fi, download the app files, ROM illustrations and Joint Actions videos to this device. After setup, Kinetica can launch without internet and continue saving projects locally.</p>
+  <p id="kinOfflineState" role="status" aria-live="polite">Checking offline readiness…</p>
+  <progress class="kin-offline-progress" id="kinOfflineProgress" value="0" max="1"></progress>
+  <div class="kin-offline-count" id="kinOfflineCount">0 files verified</div>
+  <div class="kin-offline-actions"><button type="button" id="kinOfflineClose">Close</button><button type="button" class="kin-offline-primary" id="kinOfflineStart">Download for Offline Use</button></div>
+  <p style="margin-bottom:0;font-size:11px">Open this installed PWA online at least once before switching to airplane mode. Offline files and local projects can still be erased by deleting the PWA or its site data. Keep a project backup when possible.</p>
+</dialog>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id), canvas=$('canvas'),ctx=canvas.getContext('2d');
@@ -3613,6 +3637,63 @@ if('serviceWorker' in navigator && (location.protocol==='https:' || location.hos
 updateModeUI();updateDocumentTitle();updateGallery();requestAnimationFrame(updateStickyOffsets);
 
 renderPalette();setTool('select');switchDocument(0);restoreCached();})();
+</script>
+
+<script>
+/* v46 offline setup. Works without an external JS dependency. */
+(()=>{
+ const byId=id=>document.getElementById(id);
+ const dialog=byId('kinOfflineDialog'), status=byId('kinOfflineState'), meter=byId('kinOfflineProgress'), count=byId('kinOfflineCount'), start=byId('kinOfflineStart');
+ const menu=byId('menuOfflineAccess');
+ let busy=false;
+ function paint(message,done=0,total=1){status.textContent=message;meter.max=Math.max(1,total);meter.value=done;count.textContent=done+' of '+total+' offline assets verified'}
+ function updateFromWorker(data){
+  if(data.type==='KINETICA_OFFLINE_PROGRESS')paint('Downloading offline assets…',data.done,data.total);
+  if(data.type==='KINETICA_OFFLINE_STATUS'){
+   paint(data.ready?'Ready to open offline.':data.shellReady?'App ready offline; download lesson assets for complete access.':'App shell not yet ready; stay online and retry.',data.count,data.total);
+   start.textContent=data.ready?'Verify Offline Files':'Download for Offline Use';
+  }
+  if(data.type==='KINETICA_OFFLINE_COMPLETE'){
+   paint(data.ready?'Ready to open offline. You can test airplane mode.':'Offline download incomplete. Stay online and try again.',data.count,data.total);
+   start.textContent=data.ready?'Verify Offline Files':'Retry Missing Files';
+  }
+  if(data.type==='KINETICA_OFFLINE_ERROR')paint('Offline setup failed: '+data.error,data.count??0,data.total??1);
+ }
+ async function send(type){
+  if(!('serviceWorker' in navigator)){paint('This browser does not support offline PWA caching.');return}
+  let registration;
+  try{
+    registration=await navigator.serviceWorker.register('./sw.js',{scope:'./'});
+    if(registration.installing) await new Promise(resolve=>{const worker=registration.installing;const timeout=setTimeout(resolve,8000);worker.addEventListener('statechange',()=>{if(worker.state==='activated'||worker.state==='redundant'){clearTimeout(timeout);resolve()}})});
+  }catch(error){paint('Offline worker registration failed: '+String(error.message||error));return}
+  const worker=registration.active||navigator.serviceWorker.controller;
+  if(!worker){paint('Installing offline support. Keep this app open online, then retry.');return}
+  // The previous v45 worker does not implement offline progress messages.
+  const reply=await new Promise(resolve=>{
+    const channel=new MessageChannel();let received=false;
+    const timeout=setTimeout(()=>{channel.port1.close();resolve(false)},type==='KINETICA_OFFLINE_PREPARE'?180000:7000);
+    channel.port1.onmessage=event=>{
+      const data=event.data||{};received=true;updateFromWorker(data);
+      if(data.type==='KINETICA_OFFLINE_STATUS'||data.type==='KINETICA_OFFLINE_COMPLETE'||data.type==='KINETICA_OFFLINE_ERROR'){
+        clearTimeout(timeout);channel.port1.close();resolve(true);
+      }
+    };
+    try{worker.postMessage({type},[channel.port2])}catch(e){clearTimeout(timeout);resolve(false)}
+  });
+  if(!reply)paint('Offline worker is still updating. Reopen Kinetica while online, then check again.');
+ }
+ async function prepare(){if(busy)return;busy=true;start.disabled=true;paint('Preparing offline downloads…');try{await send('KINETICA_OFFLINE_PREPARE')}finally{busy=false;start.disabled=false}}
+ menu.addEventListener('click',()=>{
+   // File menu overlays must be closed before showModal; closed via existing menu handler.
+   document.getElementById('fileMenuButton').click();
+   if(!dialog.open)dialog.showModal();
+   send('KINETICA_OFFLINE_STATUS');
+ });
+ byId('kinOfflineClose').addEventListener('click',()=>dialog.close());
+ byId('kinOfflineCloseTop').addEventListener('click',()=>dialog.close());
+ start.addEventListener('click',prepare);
+ window.addEventListener('online',()=>{if(dialog.open)send('KINETICA_OFFLINE_STATUS')});
+})();
 </script>
 <script src="./rom-guides-v30.js?v=41" defer></script>
 </body></html>
