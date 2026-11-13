@@ -1,6 +1,6 @@
-// Kinetica Studio v46: offline-first launch, verified optional lessons.
+// Kinetica Studio v56: offline-first launch, verified optional lessons.
 // A failure to fetch one guide or clip must never disable offline app startup.
-const CACHE_NAME='movement-evaluation-studio-shell-v47';
+const CACHE_NAME='movement-evaluation-studio-shell-v56';
 const CORE=['./index.html','./rom-guides-v30.css?v=41','./rom-guides-v30.js?v=41'];
 const EXTRAS=[
  './manifest.webmanifest?v=29','./icon-192.png?v=29','./icon-512.png?v=29',

@@ -521,8 +521,46 @@ body:not(.rom-mode) #romSelectWrap{display:none!important}
 .rom-slot-caption{display:block;padding:7px 5px;font-size:9px;font-weight:650;min-height:33px;line-height:1.25;overflow-wrap:anywhere}
 .rom-slot-edit{position:absolute;top:4px;left:4px;background:#263444e8;color:#ebf4ff;border:1px solid #ffffff65;border-radius:6px;padding:3px;min-width:24px;min-height:24px;display:grid;place-items:center;font-size:12px}
 .rom-slot-edit:hover{background:#4d6683}
+/* v56: info control sits inside the gray caption strip at the lower-right,
+   vertically centered against the actual caption height; remains a sibling
+   of the thumbnail button so it can be clicked independently. */
+.rom-slot-wrap{position:relative;min-width:0}
+.rom-slot-caption{padding-right:43px}
+.rom-slot-info{
+ position:absolute;z-index:8;right:7px;
+ bottom:max(1px,calc((var(--rom-caption-height,33px) - 28px) / 2));
+ display:grid;place-items:center;width:28px;height:28px;
+ min-width:28px;min-height:28px;padding:0;margin:0;
+ border:1.5px solid #aed4f5;border-radius:50%;
+ background:#263b50ef;color:#f3f9ff;
+ font:800 15px/1 system-ui,-apple-system,sans-serif;
+ box-shadow:0 2px 6px #0009;cursor:pointer;
+ -webkit-appearance:none;appearance:none;touch-action:manipulation;
+}
+.rom-slot-info:hover,.rom-slot-info:focus-visible{background:#507ba2;border-color:#e2f4ff;outline:2px solid #9bd2ff;outline-offset:1px}
+@media(max-width:600px){.rom-slot-caption{padding-right:45px}.rom-slot-info{width:32px;height:32px;right:7px;bottom:max(1px,calc((var(--rom-caption-height,39px) - 32px) / 2));font-size:16px}}
+.rom-guide-dialog{position:fixed;width:min(530px,calc(100vw - 24px));max-height:min(86dvh,850px);margin:auto;padding:0;overflow:auto;overscroll-behavior:contain;color:#edf5fc;background:#303841;border:1px solid #8199b1;border-radius:16px;box-shadow:0 28px 75px #000b;opacity:0;transform:translateY(10px) scale(.985);transition:opacity 200ms ease,transform 200ms cubic-bezier(.2,.75,.2,1)}
+.rom-guide-dialog[open]{display:block}
+.rom-guide-dialog[open].rom-guide-visible{opacity:1;transform:translateY(0) scale(1)}
+.rom-guide-dialog::backdrop{background:rgba(5,10,17,.76);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+.rom-guide-header{position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:14px;background:#3a444f;padding:12px 17px;border-bottom:1px solid #ffffff2b}
+.rom-guide-overline{color:#b8d4eb;font-size:10px;font-weight:850;letter-spacing:.14em}
+.rom-guide-close{display:grid;place-items:center;width:35px;height:35px;border:1px solid #ffffff3d;border-radius:9px;background:#465363;color:#e9f6ff;font-size:23px;cursor:pointer;line-height:1}
+.rom-guide-close:hover,.rom-guide-close:focus-visible{background:#577493}
+.rom-guide-content{padding:17px 19px 20px}
+.rom-guide-content h2{margin:0 0 7px;font-size:18px;line-height:1.3;font-weight:780}
+.rom-guide-slot{color:#b5d9fa;font-weight:750;font-size:13px;line-height:1.4;margin-bottom:14px}
+.rom-guide-figure{display:flex;align-items:center;justify-content:center;min-height:190px;padding:13px;border-radius:12px;background:#fff;border:1px solid #d5dae1;overflow:hidden;color:#44576c}
+.rom-guide-figure img{display:block;width:auto;height:auto;max-width:100%;max-height:min(35dvh,315px);object-fit:contain}
+.rom-guide-figure .rom-guide-image-fallback{font-size:12px;line-height:1.5;text-align:center;color:#596777}
+.rom-guide-description{font-size:13px;line-height:1.65;color:#eef4fa;margin:17px 0 12px}
+.rom-guide-instruction{font-size:11px;line-height:1.6;color:#b7c6d5;margin:0}
+.rom-guide-source{margin-top:15px;padding-top:11px;border-top:1px solid #ffffff21;font-size:10px;color:#9bb7cc}
+@media(max-width:600px){.rom-guide-dialog{max-height:85dvh}.rom-guide-content{padding:16px}.rom-guide-figure{min-height:150px}.rom-guide-figure img{max-height:30dvh}.rom-guide-content h2{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.rom-guide-dialog{transition:none!important;transform:none!important;opacity:1!important}}
+
 body.rom-mode .movement-only{display:none!important}
-body.rom-mode [data-tool]:not([data-tool="select"]):not([data-tool="text"]):not([data-tool="rom"]):not([data-tool="blur"]){display:none!important}
+body.rom-mode [data-tool]:not([data-tool="select"]):not([data-tool="text"]):not([data-tool="rom"]):not([data-tool="blur"]):not([data-tool="mannequin"]){display:none!important}
 body.rom-mode .rom-gallery{display:block}
 body.rom-mode #frameCategory{pointer-events:none}
 body.rom-mode .frame-properties{display:none!important}
@@ -634,7 +672,7 @@ body.rom-mode #viewMenuWrap{display:none!important}
 
 /* KINETICA JOINT ACTIONS v31 — exercise gallery, paused animation previews */
 body.joint-mode .movement-only,body.joint-mode #romGallery,body.joint-mode #romSelectWrap,body.joint-mode #viewMenuWrap{display:none!important}
-body.joint-mode [data-tool]:not([data-tool="select"]):not([data-tool="joint"]):not([data-tool="rom"]):not([data-tool="blur"]){display:none!important}
+body.joint-mode [data-tool]:not([data-tool="select"]):not([data-tool="joint"]):not([data-tool="rom"]):not([data-tool="blur"]):not([data-tool="mannequin"]){display:none!important}
 body.joint-mode #frameProperties,body.joint-mode #frameCategory{display:none!important}
 body.joint-mode .joint-gallery{display:block!important}
 body.joint-mode .gallery-heading-title{font-size:14px}
@@ -703,6 +741,12 @@ body.joint-mode .frame-buttons button{min-width:0}
 .save-center-note{font-size:12px;line-height:1.55;color:#aebfcd;border-top:1px solid #ffffff20;padding-top:12px}
 @media(max-width:540px){.save-center-actions{grid-template-columns:1fr}.save-center-dialog{max-height:91dvh}.save-center-head{padding:14px 16px}.save-center-body{padding:13px 16px}.save-center-preview{max-height:30vh}.save-center-preview img{max-height:27vh}}
 
+/* Kinetica v54 — compact export format submenu and three distinct PDF actions. */
+.export-format-submenu{min-width:208px}
+.save-center-actions.pdf-only{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.save-center-actions.pdf-only #saveCenterShare{grid-column:1/-1}
+@media(max-width:540px){.save-center-actions.pdf-only{grid-template-columns:1fr}}
+.privacy-export-row.is-disabled{opacity:.50;cursor:default}
 /* Kinetica v35 — direct-on-canvas text editing for every annotation tool. */
 .canvas-label-editor{
  position:absolute;z-index:18;display:block;max-width:calc(100% - 8px);
@@ -767,9 +811,37 @@ body.joint-mode .frame-buttons button{min-width:0}
 .kin-offline-dialog button:disabled{opacity:.55;cursor:wait}
 .kin-offline-dialog h2{font-size:19px;margin:0;color:#f0f7ff}
 @media(max-width:450px){.kin-offline-dialog{padding:16px}.kin-offline-dialog .kin-offline-actions button{flex:1}}
+/* v48 — user-controlled privacy submission and editable silhouette mannequin. */
+.picture-frame{position:relative}
+.privacy-preview-eye{position:absolute;right:10px;top:10px;z-index:9;border:1px solid #9bcaff;background:#263b50ef;color:#e8f6ff;min-width:40px;min-height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 3px 10px #0006}
+.privacy-preview-eye.active{background:#487294;border-color:#c0e2ff}
+.privacy-preview-eye svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linejoin:round;stroke-linecap:round}
+.privacy-preview-eye[hidden]{display:none!important}
+.privacy-export-row{display:flex;align-items:flex-start;gap:11px;padding:14px;margin:0 0 14px;background:#334657;border:1px solid #779bc277;border-radius:11px;color:#e4f1ff;cursor:pointer}
+.privacy-export-row input{accent-color:#8ec5ee;width:19px;height:19px;flex:none;margin:2px 0 0}
+.privacy-export-row span{font-size:13px;font-weight:700;line-height:1.4}
+.privacy-export-row small{display:block;font-size:11px;line-height:1.45;color:#becfdd;font-weight:400;margin-top:4px}
+.privacy-export-row[hidden]{display:none!important}
+.mannequin-inspector-note{font-size:11px;line-height:1.5;color:#cad9e5;margin-top:9px}
+#skeletonAngleGroup[hidden]{display:none!important}
+/* v49 — taller icon, persistent presence indication, and unclipped action menu. */
+.toolbar-button[data-tool="mannequin"] svg{width:20px;height:20px;stroke-width:1.8}
+@media(max-width:450px){.toolbar-button[data-tool="mannequin"] svg{width:18px;height:18px}}
+.toolbar-button[data-tool="mannequin"].mannequin-present{background:#365e80;border-color:#8dcafa;color:#f6fcff;box-shadow:inset 2px 2px 4px #0005,0 0 0 1px #78bfff44}
+.toolbar-button[data-tool="mannequin"].mannequin-present:after{content:"";position:absolute;right:4px;bottom:4px;width:6px;height:6px;border-radius:50%;background:#a9eece;box-shadow:0 0 5px #a9eece88}
+.toolbar-button[data-tool="mannequin"].mannequin-editing{background:#487ba4;border-color:#c6e7ff}
+.mannequin-menu{position:fixed;z-index:290;width:245px;padding:8px;background:#26313d;border:1px solid #819bb1a8;border-radius:12px;box-shadow:0 17px 45px #0009;color:#edf6ff}
+.mannequin-menu[hidden]{display:none!important}
+.mannequin-menu-title{font-size:10px;letter-spacing:.12em;font-weight:850;color:#adc5d9;padding:6px 9px 10px;display:flex;justify-content:space-between}
+.mannequin-menu-title span{letter-spacing:normal;font-size:11px;color:#b8e2fd}
+.mannequin-menu button{display:block;text-align:left;width:100%;border:0;border-radius:7px;background:transparent;color:#eef7ff;font-size:13px;font-weight:650;min-height:40px;padding:8px 10px}
+.mannequin-menu button:hover,.mannequin-menu button:focus-visible{background:#3b536a}
+.mannequin-menu button[data-current="true"]{background:#3b6889}
+.mannequin-menu button small{display:block;margin-top:3px;color:#b5c8d7;font-size:10px;font-weight:450}
+.mannequin-menu-separator{border-top:1px solid #ffffff26;margin:6px 4px}
+.mannequin-menu .mannequin-delete{color:#ffc2bd}
 </style>
-  <link rel="stylesheet" href="./rom-guides-v30.css?v=41">
-<meta name="kinetica-release" content="v45-skeleton-move-muscle-opacity-label-callouts">
+<meta name="kinetica-release" content="v56-rom-guide-caption-alignment">
 </head>
 <body>
 <div class="device">
@@ -816,7 +888,13 @@ body.joint-mode .frame-buttons button{min-width:0}
             </div>
           </div>
           <div class="menu-separator" role="separator"></div>
-          <button type="button" class="menu-action" id="menuExportPoster">Export Complete Submission…</button>
+          <div class="project-type-wrap" id="exportFormatWrap">
+            <button type="button" class="menu-action project-type-trigger" id="menuExportPoster" aria-haspopup="true" aria-expanded="false" aria-controls="exportFormatSubmenu">Export Complete Submission <span class="submenu-caret" aria-hidden="true">›</span></button>
+            <div class="project-type-submenu export-format-submenu" id="exportFormatSubmenu" role="group" aria-label="Complete submission format" hidden>
+              <button type="button" class="menu-action" data-export-format="pdf">PDF</button>
+              <button type="button" class="menu-action" data-export-format="image">Image</button>
+            </div>
+          </div>
           <button type="button" class="menu-action" id="menuExportPlane">Export Current Plane (PNG)</button>
         </div>
       </div>
@@ -867,6 +945,7 @@ body.joint-mode .frame-buttons button{min-width:0}
         <button type="button" class="toolbar-button" data-tool="text" title="Text Label" aria-label="Text Label" data-tooltip="Text Label" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6V4h16v2M12 4v16M8 20h8"/></svg></button>
         <button type="button" class="toolbar-button" data-tool="rom" title="Range of Motion (ROM)" aria-label="Range of Motion (ROM)" data-tooltip="Range of Motion (ROM)" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.1 19.9H21M4.1 19.9 13.2 3.8"/><circle cx="4.1" cy="19.9" r="2"/><path d="M14.5 19.9a10.4 10.4 0 0 0-5.1-9"/><path d="M11.4 19.9v-1.35M10.8 16.7l1.2-.46M9.2 14.1l1.04-.85M12.65 18.1l1.25-.25"/></svg></button>
         <button type="button" class="toolbar-button" data-tool="skeleton" title="Wireframe Skeleton" aria-label="Wireframe Skeleton" data-tooltip="Wireframe Skeleton" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="3.5" r="1.8"/><path d="M12 5.4v4.2M6.3 9l5.7.6 5.7-.6M6.3 9l-2 4 1.1 3.4M17.7 9l2 4-1.1 3.4M12 9.6v5M9 14.6h6M9 14.6l-1.4 4.1-1.1 3M15 14.6l1.4 4.1 1.1 3"/><circle cx="6.3" cy="9" r="1"/><circle cx="17.7" cy="9" r="1"/><circle cx="9" cy="14.6" r="1"/><circle cx="15" cy="14.6" r="1"/></svg></button>
+        <button type="button" class="toolbar-button" data-tool="mannequin" title="Place mannequin" aria-label="Place mannequin" data-tooltip="Place mannequin" aria-pressed="false" aria-haspopup="menu" aria-expanded="false" aria-controls="mannequinMenu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="3.7" rx="2.2" ry="2.6"/><path d="M8.6 7.2Q12 6 15.4 7.2L16.6 13H7.4Z" fill="currentColor" fill-opacity=".2"/><path d="M8.6 8 5.3 13.3l-1.1 3.1M15.4 8l3.3 5.3 1.1 3.1M9.2 13l-1.5 5.1-1 3.3M14.8 13l1.5 5.1 1 3.3"/><circle cx="12" cy="13" r="1" fill="currentColor"/></svg></button>
         <button type="button" class="toolbar-button" data-tool="blur" title="Blur" aria-label="Blur" data-tooltip="Blur" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3" stroke-dasharray="2.5 2.5"/><path d="M8 9h8M7 12h10M8 15h8" stroke-opacity=".8"/></svg></button>
       </div>
       <span class="toolbar-divider" role="separator" aria-hidden="true"></span>
@@ -881,6 +960,14 @@ body.joint-mode .frame-buttons button{min-width:0}
     <input type="file" id="galleryInput" accept="image/*,video/*" hidden aria-label="Upload photo or video for the selected plane">
   </nav>
   <div class="toolbar-tooltip" id="toolbarTooltip" role="tooltip" hidden></div>
+  <div id="mannequinMenu" class="mannequin-menu" role="menu" aria-label="Mannequin actions" hidden>
+    <div class="mannequin-menu-title">MANNEQUIN <span id="mannequinMenuStatus">Locked</span></div>
+    <button type="button" role="menuitem" data-mannequin-action="edit">Edit joints <small>Adjust individual landmarks</small></button>
+    <button type="button" role="menuitem" data-mannequin-action="move">Move mannequin <small>Reposition entire silhouette</small></button>
+    <button type="button" role="menuitem" data-mannequin-action="lock">Done / Lock <small>Protect from accidental selection</small></button>
+    <div class="mannequin-menu-separator"></div>
+    <button type="button" role="menuitem" class="mannequin-delete" data-mannequin-action="delete">Delete mannequin…</button>
+  </div>
 
 <div class="workbench">
   <aside class="plane-gallery" aria-label="Plane gallery">
@@ -902,7 +989,7 @@ body.joint-mode .frame-buttons button{min-width:0}
     <div class="joint-gallery" id="jointGallery" hidden aria-label="Joint Actions exercise gallery"></div>
   </aside>
 <section class="center" aria-label="Movement canvas">
-  <div class="bezel"><div class="oled"><div class="screen-head"><span id="screenTitle">FRONTAL PLANE · NO FRAME</span><span class="screen-tag" id="screenTag">STANDBY</span></div><div id="stage" class="stage empty-screen"><div class="empty" id="empty"><div class="empty-symbol">⌁</div><h3>CAPTURE YOUR PEAK MOVEMENT</h3><p>Upload a frontal- or sagittal-plane screenshot, or scrub a slow-motion video and choose the exact peak frame.</p></div><div id="pictureFrame" class="picture-frame hidden"><canvas id="canvas" aria-label="Movement photo and interactive anatomical annotations"></canvas><input id="canvasLabelEditor" type="text" class="canvas-label-editor hidden" maxlength="120" autocomplete="off" spellcheck="false" aria-label="Annotation label. Press Enter to finish, Escape to cancel" placeholder="Type annotation name, then Enter"><div id="overlayNotice" class="screen-overlay hidden"></div></div></div></div></div>
+  <div class="bezel"><div class="oled"><div class="screen-head"><span id="screenTitle">FRONTAL PLANE · NO FRAME</span><span class="screen-tag" id="screenTag">STANDBY</span></div><div id="stage" class="stage empty-screen"><div class="empty" id="empty"><div class="empty-symbol">⌁</div><h3>CAPTURE YOUR PEAK MOVEMENT</h3><p>Upload a frontal- or sagittal-plane screenshot, or scrub a slow-motion video and choose the exact peak frame.</p></div><div id="pictureFrame" class="picture-frame hidden"><button type="button" id="privacyPreviewEye" class="privacy-preview-eye" aria-label="Preview Mannequin Mode submission without photo" title="Preview without photo" aria-pressed="false" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.8-6.5 10-6.5 10 6.5 10 6.5-3.8 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="3.1"/></svg></button><canvas id="canvas" aria-label="Movement photo and interactive anatomical annotations"></canvas><input id="canvasLabelEditor" type="text" class="canvas-label-editor hidden" maxlength="120" autocomplete="off" spellcheck="false" aria-label="Annotation label. Press Enter to finish, Escape to cancel" placeholder="Type annotation name, then Enter"><div id="overlayNotice" class="screen-overlay hidden"></div></div></div></div></div>
   <div class="frame-properties" id="frameProperties">
     <label>Frame name<input id="frameName" type="text" maxlength="75" placeholder="e.g., Frontal ROM" autocomplete="off"></label>
     <label>Category<select id="frameCategory"><option value="ROM">ROM</option><option value="Muscles">Muscles</option><option value="Skeletal">Skeletal</option><option value="Joints">Joints</option><option value="Movement">Movement</option><option value="Other">Other</option></select></label>
@@ -947,14 +1034,17 @@ body.joint-mode .frame-buttons button{min-width:0}
     </div>
     <div class="fieldgroup hidden skeleton-settings" id="skeletonFields" aria-label="Wireframe skeleton controls">
       <label>MANUAL POSE OVERLAY</label>
-      <p class="skeleton-small-note">Approximate body landmarks, not X-ray bone positions. Angles are estimated from this 2D photo.</p>
-      <label for="skeletonAngleMode">JOINT ANGLES</label>
-      <select id="skeletonAngleMode" class="select-well"><option value="selected">Selected joint</option><option value="all">All eligible joints</option><option value="off">Hidden</option></select>
-      <div class="skeleton-checks"><label class="skeleton-check"><input id="skeletonVisible" type="checkbox" checked> Show wireframe</label><label class="skeleton-check"><input id="skeletonMarkers" type="checkbox" checked> Show joint markers</label></div>
+      <p class="skeleton-small-note" id="poseInspectorNote">Approximate body landmarks, not X-ray bone positions. Angles are estimated from this 2D photo.</p>
+      <div id="skeletonAngleGroup"><label for="skeletonAngleMode">JOINT ANGLES</label>
+      <select id="skeletonAngleMode" class="select-well"><option value="selected">Selected joint</option><option value="all">All eligible joints</option><option value="off">Hidden</option></select></div>
+      <div class="skeleton-checks"><label class="skeleton-check"><input id="skeletonVisible" type="checkbox" checked> <span id="poseVisibleText">Show wireframe</span></label><label class="skeleton-check"><input id="skeletonMarkers" type="checkbox" checked> Show joint markers</label></div>
       <div class="style-row"><div class="style-heading"><label for="skeletonOpacity">OVERLAY OPACITY</label><output id="skeletonOpacityValue" for="skeletonOpacity">85%</output></div><input id="skeletonOpacity" type="range" min="20" max="100" step="5" value="85"></div>
+      <div id="mannequinProportions" class="hidden" aria-label="Head and neck sizing controls">
+        <p class="skeleton-small-note"><strong>Resize directly on the photo:</strong> Choose Edit Joints, then drag the blue <strong>H</strong> grip beside the head or the teal <strong>N</strong> grip beside the neck. Their starting sizes are 100% and can be adjusted independently. Switch to Done / Lock for the smooth, solid silhouette.</p>
+      </div>
       <div class="skeleton-actions"><button id="skeletonMove" type="button" class="tactile" aria-pressed="false">Move Entire Skeleton</button></div>
       <div class="skeleton-actions"><button id="skeletonFlip" type="button" class="tactile">Flip Horizontal</button><button id="skeletonReset" type="button" class="tactile">Reset Pose</button></div>
-      <p class="skeleton-small-note">Drag the center four-arrow grip to reposition the entire pose. Use Move Entire Skeleton to drag from anywhere; tap again to return to individual joint editing.</p>
+      <p class="skeleton-small-note" id="poseGestureNote">Drag the center four-arrow grip to reposition the entire pose. Use Move Entire Skeleton to drag from anywhere; tap again to return to individual joint editing.</p>
     </div>
     <div class="fieldgroup hidden" id="styleFields">
       <label id="colorLabel">ANNOTATION COLOR</label><div class="palette" id="palette" role="group" aria-label="Choose annotation color"></div>
@@ -1024,7 +1114,8 @@ body.joint-mode .frame-buttons button{min-width:0}
 <dialog id="saveCenterDialog" class="save-center-dialog" aria-labelledby="saveCenterTitle">
   <div class="save-center-head"><div><small>Kinetica Studio · Save &amp; Share</small><h2 id="saveCenterTitle">Prepare submission</h2></div><button type="button" class="save-center-close" id="saveCenterClose" aria-label="Close Save and Share">×</button></div>
   <div class="save-center-body">
-    <p class="save-center-help">Every export uses one file: a PNG, a ZIP containing all PNG pages, or a project backup. If downloads are blocked on your school Chromebook, try <strong>Copy Image</strong> and paste into Google Docs, Slides, or a supported Schoology submission field.</p>
+    <label class="privacy-export-row" id="romValuesExportRow" hidden><input type="checkbox" id="romValuesExportCheck"><span>ROM values only</span></label>
+    <label class="privacy-export-row" id="privacyExportRow" hidden><input type="checkbox" id="privacyExportCheck"><span>Mannequin Mode</span></label>
     <div class="save-center-state" id="saveCenterState" role="status" aria-live="polite">Preparing…</div>
     <div class="save-center-preview" id="saveCenterPreview"><div class="save-center-nonimage">Preparing export…</div></div>
     <div class="save-center-pager" id="saveCenterPager"><button type="button" id="saveCenterPrevious">← Previous</button><span id="saveCenterPageLabel">Page 1 of 1</span><button type="button" id="saveCenterNext">Next →</button></div>
@@ -1036,7 +1127,6 @@ body.joint-mode .frame-buttons button{min-width:0}
       <button type="button" id="saveCenterShare">Share to another app…</button>
       <div class="save-center-one-file" id="saveCenterOneFile">Multiple export pages will be packaged into one ZIP download automatically.</div>
     </div>
-    <div class="save-center-note" id="saveCenterNote">Autosave protects this device only. A downloaded file, a copy in Google Drive, or a submitted image is safer for turning in assignments.</div>
   </div>
 </dialog>
 
@@ -1075,8 +1165,74 @@ function canonicalSynovialType(value){
  };
  return aliases[key]||LECTURE_SYNOVIAL_TYPES.find(label=>label.toLowerCase()===key)||raw;
 }
-const help={select:'Tap an existing label to rename it, or drag any annotation to reposition it.',joint:'Tap the joint location, type its name on the photo, then press Enter. Tap another location to label another joint.',bone:'Smart Shape: click two endpoints or drag once, adjust the blue, teal, and orange handles, then name the bone. Freeform is available in the inspector.',muscle:'Smart Shape: click two endpoints or drag once, adjust width and curve, then name the muscle. Choose fusiform, flat, or fan shapes in the inspector.',arrow:'Drag or tap two points, then adjust the arrow path and bend handle. Press Enter to label the movement.',text:'Tap the photo, type the label directly on it, and press Enter. Tap elsewhere for the next label.',rom:'Place the fulcrum, stationary arm and moving arm, then confirm or name the measurement with Enter. Markers remain draggable.',blur:'Drag an oval or rectangle over a face. Move or resize the region; exports flatten the blur into the image.',skeleton:'Tap the photo to place a skeleton. Drag a landmark to match the photo; use the inspector for optional angles.'};
+const help={select:'Tap an existing label to rename it, or drag any annotation to reposition it.',joint:'Tap the joint location, type its name on the photo, then press Enter. Tap another location to label another joint.',bone:'Smart Shape: click two endpoints or drag once, adjust the blue, teal, and orange handles, then name the bone. Freeform is available in the inspector.',muscle:'Smart Shape: click two endpoints or drag once, adjust width and curve, then name the muscle. Choose fusiform, flat, or fan shapes in the inspector.',arrow:'Drag or tap two points, then adjust the arrow path and bend handle. Press Enter to label the movement.',text:'Tap the photo, type the label directly on it, and press Enter. Tap elsewhere for the next label.',rom:'Place the fulcrum, stationary arm and moving arm, then confirm or name the measurement with Enter. Markers remain draggable.',blur:'Drag an oval or rectangle over a face. Move or resize the region; exports flatten the blur into the image.',skeleton:'Tap the photo to place a skeleton. Drag a landmark to match the photo; use the inspector for optional angles.',mannequin:'Tap the photo to place a mannequin. In Edit Joints, drag H/N to resize head and neck; Done / Lock produces a solid silhouette. ROM cannot move it.'};
 let views=[makeView(0),makeView(1)],active=0,tool='select',selected=-1,drag=null,draft=null,smartPending=null;
+let privacyMode=false,privacyPreview=false; // Privacy is an export choice; preview never edits image data.
+const PRIVACY_RENDER_TYPES=new Set(['mannequin','skeleton','rom','text','joint','arrow']);
+const isPoseAnnotation=a=>!!a&&['mannequin','skeleton'].includes(a.type);
+const mannequinIndex=()=>current().annotations.findIndex(a=>a.type==='mannequin');
+const mannequinEditable=()=>mannequinMode!=='locked';
+const mannequinButton=()=>document.querySelector('[data-tool="mannequin"]');
+function syncMannequinToolbar(){
+ const b=mannequinButton(),has=mannequinIndex()>=0;
+ if(!b)return;
+ b.classList.toggle('mannequin-present',has);
+ b.classList.toggle('mannequin-editing',has&&mannequinEditable());
+ b.classList.toggle('active',!has&&tool==='mannequin');
+ b.title=has?'Mannequin options (currently '+(mannequinEditable()?mannequinMode:'locked')+')':'Place mannequin';
+ b.dataset.tooltip=b.title;b.setAttribute('aria-label',b.title);
+ b.setAttribute('aria-pressed',String(has||tool==='mannequin'));
+ if(!has)closeMannequinMenu();
+}
+function closeMannequinMenu(){const menu=$('mannequinMenu');menu.hidden=true;mannequinButton()?.setAttribute('aria-expanded','false')}
+function positionMannequinMenu(){
+ const b=mannequinButton(),menu=$('mannequinMenu');if(!b||menu.hidden)return;
+ const r=b.getBoundingClientRect(),width=245,spaceBelow=window.innerHeight-r.bottom;
+ menu.style.left=Math.max(8,Math.min(window.innerWidth-width-8,r.left+(r.width-width)/2))+'px';
+ menu.style.top=(spaceBelow>230?r.bottom+8:Math.max(8,r.top-menu.offsetHeight-8))+'px';
+}
+function toggleMannequinMenu(){
+ if(mannequinIndex()<0){setTool('mannequin');return}
+ const menu=$('mannequinMenu');menu.hidden=!menu.hidden;
+ mannequinButton().setAttribute('aria-expanded',String(!menu.hidden));
+ if(!menu.hidden){$('mannequinMenuStatus').textContent=mannequinMode==='locked'?'Locked':mannequinMode==='edit'?'Editing joints':'Moving';
+  menu.querySelectorAll('[data-mannequin-action]').forEach(b=>b.dataset.current=String(b.dataset.mannequinAction===mannequinMode));positionMannequinMenu();}
+}
+function lockMannequin(){
+ mannequinMode='locked';skeletonMoveArmed=false;
+ if(current().annotations[selected]?.type==='mannequin')selected=-1;
+ if(tool==='mannequin')tool='select';
+ closeMannequinMenu();syncMannequinToolbar();
+ populateInspector();updateUI();draw();
+}
+function enterMannequinMode(mode){
+ const index=mannequinIndex();if(index<0)return;
+ closeMannequinMenu();setTool('select');mannequinMode=mode;selected=index;skeletonMoveArmed=mode==='move';
+ populateInspector();updateUI();draw();
+}
+function deleteMannequin(){
+ const index=mannequinIndex();if(index<0)return;
+ closeMannequinMenu();
+ if(!confirm('Delete the mannequin from this photo?\n\nYour ROM measurements and other annotations will be preserved.'))return;
+ const before=deepcopy(current().annotations);current().annotations.splice(index,1);
+ selected=-1;mannequinMode='locked';skeletonMoveArmed=false;
+ remember(before);populateInspector();updateUI();draw();
+}
+
+function hasPrivacyPose(v){return !!v?.annotations?.some(a=>isPoseAnnotation(a)&&a.visible!==false&&a.landmarks)}
+function syncPrivacyEye(){
+ const button=$('privacyPreviewEye'),v=current();
+ button.hidden=!(privacyMode&&v?.frameImg&&!v.preview);
+ button.classList.toggle('active',privacyPreview);
+ button.setAttribute('aria-pressed',String(privacyPreview));
+ button.setAttribute('aria-label',privacyPreview?'Show original photo while editing':'Preview Mannequin Mode submission without photo');
+ button.title=privacyPreview?'Show photo':'Preview without photo';
+ if(button.dataset.preview!==String(privacyPreview)){
+  button.querySelector('svg').innerHTML=privacyPreview?'<path d="M3 3 21 21"/><path d="M2 12s3.8-6.5 10-6.5 10 6.5 10 6.5-3.8 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>':'<path d="M2 12s3.8-6.5 10-6.5 10 6.5 10 6.5-3.8 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>';
+  button.dataset.preview=String(privacyPreview);
+ }
+}
+$('privacyPreviewEye').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(!privacyMode||!current().frameImg)return;privacyPreview=!privacyPreview;syncPrivacyEye();draw();});
 
 // Slots from the Regular Anatomy ROM handout (pages 1–2) plus additional
 // Advanced ROM exercises (pages 3–4), excluding all worksheet questions.
@@ -1293,14 +1449,14 @@ function updateModeUI(){
  $('galleryHeadingText').textContent=projectType==='rom'?'ROM Measurements':projectType==='joint'?'Joint Actions':'Plane Gallery';
  document.querySelectorAll('[data-project-type]').forEach(b=>{const on=b.dataset.projectType===projectType;b.setAttribute('aria-checked',String(on));b.lastElementChild.textContent=on?'✓':''});
  document.querySelectorAll('[data-plane-menu]').forEach(b=>b.classList.toggle('hidden',projectType!=='movement'));
- $('menuExportPoster').textContent=projectType==='rom'?'Export ROM Lab Submission…':projectType==='joint'?'Export Joint Actions Submission…':'Export Complete Submission…';
+ $('menuExportPoster').firstChild.textContent=projectType==='rom'?'Export ROM Lab Submission ':projectType==='joint'?'Export Joint Actions Submission ':'Export Complete Submission ';
  $('menuExportPlane').textContent=projectType==='rom'?'Export Current Measurement (PNG)':projectType==='joint'?'Export Current Exercise (PNG)':'Export Current Plane (PNG)';
  document.querySelector('#videoControls .frame-note').textContent=projectType==='joint'?'Step through the exercise clip to find the peak position. Exact steps follow the clip’s frame rate.':'Frame stepping is approximately ±1/120 second; the exact displayed frame depends on the video.';
 }
 function setProjectType(next,quiet=false){
  if(!['rom','movement','joint'].includes(next)||next===projectType)return;
  if(projectType==='movement')movementTitle=$('exercise').value||'Untitled Exercise';
- projectType=next;romPhonePage='gallery';
+ projectType=next;privacyPreview=false;romPhonePage='gallery';
  if(next==='rom'&&history.state?.[ROM_HISTORY_KEY]==='editor'){try{history.replaceState({...history.state,[ROM_HISTORY_KEY]:'gallery'},'')}catch(e){}}
  let index=0;
  if(next==='rom'){
@@ -1339,7 +1495,7 @@ function renderROMGallery(){
    const caption=document.createElement('span');caption.className='rom-slot-caption';caption.textContent=def.slot;
    b.append(media,caption);
    b.addEventListener('click',()=>{const ix=views.indexOf(v);showROMPhonePage('editor',{index:ix});if(!v.frameSrc&&!v.preview){pendingNew={romKey:def.key};$('galleryInput').accept='image/*,video/*';$('galleryInput').click()}});
-   const wrap=document.createElement('div');wrap.style.position='relative';wrap.appendChild(b);
+   const wrap=document.createElement('div');wrap.className='rom-slot-wrap';wrap.appendChild(b);
    if(v.frameSrc&&!v.preview){
     const edit=document.createElement('button');edit.type='button';edit.className='rom-slot-edit';edit.title='Crop or replace this capture';edit.setAttribute('aria-label','Edit '+def.label);edit.textContent='✎';
     edit.addEventListener('click',e=>{e.stopPropagation();openFrameEditMenu(v.uid,edit)});wrap.appendChild(edit)
@@ -1354,6 +1510,15 @@ function renderROMGallery(){
   section.append(heading,grid);fragment.appendChild(section)
  }
  container.replaceChildren(fragment);container.scrollTop=previousScroll;
+ // Vertically center the separate info button in the gray caption strip.
+ // Watch caption resizing so longer labels remain correctly aligned.
+ if(window.__kinROMCaptionObserver)window.__kinROMCaptionObserver.disconnect();
+ if(typeof ResizeObserver==='function'){
+  window.__kinROMCaptionObserver=new ResizeObserver(entries=>entries.forEach(({target})=>{
+   target.parentElement?.parentElement?.style.setProperty('--rom-caption-height',target.getBoundingClientRect().height+'px');
+  }));
+  container.querySelectorAll('.rom-slot-caption').forEach(caption=>window.__kinROMCaptionObserver.observe(caption));
+ }
 }
 
 let undo=[],redo=[],chosenColor=colors[0],nextID=1;
@@ -1361,6 +1526,7 @@ let blurShapeMode='oval',blurStrengthMode=32;
 let romDraft=null,romPointActive=0,romMode='included',romReposition=false;
 let inspectorEditSession=0;
 let skeletonMoveArmed=false;
+let mannequinMode='locked'; // Ephemeral per-document edit access, never persisted into backups.
 // Settings for a new annotation should survive temporarily inspecting another object.
 const creationFields={};
 function rememberCreationFields(){
@@ -1375,7 +1541,7 @@ function rememberCreationFields(){
  };
 }
 
-const toolStyles={joint:{color:'#e7e4a0',width:3,labelScale:1},bone:{color:'#b9dbfa',width:4.4,labelScale:1},muscle:{color:colors[0],width:5.5,labelScale:1,opacity:.7},arrow:{color:'#fbc47a',width:4,labelScale:1},text:{color:'#ffffff',width:3,labelScale:1},rom:{color:'#b9ddff',width:4,labelScale:1},blur:{color:'#acd7ff',width:3,labelScale:1},skeleton:{color:'#96d6ff',width:3,labelScale:1}};
+const toolStyles={joint:{color:'#e7e4a0',width:3,labelScale:1},bone:{color:'#b9dbfa',width:4.4,labelScale:1},muscle:{color:colors[0],width:5.5,labelScale:1,opacity:.7},arrow:{color:'#fbc47a',width:4,labelScale:1},text:{color:'#ffffff',width:3,labelScale:1},rom:{color:'#b9ddff',width:4,labelScale:1},blur:{color:'#acd7ff',width:3,labelScale:1},skeleton:{color:'#96d6ff',width:3,labelScale:1},mannequin:{color:'#b2c6d6',width:3,labelScale:1}};
 const anatomyShapeDefaults={bone:{mode:'smart',family:'long',width:.082,bend:0},muscle:{mode:'smart',family:'fusiform',width:.14,bend:0}};
 const anatomyFamilies={bone:[['long','Long Bone'],['broad','Broad / Irregular']],muscle:[['fusiform','Fusiform'],['flat','Broad / Flat'],['fan','Fan-Shaped']]};
 // Smart Movement Arrows: selectable geometric paths, with a draggable bend grip.
@@ -1390,26 +1556,32 @@ function suggestedArrowPath(movement){
 function initialArrowBend(path){return path==='arc'?.28:path==='curved'?.18:0;}
 
 const isSmart=a=>!!a&&['bone','muscle'].includes(a.type)&&a.shapeMode==='smart'&&Array.isArray(a.points)&&a.points.length===2&&a.points.every(Boolean);
-const inspectorNames={select:'SELECT ANNOTATION',joint:'SYNOVIAL JOINT',bone:'BONE SHAPE',muscle:'MUSCLE SHAPE',arrow:'MOVEMENT ARROW',text:'TEXT LABEL',rom:'RANGE OF MOTION',blur:'BLUR',skeleton:'WIREFRAME SKELETON'};
+const inspectorNames={select:'SELECT ANNOTATION',joint:'SYNOVIAL JOINT',bone:'BONE SHAPE',muscle:'MUSCLE SHAPE',arrow:'MOVEMENT ARROW',text:'TEXT LABEL',rom:'RANGE OF MOTION',blur:'BLUR',skeleton:'WIREFRAME SKELETON',mannequin:'MANNEQUIN'};
 function inspectorType(){return current().annotations[selected]?.type||tool}
 function populateInspector(){
  const item=current().annotations[selected],type=item?.type||tool;
  const mode=type==='select'?'none':type;
  $('inspectorTitle').textContent=inspectorNames[type]+' OPTIONS';
  $('inspectorHelp').textContent=type==='select'?'Select an annotation on the photo or choose Edit → Manage Annotations.':'';
- ['nameField','jointFields','arrowFields','styleFields','romFields','blurFields','skeletonFields'].forEach(i=>$(i).classList.toggle('hidden',i==='nameField'?(!item||mode==='none'||mode==='blur'||mode==='skeleton'):i==='styleFields'?(mode==='none'||mode==='blur'):(i==='jointFields'&&mode!=='joint'||i==='arrowFields'&&mode!=='arrow'||i==='romFields'&&mode!=='rom'||i==='blurFields'&&mode!=='blur'||i==='skeletonFields'&&mode!=='skeleton')));
+ ['nameField','jointFields','arrowFields','styleFields','romFields','blurFields','skeletonFields'].forEach(i=>$(i).classList.toggle('hidden',i==='nameField'?(!item||mode==='none'||mode==='blur'||mode==='skeleton'||mode==='mannequin'):i==='styleFields'?(mode==='none'||mode==='blur'):(i==='jointFields'&&mode!=='joint'||i==='arrowFields'&&mode!=='arrow'||i==='romFields'&&mode!=='rom'||i==='blurFields'&&mode!=='blur'||i==='skeletonFields'&&!['skeleton','mannequin'].includes(mode))));
  $('smartShapeFields').classList.toggle('hidden',!['bone','muscle'].includes(type));
  $('muscleOpacityField').classList.toggle('hidden',type!=='muscle');
  $('muscleOpacity').value=String(Math.round((item?.type==='muscle'?(item.opacity??.7):(toolStyles.muscle.opacity??.7))*100));
  $('muscleOpacityValue').textContent=$('muscleOpacity').value+'%';
  $('labelAnchorActions').classList.toggle('hidden',!item||!['joint','text','bone','muscle','arrow','rom'].includes(item.type));
- if(type==='skeleton'){
-  const sk=item?.type==='skeleton'?item:null;
+ if(type==='skeleton'||type==='mannequin'){
+  const sk=isPoseAnnotation(item)?item:null;
+  $('skeletonAngleGroup').hidden=type==='mannequin';
+  $('poseVisibleText').textContent=type==='mannequin'?'Show mannequin':'Show wireframe';
+  $('poseGestureNote').textContent=type==='mannequin'?'Mannequin is protected outside Edit / Move. Switch to ROM to lock it automatically; use the highlighted mannequin toolbar button to reopen its actions.':'Drag the center four-arrow grip to reposition the entire pose. Use Move Entire Skeleton to drag from anywhere; tap again to return to individual joint editing.';
+  $('poseInspectorNote').textContent=type==='mannequin'?'Drag H and N on the photo to adjust head and neck sizes independently; Done / Lock combines the body into a smooth solid silhouette.':'Approximate body landmarks, not X-ray bone positions. Angles are estimated from this 2D photo.';
+  $('skeletonMove').textContent=type==='mannequin'?(mannequinMode==='move'?'Edit Mannequin Joints':'Move Entire Mannequin'):'Move Entire Skeleton';
   $('skeletonAngleMode').value=sk?.angleMode||'selected';
   $('skeletonVisible').checked=sk?.visible!==false;
   $('skeletonMarkers').checked=sk?.showMarkers!==false;
   $('skeletonOpacity').value=String(Math.round((sk?.opacity??.85)*100));
   $('skeletonOpacityValue').textContent=$('skeletonOpacity').value+'%';
+  $('mannequinProportions').classList.toggle('hidden',type!=='mannequin');
   $('skeletonFlip').disabled=!sk;$('skeletonReset').disabled=!sk;
   $('skeletonMove').disabled=!sk;$('skeletonMove').classList.toggle('active',!!sk&&skeletonMoveArmed);$('skeletonMove').setAttribute('aria-pressed',String(!!sk&&skeletonMoveArmed));
  }
@@ -1426,7 +1598,7 @@ function populateInspector(){
   $('smartShapeOptions').classList.toggle('hidden',mode!=='smart');
  }
  $('strokeField').classList.toggle('hidden',!['bone','muscle','arrow','rom'].includes(type)||(isSmart(item)||(!item&&['bone','muscle'].includes(type)&&anatomyShapeDefaults[type].mode==='smart')));
- $('labelSize').closest('.style-row').classList.toggle('hidden',type==='skeleton');
+ $('labelSize').closest('.style-row').classList.toggle('hidden',['skeleton','mannequin'].includes(type));
  if(type==='arrow'){
   const path=item?(item.arrowPath||'straight'):arrowSettings.path;
   const bend=item?(Number.isFinite(Number(item.arrowBend))?Number(item.arrowBend):0):arrowSettings.bend;
@@ -1436,7 +1608,7 @@ function populateInspector(){
   $('arrowCurveField').classList.toggle('hidden',path==='straight');
  }
  
- if(type==='select'||type==='skeleton'){if(type==='skeleton'){chosenColor=item?.color||toolStyles.skeleton.color;renderPalette();}return;}
+ if(type==='select'||type==='skeleton'||type==='mannequin'){if(type==='skeleton'||type==='mannequin'){chosenColor=item?.color||toolStyles[type].color;renderPalette();}return;}
  if(type==='rom'){romMode=item?.angleMode||romDraft?.angleMode||romMode;romPointActive=romPointActive??0;updateROMInspector();}
  if(type==='blur'){
   $('blurShape').value=item?.shape||blurShapeMode;
@@ -1777,7 +1949,7 @@ function reframeAnnotation(a,oldRect,newRect){
  if(a.to)out.to=reframePoint(a.to,oldRect,newRect);
  if(a.labelPosition)out.labelPosition=reframePoint(a.labelPosition,oldRect,newRect);
  if(Array.isArray(a.points))out.points=a.points.map(p=>reframePoint(p,oldRect,newRect));
- if(a.type==='skeleton'&&a.landmarks){out.landmarks=Object.fromEntries(Object.entries(a.landmarks).map(([key,point])=>[key,reframePoint(point,oldRect,newRect)]));if(a.initialLandmarks)out.initialLandmarks=Object.fromEntries(Object.entries(a.initialLandmarks).map(([key,point])=>[key,reframePoint(point,oldRect,newRect)]))}
+ if(isPoseAnnotation(a)&&a.landmarks){out.landmarks=Object.fromEntries(Object.entries(a.landmarks).map(([key,point])=>[key,reframePoint(point,oldRect,newRect)]));if(a.initialLandmarks)out.initialLandmarks=Object.fromEntries(Object.entries(a.initialLandmarks).map(([key,point])=>[key,reframePoint(point,oldRect,newRect)]))}
  return out;
 }
 $('cropApply').onclick=()=>{
@@ -1810,7 +1982,8 @@ function sourceSize(v){const s=visibleSource(v);if(!s)return{w:16,h:9};return s 
 function switchDocument(index){
  if(index<0||index>=views.length)return;
  if(inlineLabel)finishInlineLabel(inlineLabelInput.value.trim()?'save':'cancel');
- active=index;selected=-1;draft=null;smartPending=null;romDraft=null;romPointActive=0;romReposition=false;drag=null;
+ active=index;privacyPreview=false;mannequinMode='locked';skeletonMoveArmed=false;closeMannequinMenu();
+ selected=-1;draft=null;smartPending=null;romDraft=null;romPointActive=0;romReposition=false;drag=null;
  document.querySelectorAll('[data-plane]').forEach(b=>{const yes=Number(b.dataset.plane)===current().plane;b.classList.toggle('active',yes);b.setAttribute('aria-pressed',String(yes))});
  populateInspector();syncCanvas();updateFrameProperties();updateUI();draw();
 }
@@ -1992,8 +2165,42 @@ function skeletonMoveGrip(a){
  if(!points.length)return null;
  return{x:points.reduce((n,v)=>n+v.x,0)/points.length,y:points.reduce((n,v)=>n+v.y,0)/points.length};
 }
+// v52: on-canvas head and neck scale grips; size is independent of pose landmarks.
+// A normalized value of 1.0 is physically 150% of the original v51 dimensions.
+function mannequinResizeGeometry(a,w,h){
+ const raw=a.landmarks||{};
+ if(!raw.head||!raw.neck||!raw.leftShoulder||!raw.rightShoulder)return null;
+ const pix=k=>({x:raw[k].x*w,y:raw[k].y*h}),head=pix('head'),neck=pix('neck');
+ const left=pix('leftShoulder'),right=pix('rightShoulder');
+ const thick=clamp(Math.hypot(left.x-right.x,left.y-right.y)*.27,Math.min(w,h)*.015,Math.min(w,h)*.095);
+ const dx=head.x-neck.x,dy=head.y-neck.y,len=Math.max(1,Math.hypot(dx,dy));
+ // Use the normal pointing toward canvas-right, regardless of head tilt.
+ const side=dy>0?-1:1,nx=(-dy/len)*side,ny=(dx/len)*side;
+ const headSize=clamp(Number(a.headSize??1),.45,2.20),neckSize=clamp(Number(a.neckSize??1),.45,2.20);
+ const headRadius=thick*.81*1.5*headSize, neckRadius=thick*.39*1.5*neckSize;
+ const neckCenter={x:neck.x+dx*.31,y:neck.y+dy*.31};
+ const offset=14;
+ return {head,neck,thick,nx,ny,offset,neckCenter,headRadius,neckRadius,
+  headHandle:{x:head.x+nx*(headRadius+offset),y:head.y+ny*(headRadius+offset)},
+  neckHandle:{x:neckCenter.x+nx*(neckRadius+offset),y:neckCenter.y+ny*(neckRadius+offset)}};
+}
+function resizeMannequinPart(original,kind,p,w,h){
+ const a=deepcopy(original),g=mannequinResizeGeometry(original,w,h);if(!g)return a;
+ const point={x:p.x*w,y:p.y*h},head=kind==='head',origin=head?g.head:g.neckCenter;
+ const projection=(point.x-origin.x)*g.nx+(point.y-origin.y)*g.ny-g.offset;
+ const base=g.thick*(head?.81:.39)*1.5;
+ a[head?'headSize':'neckSize']=Math.round(clamp(projection/base,.45,2.20)*100)/100;
+ return a;
+}
 function skeletonHandleAt(a,p,w,h){
  const px=p.x*w,py=p.y*h;
+ if(a.type==='mannequin'&&mannequinMode==='edit'){
+  const m=mannequinResizeGeometry(a,w,h);
+  if(m){
+   if(Math.hypot(px-m.headHandle.x,py-m.headHandle.y)<19)return{kind:'mannequin-head-size'};
+   if(Math.hypot(px-m.neckHandle.x,py-m.neckHandle.y)<19)return{kind:'mannequin-neck-size'};
+  }
+ }
  const ext=skeletonScaleHandle(a);
  if(ext&&Math.hypot(px-ext.x*w,py-ext.y*h)<21)return{kind:'scale'};
  const grip=skeletonMoveGrip(a);if(grip&&Math.hypot(px-grip.x*w,py-grip.y*h)<24)return{kind:'move'};
@@ -2001,6 +2208,16 @@ function skeletonHandleAt(a,p,w,h){
   if(Math.hypot(px-q.x*w,py-q.y*h)<17)return{kind:'joint',joint};
  }
  return null;
+}
+function poseHit(a,p,w,h){
+ if(a.type==='mannequin'){
+  if(!mannequinEditable()||a.visible===false||!a.landmarks)return false;
+  const q={x:p.x*w,y:p.y*h};
+  if(skeletonHandleAt(a,p,w,h))return true;
+  for(const [u,v] of SKELETON_SEGMENTS){const start=a.landmarks[u],end=a.landmarks[v];if(start&&end&&distanceToSegment(q,{x:start.x*w,y:start.y*h},{x:end.x*w,y:end.y*h})<Math.max(25,Math.min(w,h)*.055))return true;}
+  return false;
+ }
+ return skeletonHit(a,p,w,h);
 }
 function skeletonHit(a,p,w,h){
  if(a.visible===false||!a.landmarks)return false;
@@ -2057,7 +2274,228 @@ function drawSkeleton(c,a,w,h,isSelected,scale){
  }}c.restore();
 }
 
-function annotationAnchor(a){if(a.type==='skeleton'){const joints=Object.values(a.landmarks||{});return joints.length?{x:joints.reduce((s,p)=>s+p.x,0)/joints.length,y:joints.reduce((s,p)=>s+p.y,0)/joints.length}:{x:.5,y:.5}}if(a.type==='blur')return{x:(a.from.x+a.to.x)/2,y:(a.from.y+a.to.y)/2};if(a.type==='rom')return a.points?.[0]||a.points?.find(Boolean)||{x:0,y:0};if(a.type==='joint'||a.type==='text')return{x:a.x,y:a.y};if(a.type==='arrow')return{x:(a.from.x+a.to.x)/2,y:(a.from.y+a.to.y)/2};return a.points.at(-1)||{x:0,y:0}}
+// V48: stylized body segment silhouette, driven by exactly the same manually editable
+// landmarks as the wireframe. This is illustrative, never automated pose detection.
+function initialMannequin(center,w,h){
+ const landmarks=initialSkeleton(center,w,h),pts=Object.values(landmarks);
+ const xs=pts.map(q=>q.x),ys=pts.map(q=>q.y);
+ const cx=(Math.min(...xs)+Math.max(...xs))/2,cy=(Math.min(...ys)+Math.max(...ys))/2;
+ const span=Math.max(...ys)-Math.min(...ys),factor=Math.min(1,.76/Math.max(.01,span));
+ const nx=clamp(center.x,.24,.76),ny=clamp(center.y,.47,.54);
+ for(const q of pts){q.x=clamp(nx+(q.x-cx)*factor,.025,.975);q.y=clamp(ny+(q.y-cy)*factor,.045,.955)}
+ // The larger 100% head needs a little more room above the tapered neck.
+ // Keep the exact v49 body proportions; only lengthen the neutral head-to-neck spacing.
+ const rest=Object.entries(landmarks).filter(([key])=>key!=='head');
+ const clearance=Math.min(...rest.map(([,q])=>.965-q.y));
+ const shift=Math.max(0,Math.min(.038,clearance));
+ for(const [,q] of rest)q.y+=shift;
+ return landmarks;
+}
+// v52: locked mannequin is drawn as a single opacity-composited union.
+// Offscreen rendering ensures internal seams never show through semi-transparent fill.
+const mannequinContourCache=new WeakMap();
+function drawLockedMannequin(c,a,w,h,scale,forPrivacy){
+ const raw=a.landmarks||{};
+ const need=['head','neck','leftShoulder','rightShoulder','leftElbow','rightElbow','leftWrist','rightWrist','leftHip','rightHip','leftKnee','rightKnee','leftAnkle','rightAnkle'];
+ if(!need.every(k=>raw[k]))return;
+ const P=Object.fromEntries(need.map(k=>[k,{x:raw[k].x*w,y:raw[k].y*h}]));
+ const geom=mannequinResizeGeometry(a,w,h);if(!geom)return;
+ const thick=geom.thick,faceColor=forPrivacy?'#89b5ce':(a.color||'#c6d8e6');
+ const width=clamp(Number(a.neckSize??1),.45,2.20)*1.5;
+ const headSize=clamp(Number(a.headSize??1),.45,2.20)*1.5;
+ const key=[w,h,scale,forPrivacy,faceColor,headSize,width].join(':');
+ let item=mannequinContourCache.get(a);
+ if(!item||item.key!==key){
+  // Each shape is filled independently to form a true union mask; a compound
+  // path can leave counter-winding holes at overlapping neck and knee pieces.
+  const shapes=[];
+  function segment(u,v,r0,rm,r1){
+   const path=new Path2D();
+   const dx=v.x-u.x,dy=v.y-u.y,len=Math.max(1,Math.hypot(dx,dy));
+   const nx=-dy/len,ny=dx/len;
+   const point=(t,r,side)=>({x:u.x+dx*t+nx*thick*r*side,y:u.y+dy*t+ny*thick*r*side});
+   const u1=point(0,r0,1),m1=point(.46,rm,1),v1=point(1,r1,1);
+   const v2=point(1,r1,-1),m2=point(.46,rm,-1),u2=point(0,r0,-1);
+   const p1=point(.27,rm,1),p2=point(.77,rm*.77+r1*.23,1),p3=point(.77,rm*.77+r1*.23,-1),p4=point(.27,rm,-1);
+   path.moveTo(u1.x,u1.y);path.quadraticCurveTo(p1.x,p1.y,m1.x,m1.y);
+   path.quadraticCurveTo(p2.x,p2.y,v1.x,v1.y);path.lineTo(v2.x,v2.y);
+   path.quadraticCurveTo(p3.x,p3.y,m2.x,m2.y);path.quadraticCurveTo(p4.x,p4.y,u2.x,u2.y);path.closePath();
+   shapes.push(path);
+  }
+  for(const side of ['left','right']){
+   segment(P[side+'Hip'],P[side+'Knee'],.66,.62,.38);
+   segment(P[side+'Knee'],P[side+'Ankle'],.39,.47,.23);
+   segment(P[side+'Shoulder'],P[side+'Elbow'],.54,.51,.34);
+   segment(P[side+'Elbow'],P[side+'Wrist'],.34,.40,.21);
+  }
+  // Same head/neck/torso contours as unlocked v49, merged at overlapping joints.
+  const neckBase=P.neck,neckTop=P.head,ndx=neckTop.x-neckBase.x,ndy=neckTop.y-neckBase.y;
+  const nlen=Math.max(1,Math.hypot(ndx,ndy)),nnx=-ndy/nlen,nny=ndx/nlen;
+  const nBase=thick*.39*width,nTop=thick*.23*width;
+  let path=new Path2D();
+  path.moveTo(neckBase.x+nnx*nBase,neckBase.y+nny*nBase);
+  path.bezierCurveTo(neckBase.x+ndx*.36+nnx*nBase*.95,neckBase.y+ndy*.36+nny*nBase*.95,
+    neckBase.x+ndx*.72+nnx*nTop,neckBase.y+ndy*.72+nny*nTop,neckTop.x+nnx*nTop,neckTop.y+nny*nTop);
+  path.lineTo(neckTop.x-nnx*nTop,neckTop.y-nny*nTop);
+  path.bezierCurveTo(neckBase.x+ndx*.72-nnx*nTop,neckBase.y+ndy*.72-nny*nTop,
+    neckBase.x+ndx*.36-nnx*nBase*.95,neckBase.y+ndy*.36-nny*nBase*.95,
+    neckBase.x-nnx*nBase,neckBase.y-nny*nBase);path.closePath();shapes.push(path);
+  // Join the collar and neck in the union mask to avoid an internal hairline gap.
+  const collarBridge=new Path2D();
+  collarBridge.ellipse(P.neck.x,P.neck.y+thick*.15,thick*.40*width,thick*.41,0,0,Math.PI*2);
+  shapes.push(collarBridge);
+  path=new Path2D();
+  const L=P.leftShoulder,R=P.rightShoulder,H=P.rightHip,K=P.leftHip,spread=thick*.30;
+  path.moveTo(L.x-spread,L.y);
+  path.quadraticCurveTo((L.x+P.neck.x)*.5,P.neck.y-thick*.29,P.neck.x,P.neck.y+thick*.18);
+  path.quadraticCurveTo((R.x+P.neck.x)*.5,P.neck.y-thick*.29,R.x+spread,R.y);
+  path.quadraticCurveTo(R.x+spread*.85,(R.y+H.y)/2,H.x+spread*.52,H.y+spread);
+  path.quadraticCurveTo((H.x+K.x)/2,(H.y+K.y)/2+thick*.45,K.x-spread*.52,K.y+spread);
+  path.quadraticCurveTo(L.x-spread*.85,(L.y+K.y)/2,L.x-spread,L.y);path.closePath();shapes.push(path);
+  for(const side of ['left','right']){
+   for(const [k,r] of [['Shoulder',.53],['Elbow',.35],['Hip',.59],['Knee',.38],['Ankle',.22]]){
+    const q=P[side+k],circle=new Path2D();circle.arc(q.x,q.y,thick*r,0,Math.PI*2);shapes.push(circle);
+   }
+  }
+  const head=P.head,hrx=thick*.81*headSize,hry=thick*1.1*headSize;
+  const headPath=new Path2D();headPath.ellipse(head.x,head.y,hrx,hry,0,0,Math.PI*2);shapes.push(headPath);
+  for(const side of ['left','right']){
+   const hand=P[side+'Wrist'],foot=P[side+'Ankle'];
+   const handPath=new Path2D();handPath.arc(hand.x,hand.y,thick*.24,0,Math.PI*2);shapes.push(handPath);
+   const footPath=new Path2D();
+   if(typeof footPath.roundRect==='function')footPath.roundRect(foot.x-thick*.22,foot.y-thick*.18,thick*.9,thick*.38,thick*.18);
+   else footPath.ellipse(foot.x,foot.y,thick*.35,thick*.16,0,0,Math.PI*2);
+   shapes.push(footPath);
+  }
+  const coords=Object.values(P),padding=Math.max(10*scale,thick*(4.3+headSize));
+  const x0=Math.max(0,Math.floor(Math.min(...coords.map(q=>q.x))-padding));
+  const y0=Math.max(0,Math.floor(Math.min(...coords.map(q=>q.y))-padding));
+  const x1=Math.min(w,Math.ceil(Math.max(...coords.map(q=>q.x))+padding));
+  const y1=Math.min(h,Math.ceil(Math.max(...coords.map(q=>q.y))+padding));
+  const mask=document.createElement('canvas');mask.width=Math.max(1,Math.ceil(x1-x0));mask.height=Math.max(1,Math.ceil(y1-y0));
+  const m=mask.getContext('2d');m.translate(-x0,-y0);m.fillStyle='#fff';
+  // Overlapping fully opaque fills create one connected solid body with no seams.
+  for(const shape of shapes)m.fill(shape);
+  // Outer-only outline: dilate the combined alpha slightly, then paint the
+  // original union over it. This avoids all internal borders and holes.
+  const bordered=document.createElement('canvas');bordered.width=mask.width;bordered.height=mask.height;
+  const b=bordered.getContext('2d'),rad=Math.max(1.5,2.1*scale);
+  for(let k=0;k<16;k++){
+   const t=Math.PI*2*k/16;
+   b.drawImage(mask,Math.cos(t)*rad,Math.sin(t)*rad);
+  }
+  b.globalCompositeOperation='source-in';b.fillStyle='#29465a';b.fillRect(0,0,bordered.width,bordered.height);
+  m.setTransform(1,0,0,1,0,0);m.globalCompositeOperation='source-in';m.fillStyle=faceColor;m.fillRect(0,0,mask.width,mask.height);
+  b.globalCompositeOperation='source-over';b.drawImage(mask,0,0);
+  item={key,mask:bordered,x0,y0};mannequinContourCache.set(a,item);
+ }
+ c.save();c.globalAlpha=forPrivacy?1:clamp(Number(a.opacity??.92),.2,1);
+ c.drawImage(item.mask,item.x0,item.y0);c.restore();
+}
+function drawMannequin(c,a,w,h,isSelected,scale,forPrivacy=false){
+ if(a.visible===false||!a.landmarks)return;
+ if(!isSelected){drawLockedMannequin(c,a,w,h,scale,forPrivacy);return}
+ const raw=a.landmarks,pt=k=>raw[k]?{x:raw[k].x*w,y:raw[k].y*h}:null;
+ const need=['head','neck','leftShoulder','rightShoulder','leftElbow','rightElbow','leftWrist','rightWrist','leftHip','rightHip','leftKnee','rightKnee','leftAnkle','rightAnkle'];
+ if(!need.every(k=>pt(k)))return;
+ const P=Object.fromEntries(need.map(k=>[k,pt(k)]));
+ const shoulderSpan=Math.hypot(P.leftShoulder.x-P.rightShoulder.x,P.leftShoulder.y-P.rightShoulder.y);
+ const thick=clamp(shoulderSpan*.27,Math.min(w,h)*.015,Math.min(w,h)*.095);
+ const faceColor=forPrivacy?'#89b5ce':(a.color||'#c6d8e6');
+ c.save();c.globalAlpha=forPrivacy?1:clamp(Number(a.opacity??.92),.2,1);
+ c.lineJoin='round';c.lineCap='round';
+ // Filled curvilinear limb outlines use variable radius, keeping original drag landmarks.
+ // Thighs and upper arms taper; calves and forearms include gentle anatomical bulges.
+ function taperedSegment(uKey,vKey,r0,rm,r1){
+  const u=P[uKey],v=P[vKey],dx=v.x-u.x,dy=v.y-u.y,len=Math.max(1,Math.hypot(dx,dy));
+  const nx=-dy/len,ny=dx/len;
+  const point=(t,r,side)=>({x:u.x+dx*t+nx*thick*r*side,y:u.y+dy*t+ny*thick*r*side});
+  const trace=(side,reverse=false)=>{
+   const q0=point(0,r0,side),qm=point(.46,rm,side),q1=point(1,r1,side);
+   if(!reverse){c.moveTo(q0.x,q0.y);c.quadraticCurveTo(...Object.values(point(.27,rm,side)),qm.x,qm.y);c.quadraticCurveTo(...Object.values(point(.77,rm*.77+r1*.23,side)),q1.x,q1.y)}
+   else{c.lineTo(q1.x,q1.y);c.quadraticCurveTo(...Object.values(point(.77,rm*.77+r1*.23,side)),qm.x,qm.y);c.quadraticCurveTo(...Object.values(point(.27,rm,side)),q0.x,q0.y)}
+  };
+  c.beginPath();trace(1);trace(-1,true);c.closePath();
+  c.fillStyle=faceColor;c.strokeStyle='#29465a';c.lineWidth=1.6*scale;c.fill();c.stroke();
+ }
+ // Legs and arms underlie the torso, preventing visible cut-outs where they attach.
+ for(const side of ['left','right']){
+  taperedSegment(side+'Hip',side+'Knee',.66,.62,.38);
+  taperedSegment(side+'Knee',side+'Ankle',.39,.47,.23);
+  taperedSegment(side+'Shoulder',side+'Elbow',.54,.51,.34);
+  taperedSegment(side+'Elbow',side+'Wrist',.34,.40,.21);
+ }
+ // Neck: width independently adjustable, broad at shoulders and gently tapered
+ // toward the head. The original draggable neck/head landmarks are unchanged.
+ const neckWidth=1.5*clamp(Number(a.neckSize??1),.45,2.20);
+ const neckBase=P.neck,neckTop=P.head;
+ const ndx=neckTop.x-neckBase.x,ndy=neckTop.y-neckBase.y,nlen=Math.max(1,Math.hypot(ndx,ndy));
+ const nnx=-ndy/nlen,nny=ndx/nlen;
+ const nBase=thick*.39*neckWidth,nTop=thick*.23*neckWidth;
+ c.beginPath();
+ c.moveTo(neckBase.x+nnx*nBase,neckBase.y+nny*nBase);
+ c.bezierCurveTo(neckBase.x+ndx*.36+nnx*nBase*.95,neckBase.y+ndy*.36+nny*nBase*.95,
+  neckBase.x+ndx*.72+nnx*nTop,neckBase.y+ndy*.72+nny*nTop,neckTop.x+nnx*nTop,neckTop.y+nny*nTop);
+ c.lineTo(neckTop.x-nnx*nTop,neckTop.y-nny*nTop);
+ c.bezierCurveTo(neckBase.x+ndx*.72-nnx*nTop,neckBase.y+ndy*.72-nny*nTop,
+  neckBase.x+ndx*.36-nnx*nBase*.95,neckBase.y+ndy*.36-nny*nBase*.95,
+  neckBase.x-nnx*nBase,neckBase.y-nny*nBase);
+ c.closePath();c.fillStyle=faceColor;c.strokeStyle='#29465a';c.lineWidth=1.6*scale;c.fill();c.stroke();
+ const L=P.leftShoulder,R=P.rightShoulder,H=P.rightHip,K=P.leftHip,spread=thick*.30;
+ c.beginPath();c.moveTo(L.x-spread,L.y);
+ c.quadraticCurveTo((L.x+P.neck.x)*.5,P.neck.y-thick*.29,P.neck.x,P.neck.y+thick*.18);
+ c.quadraticCurveTo((R.x+P.neck.x)*.5,P.neck.y-thick*.29,R.x+spread,R.y);
+ c.quadraticCurveTo(R.x+spread*.85,(R.y+H.y)/2,H.x+spread*.52,H.y+spread);
+ c.quadraticCurveTo((H.x+K.x)/2,(H.y+K.y)/2+thick*.45,K.x-spread*.52,K.y+spread);
+ c.quadraticCurveTo(L.x-spread*.85,(L.y+K.y)/2,L.x-spread,L.y);c.closePath();
+ c.fillStyle=faceColor;c.strokeStyle='#29465a';c.lineWidth=2*scale;c.fill();c.stroke();
+ // Rounded joints connect the taper pieces, without disjointed cylinder ends.
+ for(const side of ['left','right']){
+  for(const [key,r] of [['Shoulder',.53],['Elbow',.35],['Hip',.59],['Knee',.38],['Ankle',.22]]){
+   const q=P[side+key];c.beginPath();c.arc(q.x,q.y,thick*r,0,Math.PI*2);c.fillStyle=faceColor;c.fill();
+  }
+ }
+ const headSize=1.5*clamp(Number(a.headSize??1),.45,2.20);
+ c.beginPath();c.ellipse(P.head.x,P.head.y,thick*.81*headSize,thick*1.1*headSize,0,0,Math.PI*2);
+ c.fillStyle=faceColor;c.strokeStyle='#29465a';c.lineWidth=2*scale;c.fill();c.stroke();
+ // Abstract hands and feet avoid facial and identity detail.
+ for(const side of ['left','right']){
+  const hand=P[side+'Wrist'],foot=P[side+'Ankle'];
+  c.beginPath();c.arc(hand.x,hand.y,thick*.24,0,Math.PI*2);c.fillStyle=faceColor;c.fill();
+  c.beginPath();if(typeof c.roundRect==='function')c.roundRect(foot.x-thick*.22,foot.y-thick*.18,thick*.9,thick*.38,thick*.18);
+  else c.ellipse(foot.x,foot.y,thick*.35,thick*.16,0,0,Math.PI*2);
+  c.fillStyle=faceColor;c.fill();
+ }
+ c.globalAlpha=1;
+ if(isSelected){
+  if(mannequinMode==='edit'){
+   const g=mannequinResizeGeometry(a,w,h);
+   if(g){
+    for(const entry of [
+     {label:'H',base:g.head,point:g.headHandle,color:'#6cbeff'},
+     {label:'N',base:g.neckCenter,point:g.neckHandle,color:'#83e8d4'}
+    ]){
+     c.save();c.beginPath();c.moveTo(entry.base.x,entry.base.y);c.lineTo(entry.point.x,entry.point.y);
+     c.strokeStyle=entry.color;c.lineWidth=1.7*scale;c.setLineDash([4*scale,3*scale]);c.stroke();c.setLineDash([]);
+     c.beginPath();c.arc(entry.point.x,entry.point.y,9*scale,0,Math.PI*2);
+     c.fillStyle='#172d40';c.fill();c.strokeStyle=entry.color;c.lineWidth=3*scale;c.stroke();
+     c.fillStyle='#f6fdff';c.font=`bold ${10*scale}px system-ui,sans-serif`;
+     c.textAlign='center';c.textBaseline='middle';c.fillText(entry.label,entry.point.x,entry.point.y+.5*scale);
+     c.restore();
+    }
+   }
+  }
+  if(a.showMarkers!==false)for(const [key,q] of Object.entries(raw)){
+   c.beginPath();c.arc(q.x*w,q.y*h,5*scale,0,Math.PI*2);
+   c.fillStyle=key===a.selectedJoint?'#ffd1a1':'#e0f6ff';c.fill();
+   c.lineWidth=1.4*scale;c.strokeStyle='#2c4c64';c.stroke();
+  }
+  const grip=skeletonMoveGrip(a);if(grip){c.beginPath();c.arc(grip.x*w,grip.y*h,12*scale,0,Math.PI*2);c.fillStyle='#254a68';c.fill();c.lineWidth=1.8*scale;c.strokeStyle='#f7fcff';c.stroke();c.beginPath();c.moveTo(grip.x*w-6*scale,grip.y*h);c.lineTo(grip.x*w+6*scale,grip.y*h);c.moveTo(grip.x*w,grip.y*h-6*scale);c.lineTo(grip.x*w,grip.y*h+6*scale);c.stroke();}
+  const resize=skeletonScaleHandle(a);if(resize){c.fillStyle='#29465a';c.fillRect(resize.x*w-6*scale,resize.y*h-6*scale,12*scale,12*scale);c.lineWidth=1.8*scale;c.strokeStyle='#fff';c.strokeRect(resize.x*w-6*scale,resize.y*h-6*scale,12*scale,12*scale);}
+ }
+ c.restore();
+}
+function annotationAnchor(a){if(isPoseAnnotation(a)){const joints=Object.values(a.landmarks||{});return joints.length?{x:joints.reduce((s,p)=>s+p.x,0)/joints.length,y:joints.reduce((s,p)=>s+p.y,0)/joints.length}:{x:.5,y:.5}}if(a.type==='blur')return{x:(a.from.x+a.to.x)/2,y:(a.from.y+a.to.y)/2};if(a.type==='rom')return a.points?.[0]||a.points?.find(Boolean)||{x:0,y:0};if(a.type==='joint'||a.type==='text')return{x:a.x,y:a.y};if(a.type==='arrow')return{x:(a.from.x+a.to.x)/2,y:(a.from.y+a.to.y)/2};return a.points.at(-1)||{x:0,y:0}}
 // Labels have an anatomical anchor and an independently movable callout box.
 // labelPosition is an optional normalized coordinate. Older documents without it
 // use the original label location, preserving existing saved projects.
@@ -2107,9 +2545,10 @@ function drawAnnotationCallout(c,a,w,h,scale){
 function hitTest(pos){
  const v=current(),r=canvas.getBoundingClientRect(),p={x:pos.x*r.width,y:pos.y*r.height};
  for(let k=v.annotations.length-1;k>=0;k--){
-  const a=v.annotations[k],bounds=labelHitBounds(a,r.width,r.height);
+  const a=v.annotations[k];if(a.type==='mannequin'&&!mannequinEditable())continue;
+  const bounds=labelHitBounds(a,r.width,r.height);
   if(bounds&&p.x>=bounds.left-7&&p.x<=bounds.left+bounds.width+7&&p.y>=bounds.top-7&&p.y<=bounds.top+bounds.height+7)return k;
-  if(a.type==='skeleton'){if(skeletonHit(a,pos,r.width,r.height))return k;continue}
+  if(isPoseAnnotation(a)){if(poseHit(a,pos,r.width,r.height))return k;continue}
   if(isSmart(a)&&smartBodyHit(a,p,r.width,r.height))return k;
   const at=annotationAnchor(a),anchor={x:at.x*r.width,y:at.y*r.height};
   let dist=a.type==='arrow'?Infinity:Math.hypot(anchor.x-p.x,anchor.y-p.y);
@@ -2134,7 +2573,7 @@ function hitTest(pos){
  }
  return -1;
 }
-function translate(a,dx,dy){const b=deepcopy(a);const move=p=>({x:clamp(p.x+dx),y:clamp(p.y+dy)});if(b.labelPosition)b.labelPosition=move(b.labelPosition);if(b.type==='skeleton'&&b.landmarks)b.landmarks=Object.fromEntries(Object.entries(b.landmarks).map(([k,p])=>[k,move(p)]));else if(b.points)b.points=b.points.map(p=>p?move(p):null);else if(b.type==='arrow'||b.type==='blur'){b.from=move(b.from);b.to=move(b.to)}else{const p=move({x:b.x,y:b.y});b.x=p.x;b.y=p.y}return b}
+function translate(a,dx,dy){const b=deepcopy(a);const move=p=>({x:clamp(p.x+dx),y:clamp(p.y+dy)});if(b.labelPosition)b.labelPosition=move(b.labelPosition);if(isPoseAnnotation(b)&&b.landmarks)b.landmarks=Object.fromEntries(Object.entries(b.landmarks).map(([k,p])=>[k,move(p)]));else if(b.points)b.points=b.points.map(p=>p?move(p):null);else if(b.type==='arrow'||b.type==='blur'){b.from=move(b.from);b.to=move(b.to)}else{const p=move({x:b.x,y:b.y});b.x=p.x;b.y=p.y}return b}
 function makeAnnotation(){
 const label=''; // Label is entered on the photo after the object is positioned.
 const style=toolStyles[tool]||toolStyles.text;
@@ -2149,7 +2588,7 @@ if(tool==='bone'||tool==='muscle'){
 if(tool==='arrow'){base.movement=$('movementType').value;base.label=base.movement;base.arrowPath=arrowSettings.path;base.arrowBend=arrowSettings.bend}
 if(tool==='rom'){base.label='ROM';base.points=[null,null,null];base.angleMode=romMode}
 if(tool==='blur'){base.label='Blur';base.color='#acd7ff';base.shape=blurShapeMode;base.blurStrength=blurStrengthMode}
-if(tool==='skeleton'){base.label='Manual skeleton';base.color='#96d6ff';base.opacity=.85;base.showMarkers=true;base.visible=true;base.angleMode='selected';base.selectedJoint='leftKnee'}
+if(tool==='skeleton'||tool==='mannequin'){base.label=tool==='mannequin'?'Mannequin':'Manual skeleton';base.color=tool==='mannequin'?'#c7d9e7':'#96d6ff';base.opacity=tool==='mannequin'?.92:.85;base.showMarkers=true;base.visible=true;base.angleMode=tool==='mannequin'?'off':'selected';base.selectedJoint='leftKnee';if(tool==='mannequin'){base.headSize=1;base.neckSize=1}}
 return base}
 
 function allAnnotations(){return views.flatMap(v=>v.annotations)}
@@ -2301,10 +2740,10 @@ function onDown(e){
  }
  // The selected skeleton has draggable landmark and scale handles.
  const sk=current().annotations[selected];
- if(sk?.type==='skeleton'&&sk.visible!==false){
+ if(isPoseAnnotation(sk)&&sk.visible!==false&&(sk.type!=='mannequin'||mannequinEditable())){
   if(skeletonMoveArmed){drag={kind:'move',index:selected,from:p,original:deepcopy(sk),before};canvas.setPointerCapture(e.pointerId);canvas.style.cursor='move';return}
   const handle=skeletonHandleAt(sk,p,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
-  if(handle){drag={kind:handle.kind==='scale'?'skeleton-scale':handle.kind==='joint'?'skeleton-joint':'move',index:selected,joint:handle.joint,from:p,original:deepcopy(sk),before};canvas.setPointerCapture(e.pointerId);canvas.style.cursor='grabbing';return}
+  if(handle){drag={kind:handle.kind.startsWith('mannequin-')?handle.kind:handle.kind==='scale'?'skeleton-scale':handle.kind==='joint'?'skeleton-joint':'move',index:selected,joint:handle.joint,from:p,original:deepcopy(sk),before};canvas.setPointerCapture(e.pointerId);canvas.style.cursor='grabbing';return}
  }
  // Text boxes are independent grips, even when they overlap a smart-shape endpoint.
  const earlyLabel=labelAtPoint(p);
@@ -2332,9 +2771,9 @@ function onDown(e){
  if(hit>=0){
   rememberCreationFields();
   chooseSelected(hit); // Does not switch away from the currently chosen drawing tool.
-  if(v.annotations[hit]?.type==='skeleton'&&v.annotations[hit].visible!==false){
+  if(isPoseAnnotation(v.annotations[hit])&&v.annotations[hit].visible!==false){
    const s=v.annotations[hit],handle=skeletonHandleAt(s,p,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
-   drag={kind:handle?.kind==='joint'?'skeleton-joint':handle?.kind==='scale'?'skeleton-scale':'move',index:hit,joint:handle?.joint,from:p,original:deepcopy(s),before};
+   drag={kind:handle?.kind?.startsWith('mannequin-')?handle.kind:handle?.kind==='joint'?'skeleton-joint':handle?.kind==='scale'?'skeleton-scale':'move',index:hit,joint:handle?.joint,from:p,original:deepcopy(s),before};
    if(handle?.joint)s.selectedJoint=handle.joint;
   }else if(marker){
    romPointActive=marker.point;
@@ -2352,12 +2791,14 @@ function onDown(e){
  }
  // Blank canvas is still used to make a new annotation with the active tool.
  if(selected>=0){selected=-1;romReposition=false;if(tool==='rom')romPointActive=0;populateInspector();updateUI()}
- if(tool==='select'){drag=null;draw();return}
- if(tool==='skeleton'){
-  const old=v.annotations.findIndex(a=>a.type==='skeleton');
-  if(old>=0){chooseSelected(old);toast('One skeleton per photo. Select its landmarks to adjust.');return}
-  const a=makeAnnotation();a.landmarks=initialSkeleton(p,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);a.initialLandmarks=deepcopy(a.landmarks);
-  v.annotations.push(a);selected=v.annotations.length-1;populateInspector();remember(before);draw();return;
+ if(tool==='select'){drag=null;if(mannequinEditable()){mannequinMode='locked';skeletonMoveArmed=false;syncMannequinToolbar();populateInspector();updateUI();}draw();return}
+ if(tool==='skeleton'||tool==='mannequin'){
+  const old=v.annotations.findIndex(a=>a.type===tool);
+  if(old>=0){chooseSelected(old);toast('One '+tool+' per photo. Select its landmarks to adjust.');return}
+  const a=makeAnnotation();a.landmarks=(tool==='mannequin'?initialMannequin:initialSkeleton)(p,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);a.initialLandmarks=deepcopy(a.landmarks);
+  v.annotations.push(a);selected=v.annotations.length-1;
+  if(a.type==='mannequin'){mannequinMode='edit';tool='select';$('toolHint').textContent='Drag mannequin joints to fit the photo, then choose ROM or Done / Lock in the mannequin menu.';document.querySelectorAll('[data-tool]').forEach(b=>{const on=b.dataset.tool==='select';b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on))});}
+  populateInspector();remember(before);syncMannequinToolbar();draw();return;
  }
  if(tool==='blur'){
   const a=makeAnnotation();a.from=p;a.to=p;draft=a;drag={kind:'blur-draw',before};
@@ -2411,6 +2852,9 @@ function onMove(e){
   const sk=deepcopy(drag.original);sk.landmarks[drag.joint]={x:clamp(p.x,.005,.995),y:clamp(p.y,.005,.995)};sk.selectedJoint=drag.joint;v.annotations[drag.index]=sk;
  }else if(drag.kind==='skeleton-scale'){
   v.annotations[drag.index]=scaleSkeleton(drag.original,p);
+ }else if(drag.kind==='mannequin-head-size'||drag.kind==='mannequin-neck-size'){
+  const r=canvas.getBoundingClientRect();
+  v.annotations[drag.index]=resizeMannequinPart(drag.original,drag.kind==='mannequin-head-size'?'head':'neck',p,r.width,r.height);
  }else if(drag.kind==='arrow-handle'){
   v.annotations[drag.index]=updateArrowHandle(drag.original,drag.handle,p,canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height);
   populateInspector();
@@ -2428,7 +2872,7 @@ function onUp(e){
  if(d.kind==='editlabel'){
   beginInlineLabel(d.index,d.before,{fresh:false});return;
  }
- if(d.kind==='move'||d.kind==='label-move'||d.kind==='rommove'||d.kind==='blur-resize'||d.kind==='smart-handle'||d.kind==='arrow-handle'||d.kind==='skeleton-joint'||d.kind==='skeleton-scale')remember(d.before);
+ if(d.kind==='move'||d.kind==='label-move'||d.kind==='rommove'||d.kind==='blur-resize'||d.kind==='smart-handle'||d.kind==='arrow-handle'||d.kind==='skeleton-joint'||d.kind==='skeleton-scale'||d.kind==='mannequin-head-size'||d.kind==='mannequin-neck-size')remember(d.before);
  else if(d.kind==='smart-create'){
   const a=draft;if(!a)return;
   const r=canvas.getBoundingClientRect(),q=a.points[1];
@@ -2474,7 +2918,7 @@ function onUp(e){
  updateUI();draw();
 }
 canvas.addEventListener('pointerdown',onDown);canvas.addEventListener('pointermove',onMove);canvas.addEventListener('pointerup',onUp);canvas.addEventListener('pointercancel',()=>{
- if(drag?.kind==='rommove'||drag?.kind==='move'||drag?.kind==='label-move'||drag?.kind==='blur-resize'||drag?.kind==='smart-handle'||drag?.kind==='arrow-handle'||drag?.kind==='skeleton-joint'||drag?.kind==='skeleton-scale')current().annotations=deepcopy(drag.before);
+ if(drag?.kind==='rommove'||drag?.kind==='move'||drag?.kind==='label-move'||drag?.kind==='blur-resize'||drag?.kind==='smart-handle'||drag?.kind==='arrow-handle'||drag?.kind==='skeleton-joint'||drag?.kind==='skeleton-scale'||drag?.kind==='mannequin-head-size'||drag?.kind==='mannequin-neck-size')current().annotations=deepcopy(drag.before);
  if(drag?.kind==='romdraft'&&romDraft)romDraft.points[drag.point]=null;
  draft=null;smartPending=null;drag=null;canvas.style.cursor='crosshair';populateInspector();updateUI();draw();
 });
@@ -2575,6 +3019,7 @@ function portableBlurTexture(src,w,h,left,top,width,height,strength){
 
 function drawOne(c,a,w,h,opts={}){const scale=opts.scale||Math.max(.75,Math.min(1.35,w/750));const labelScale=scale*(a.labelScale||1);const isSelected=opts.selected;const x=p=>p.x*w,y=p=>p.y*h;
 if(a.type==='skeleton'){drawSkeleton(c,a,w,h,!!isSelected,scale);return}
+if(a.type==='mannequin'){drawMannequin(c,a,w,h,!!isSelected,scale,!!opts.forPrivacy);return}
 if(a.type==='blur'){
  const src=opts.source;
  if(!a.from||!a.to)return;
@@ -2678,18 +3123,42 @@ if(a.type==='text'){/* independent callout rendered below */}
 if(['joint','text','bone','muscle','arrow','rom'].includes(a.type))drawAnnotationCallout(c,a,w,h,scale);
 if(isSelected&&a.type!=='bone'&&a.type!=='muscle'){const p=annotationAnchor(a);c.beginPath();c.arc(x(p),y(p),17*scale,0,2*Math.PI);c.strokeStyle='#ffffffad';c.lineWidth=1.5*scale;c.setLineDash([4*scale,4*scale]);c.stroke()}
 c.restore()}
-function draw(){const v=current(),src=visibleSource(v),r=canvas.getBoundingClientRect();if(!src||!r.width||!r.height)return;ctx.setTransform(canvas.width/r.width,0,0,canvas.height/r.height,0,0);ctx.clearRect(0,0,r.width,r.height);ctx.fillStyle='#06080c';ctx.fillRect(0,0,r.width,r.height);try{ctx.drawImage(src,0,0,r.width,r.height)}catch(e){}if(v.preview)return;v.annotations.forEach((a,i)=>{if(a.type==='blur')drawOne(ctx,a,r.width,r.height,{selected:i===selected,source:src})});v.annotations.forEach((a,i)=>{if(a.type!=='blur')drawOne(ctx,a,r.width,r.height,{selected:i===selected})});if(draft)drawOne(ctx,draft,r.width,r.height,{source:src});if(romDraft)drawOne(ctx,romDraft,r.width,r.height)}
+function privacyBackground(c,w,h){
+ c.save();c.fillStyle='#e8eff5';c.fillRect(0,0,w,h);
+ c.strokeStyle='#c3d1df';c.lineWidth=Math.max(1,Math.min(w,h)/900);
+ c.strokeRect(1,1,w-2,h-2);c.restore();
+}
+function paintPhotoAnnotations(c,v,w,h,{privacy=false,source=null,scale=null,editor=false}={}){
+ const renderScale=scale??Math.max(.75,Math.min(1.35,w/750));
+ if(privacy){
+  privacyBackground(c,w,h);
+  // The original photo is never drawn into the export canvas in this branch.
+  v.annotations.filter(isPoseAnnotation).forEach(a=>drawOne(c,a,w,h,{selected:editor&&v.annotations.indexOf(a)===selected&&(a.type!=='mannequin'||mannequinEditable()),scale:renderScale,forPrivacy:true}));
+  v.annotations.filter(a=>!isPoseAnnotation(a)&&PRIVACY_RENDER_TYPES.has(a.type)).forEach(a=>drawOne(c,a,w,h,{selected:editor&&v.annotations.indexOf(a)===selected,scale:renderScale,forPrivacy:true}));
+ }else{
+  if(source){try{c.drawImage(source,0,0,w,h)}catch(e){}}
+  v.annotations.filter(a=>a.type==='blur').forEach((a)=>drawOne(c,a,w,h,{selected:editor&&v.annotations.indexOf(a)===selected,scale:renderScale,source}));
+  v.annotations.filter(isPoseAnnotation).forEach(a=>drawOne(c,a,w,h,{selected:editor&&v.annotations.indexOf(a)===selected&&(a.type!=='mannequin'||mannequinEditable()),scale:renderScale}));
+  v.annotations.filter(a=>a.type!=='blur'&&!isPoseAnnotation(a)).forEach((a)=>drawOne(c,a,w,h,{selected:editor&&v.annotations.indexOf(a)===selected,scale:renderScale}));
+ }
+}
+function draw(){const v=current(),src=visibleSource(v),r=canvas.getBoundingClientRect();syncPrivacyEye();if(!src||!r.width||!r.height)return;ctx.setTransform(canvas.width/r.width,0,0,canvas.height/r.height,0,0);ctx.clearRect(0,0,r.width,r.height);const privacy=privacyMode&&privacyPreview&&!v.preview;paintPhotoAnnotations(ctx,v,r.width,r.height,{privacy,source:src,editor:!privacy});if(v.preview)return;if(draft&&(!privacy||PRIVACY_RENDER_TYPES.has(draft.type)))drawOne(ctx,draft,r.width,r.height,{source:src,forPrivacy:privacy});if(romDraft)drawOne(ctx,romDraft,r.width,r.height)}
 function setTool(t){
  if(inlineLabel)finishInlineLabel(inlineLabelInput.value.trim()?'save':'cancel');
- if(projectType==='rom'&&!['select','text','rom','blur'].includes(t))t='rom';
- if(projectType==='joint'&&!['select','joint','rom','blur'].includes(t))t='joint';
+ if(projectType==='rom'&&!['select','text','rom','blur','mannequin'].includes(t))t='rom';
+ if(projectType==='joint'&&!['select','joint','rom','blur','mannequin'].includes(t))t='joint';
  rememberCreationFields();
+ mannequinMode='locked';closeMannequinMenu();
  skeletonMoveArmed=false;tool=t;selected=-1;draft=null;smartPending=null;romReposition=false;romDraft=null;romPointActive=0;
  document.querySelectorAll('[data-tool]').forEach(b=>{const on=b.dataset.tool===t;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on))});
+ syncMannequinToolbar();
  $('toolHint').textContent=help[t];populateInspector();updateUI();draw();
 }
 function chooseSelected(i){
- romDraft=null;romReposition=false;selected=i;const item=current().annotations[i];if(item?.type!=='skeleton')skeletonMoveArmed=false;if(!item){populateInspector();updateUI();draw();return}
+ romDraft=null;romReposition=false;
+ const requested=current().annotations[i];
+ if(requested?.type==='mannequin'&&!mannequinEditable()){toggleMannequinMenu();return}
+ selected=i;const item=current().annotations[i];if(!isPoseAnnotation(item))skeletonMoveArmed=false;if(!item){populateInspector();updateUI();draw();return}
  // Allow editing this item while any annotation tool remains active.
  populateInspector();updateUI();draw();
 }
@@ -2758,12 +3227,13 @@ $('resetLabelPosition').addEventListener('click',()=>{
 });
 // Manual pose controls are applied only to the current skeleton, never to another project.
 function changeSkeletonSetting(fn,mergeKey){
- const a=current().annotations[selected];if(a?.type!=='skeleton')return;
+ const a=current().annotations[selected];if(!isPoseAnnotation(a))return;
  const before=deepcopy(current().annotations);fn(a);
  remember(before,active,mergeKey?`skeleton:${a.id}:${mergeKey}`:null);draw();
 }
 $('skeletonMove').addEventListener('click',()=>{
- if(current().annotations[selected]?.type!=='skeleton')return;
+ const sk=current().annotations[selected];if(!isPoseAnnotation(sk))return;
+ if(sk.type==='mannequin'){enterMannequinMode(mannequinMode==='move'?'edit':'move');return}
  skeletonMoveArmed=!skeletonMoveArmed;populateInspector();canvas.style.cursor=skeletonMoveArmed?'move':'crosshair';draw();
 });
 $('skeletonAngleMode').addEventListener('change',()=>changeSkeletonSetting(a=>{a.angleMode=$('skeletonAngleMode').value},null));
@@ -2771,8 +3241,10 @@ $('skeletonVisible').addEventListener('change',()=>changeSkeletonSetting(a=>{a.v
 $('skeletonMarkers').addEventListener('change',()=>changeSkeletonSetting(a=>{a.showMarkers=$('skeletonMarkers').checked},null));
 $('skeletonOpacity').addEventListener('input',()=>{const value=Number($('skeletonOpacity').value);$('skeletonOpacityValue').textContent=value+'%';changeSkeletonSetting(a=>{a.opacity=value/100},'opacity')});
 $('skeletonFlip').addEventListener('click',()=>changeSkeletonSetting(a=>{const pts=Object.values(a.landmarks),cx=pts.reduce((t,q)=>t+q.x,0)/pts.length;for(const q of pts)q.x=clamp(2*cx-q.x,.005,.995)},null));
-$('skeletonReset').addEventListener('click',()=>changeSkeletonSetting(a=>{a.landmarks=deepcopy(a.initialLandmarks||initialSkeleton({x:.5,y:.51},canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height));a.selectedJoint='leftKnee'},null));
-function removeSelected(){if(inlineLabel){finishInlineLabel('cancel');return}const v=current();if(selected<0)return;const before=deepcopy(v.annotations);v.annotations.splice(selected,1);selected=-1;populateInspector();remember(before);updateUI();draw()}
+$('skeletonReset').addEventListener('click',()=>changeSkeletonSetting(a=>{a.landmarks=deepcopy(a.initialLandmarks||(a.type==='mannequin'?initialMannequin:initialSkeleton)({x:.5,y:.51},canvas.getBoundingClientRect().width,canvas.getBoundingClientRect().height));a.selectedJoint='leftKnee'},null));
+function removeSelected(){if(inlineLabel){finishInlineLabel('cancel');return}const v=current();if(selected<0)return;
+ if(v.annotations[selected]?.type==='mannequin'){deleteMannequin();return}
+ const before=deepcopy(v.annotations);v.annotations.splice(selected,1);selected=-1;populateInspector();remember(before);updateUI();draw()}
 function clearPlane(){if(inlineLabel)finishInlineLabel(inlineLabelInput.value.trim()?'save':'cancel');const v=current();if(!v.annotations.length)return;if(!confirm('Clear all annotations in the current plane?'))return;const before=deepcopy(v.annotations);v.annotations=[];selected=-1;populateInspector();remember(before);updateUI();draw()}
 function renderPalette(){
  const palette=$('palette');palette.replaceChildren();
@@ -2796,24 +3268,24 @@ $('videoControls').classList.toggle('hidden',!(s&&v.preview));$('cancelFrameBtn'
 $('overlayNotice').classList.toggle('hidden',!v.preview);$('overlayNotice').textContent=v.preview?'VIDEO PREVIEW · CAPTURE FRAME BEFORE ANNOTATING':'';
 updateGallery();
 $('clearBtn').disabled=!v.annotations.length;$('deleteBtn').disabled=selected<0;$('undoBtn').disabled=!undo.length;$('redoBtn').disabled=!redo.length;$('menuExportPlane').disabled=!v.frameSrc;$('menuExportPoster').disabled=projectType==='rom'?!views.some(z=>z.romKey&&romSlotComplete(z)):projectType==='joint'?!views.some(z=>z.jointKey&&z.frameSrc):!movementViews().some(z=>z.frameSrc);
-const list=$('annotationList');list.replaceChildren();if(v.annotations.length===0){const p=document.createElement('p');p.className='hint';p.textContent='No annotations yet.';list.appendChild(p)}v.annotations.forEach((a,i)=>{const b=document.createElement('button');b.className='annotation-chip'+(selected===i?' active':'');const dot=document.createElement('span');dot.className='led on';dot.style.color=a.color;const label=document.createElement('span');label.className='name';label.textContent=a.type==='blur'?'Blur':a.type==='skeleton'?'Manual skeleton':a.label+(a.type==='joint'?' · '+a.jointType:'');const typ=document.createElement('small');typ.textContent=a.type.toUpperCase();b.append(dot,label,typ);b.onclick=()=>{rememberCreationFields();chooseSelected(i);if(annotationsDialog.open)closeAnnotations()};list.appendChild(b)});
+const list=$('annotationList');list.replaceChildren();if(v.annotations.length===0){const p=document.createElement('p');p.className='hint';p.textContent='No annotations yet.';list.appendChild(p)}v.annotations.forEach((a,i)=>{const b=document.createElement('button');b.className='annotation-chip'+(selected===i?' active':'');const dot=document.createElement('span');dot.className='led on';dot.style.color=a.color;const label=document.createElement('span');label.className='name';label.textContent=a.type==='blur'?'Blur':a.type==='skeleton'?'Manual skeleton':a.type==='mannequin'?'Mannequin':a.label+(a.type==='joint'?' · '+a.jointType:'');const typ=document.createElement('small');typ.textContent=a.type.toUpperCase();b.append(dot,label,typ);b.onclick=()=>{rememberCreationFields();if(annotationsDialog.open)closeAnnotations();if(a.type==='mannequin'){toggleMannequinMenu();return}chooseSelected(i)};list.appendChild(b)});
 syncMenuActions();
-$('canvasHelp').textContent=canAnnotate?help[tool]:v.preview?'Select USE THIS FRAME to freeze the video before drawing.':'Choose a photo or video for the active plane.';updateROMInspector();queueAutosave()}
+syncMannequinToolbar();syncPrivacyEye();$('canvasHelp').textContent=canAnnotate?help[tool]:v.preview?'Select USE THIS FRAME to freeze the video before drawing.':'Choose a photo or video for the active plane.';updateROMInspector();queueAutosave()}
 // Cache a privacy-safe gallery thumbnail when the photo has blur regions.
 // Raw captured frames remain in editable projects, but previews match the export.
 function privacyThumbnail(v){
  if(!v.frameSrc||!v.frameImg)return v.frameSrc||'';
  const regions=v.annotations.filter(a=>a.type==='blur');
  if(!regions.length){v._privacyThumbCache=null;return v.frameSrc}
- const key=JSON.stringify(regions);
+ const key=JSON.stringify({regions,privacyMode});
  if(v._privacyThumbCache?.frame===v.frameSrc&&v._privacyThumbCache.key===key)return v._privacyThumbCache.url;
  try{
   const render=canvasPNG(v,480),url=render.toDataURL('image/jpeg',.8);
   v._privacyThumbCache={frame:v.frameSrc,key,url};return url;
  }catch(e){return v.frameSrc}
 }
-function canvasPNG(v,dimension=2000){if(!v.frameImg)return null;const im=v.frameImg,scale=Math.min(1,dimension/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*scale)),h=Math.max(1,Math.round(im.naturalHeight*scale)),out=document.createElement('canvas');out.width=w;out.height=h;const c=out.getContext('2d');c.drawImage(im,0,0,w,h);v.annotations.forEach(a=>{if(a.type==='blur')drawOne(c,a,w,h,{scale:Math.max(1,w/1000),source:im})});v.annotations.forEach(a=>{if(a.type!=='blur')drawOne(c,a,w,h,{scale:Math.max(1,w/1000)})});return out}
-function canvasBlob(c){return new Promise((ok,no)=>{if(!c){no(new Error('Nothing to export'));return;}c.toBlob(b=>b?ok(b):no(new Error('PNG rendering failed')),'image/png')})}
+function canvasPNG(v,dimension=2000){if(!v.frameImg)return null;const im=v.frameImg,scale=Math.min(1,dimension/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*scale)),h=Math.max(1,Math.round(im.naturalHeight*scale)),out=document.createElement('canvas');out.width=w;out.height=h;const c=out.getContext('2d');paintPhotoAnnotations(c,v,w,h,{privacy:privacyMode,source:im,scale:Math.max(1,w/1000)});return out}
+function canvasBlob(c,type='image/png',quality=.93){return new Promise((ok,no)=>{if(!c){no(new Error('Nothing to export'));return;}c.toBlob(b=>b?ok(b):no(new Error('Image rendering failed')),type,quality)})}
 // v34 exports are prepared and then saved using a real, visible user click.
 // Hidden anchor.click() after async canvas.toBlob() was unreliable on managed Chromebooks.
 
@@ -2825,7 +3297,7 @@ function board(page=0){
  all.filter(a=>a.type==='muscle').forEach(a=>{if(!muscles.has((a.label||'').toLowerCase()))muscles.set((a.label||'').toLowerCase(),a)});
  const keyItems=[...muscles.values()],W=2200,margin=56,gap=40,pw=(W-2*margin-gap)/2;
  const cardH=775,head=210,rows=Math.max(1,...columns.map(a=>a.length));
- const keyRows=Math.ceil(keyItems.length/3),showKey=page===Math.ceil(Math.max(frontal.length,sagittal.length)/limit)-1;
+ const keyRows=Math.ceil(keyItems.length/3),showKey=!privacyMode&&page===Math.ceil(Math.max(frontal.length,sagittal.length)/limit)-1;
  const keyHeight=showKey?160+keyRows*43:0,H=head+rows*cardH+keyHeight+55;
  const c=document.createElement('canvas');c.width=W;c.height=H;const q=c.getContext('2d');
  q.fillStyle='#f4f6f7';q.fillRect(0,0,W,H);q.fillStyle='#242c35';q.fillRect(0,0,W,156);
@@ -2842,9 +3314,7 @@ function board(page=0){
    const fit=Math.min(box.w/im.naturalWidth,box.h/im.naturalHeight);
    const w=im.naturalWidth*fit,h=im.naturalHeight*fit;
    const ix=box.x+(box.w-w)/2,iy=box.y+(box.h-h)/2;
-   q.drawImage(im,ix,iy,w,h);q.save();q.translate(ix,iy);
-   v.annotations.filter(a=>a.type==='blur').forEach(a=>drawOne(q,a,w,h,{scale:Math.max(.8,w/850),source:im}));
-   v.annotations.filter(a=>a.type!=='blur').forEach(a=>drawOne(q,a,w,h,{scale:Math.max(.8,w/850)}));q.restore();
+   q.save();q.translate(ix,iy);paintPhotoAnnotations(q,v,w,h,{privacy:privacyMode,source:im,scale:Math.max(.8,w/850)});q.restore();
   });
  }
  if(showKey){let y=head+rows*cardH+30;q.fillStyle='#2b353f';q.font='bold 29px system-ui';q.fillText('MUSCLE COLOR KEY',margin,y);
@@ -2882,15 +3352,46 @@ function romBoard(page=0){
   const box={x:x+20,y:y+110,w:cardW-40,h:cardH-195},im=v.frameImg;
   const scale=Math.min(box.w/im.naturalWidth,box.h/im.naturalHeight);
   const w=im.naturalWidth*scale,h=im.naturalHeight*scale,ix=box.x+(box.w-w)/2,iy=box.y+(box.h-h)/2;
-  q.drawImage(im,ix,iy,w,h);q.save();q.translate(ix,iy);
-  v.annotations.filter(a=>a.type==='blur').forEach(a=>drawOne(q,a,w,h,{scale:Math.max(.8,w/850),source:im}));
-  v.annotations.filter(a=>['rom','text'].includes(a.type)).forEach(a=>drawOne(q,a,w,h,{scale:Math.max(.8,w/850)}));q.restore();
+  q.save();q.translate(ix,iy);
+  if(privacyMode)paintPhotoAnnotations(q,v,w,h,{privacy:true,scale:Math.max(.8,w/850)});
+  else{q.drawImage(im,0,0,w,h);v.annotations.filter(a=>a.type==='blur').forEach(a=>drawOne(q,a,w,h,{scale:Math.max(.8,w/850),source:im}));v.annotations.filter(a=>a.type==='mannequin').forEach(a=>drawOne(q,a,w,h,{scale:Math.max(.8,w/850)}));v.annotations.filter(a=>['rom','text'].includes(a.type)).forEach(a=>drawOne(q,a,w,h,{scale:Math.max(.8,w/850)}));}q.restore();
   const angles=v.annotations.filter(a=>a.type==='rom').map(a=>romAngleForView(v,a)).filter(a=>a!==null);
   q.fillStyle='#344b65';q.font='bold 26px system-ui';q.fillText(def.slot+'  ·  '+angles.map(n=>n.toFixed(1)+'°').join(' / '),x+22,y+cardH-47,cardW-44);
  });
  return cvs;
 }
 
+// Values-only submissions never draw original photo content or annotations.
+// Show every selected measurement, including incomplete rows, in worksheet order.
+function romValuesReportItems(){
+ return romDefinitions.filter(def=>isROMEnabled(def.key)).map(def=>{
+  const v=romViewFor(def.key);
+  const values=v?.frameImg?(v.annotations||[]).filter(a=>a.type==='rom').map(a=>romAngleForView(v,a)).filter(n=>Number.isFinite(n)):[];
+  return {def,value:values.length?values.map(n=>n.toFixed(1)+'°').join(' / '):'—'};
+ });
+}
+const ROM_VALUES_PER_PAGE=23;
+function romValuesPageCount(){return Math.max(1,Math.ceil(romValuesReportItems().length/ROM_VALUES_PER_PAGE))}
+function romValuesBoard(page=0){
+ const items=romValuesReportItems(),rows=items.slice(page*ROM_VALUES_PER_PAGE,(page+1)*ROM_VALUES_PER_PAGE);
+ const W=1500,pad=66,header=234,rowH=71,H=header+Math.max(rows.length,1)*rowH+83;
+ const canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;const q=canvas.getContext('2d');
+ q.fillStyle='#fff';q.fillRect(0,0,W,H);
+ q.fillStyle='#293d52';q.fillRect(0,0,W,158);
+ q.fillStyle='#fff';q.font='700 53px system-ui';q.fillText('ROM LAB — VALUES ONLY',pad,80);
+ q.fillStyle='#cfdded';q.font='26px system-ui';q.fillText(($('student').value.trim()||'Student').slice(0,65)+'  ·  Page '+(page+1)+' of '+romValuesPageCount(),pad,125);
+ q.fillStyle='#e7edf4';q.fillRect(pad,182,W-pad*2,53);
+ q.fillStyle='#2b435a';q.font='700 28px system-ui';q.fillText('ROM MEASUREMENT',pad+24,219);q.fillText('VALUE',W-pad-265,219);
+ rows.forEach(({def,value},index)=>{
+  const y=header+index*rowH;
+  q.fillStyle=index%2===0?'#fff':'#f3f6fa';q.fillRect(pad,y,W-pad*2,rowH);
+  q.strokeStyle='#dce5ec';q.lineWidth=1;q.beginPath();q.moveTo(pad,y+rowH);q.lineTo(W-pad,y+rowH);q.stroke();
+  q.fillStyle='#35485a';q.font='600 25px system-ui';
+  q.fillText(def.group+' — '+def.slot,pad+24,y+44,W-pad*2-375);
+  q.fillStyle='#193f63';q.font='700 28px system-ui';q.fillText(value,W-pad-265,y+44,252);
+ });
+ return canvas;
+}
 function romPageCount(){return Math.max(1,Math.ceil(romCompleteDocs().length/8))}
 function jointCompletedDocs(){return jointExercises.map(def=>({def,v:jointViewFor(def.key)})).filter(({v})=>v?.frameImg&&v.frameSrc)}
 function jointPageCount(){return Math.max(1,Math.ceil(jointCompletedDocs().length/8))}
@@ -2909,7 +3410,7 @@ function jointBoard(page=0){
 }
 
 function exportPageCount(){const counts=[0,1].map(p=>movementViews().filter(v=>v.plane===p&&v.frameImg).length);return Math.max(1,Math.ceil(Math.max(...counts)/8))}
-function serializeProject(){return{schema:'movement-evaluation-studio',version:2,projectType,romEnabledKeys:romDefinitions.filter(def=>isROMEnabled(def.key)).map(def=>def.key),movementTitle,exercise:$('exercise').value,student:$('student').value,activeId:current().uid,views:views.map(v=>({uid:v.uid,romKey:v.romKey||null,jointKey:v.jointKey||null,plane:viewNames[v.plane],category:v.category||'Other',name:v.name||'',frameSrc:v.frameSrc,frameLabel:v.frameLabel,cropBaseSrc:v.cropBaseSrc,cropBounds:v.cropBounds,annotations:v.annotations}))}}
+function serializeProject(){return{schema:'movement-evaluation-studio',version:2,projectType,privacyMode,romEnabledKeys:romDefinitions.filter(def=>isROMEnabled(def.key)).map(def=>def.key),movementTitle,exercise:$('exercise').value,student:$('student').value,activeId:current().uid,views:views.map(v=>({uid:v.uid,romKey:v.romKey||null,jointKey:v.jointKey||null,plane:viewNames[v.plane],category:v.category||'Other',name:v.name||'',frameSrc:v.frameSrc,frameLabel:v.frameLabel,cropBaseSrc:v.cropBaseSrc,cropBounds:v.cropBounds,annotations:v.annotations}))}}
 function saveProject(){openSaveCenterForBackup()}
 function hydrateProject(d){
  if(d?.schema!=='movement-evaluation-studio'||![1,2].includes(d.version)||!Array.isArray(d.views))throw Error('Not a Movement Evaluation project');
@@ -2928,15 +3429,47 @@ function hydrateProject(d){
  for(let plane=0;plane<2;plane++)if(!views.some(v=>v.plane===plane&&!v.romKey&&!v.jointKey))views.push(makeView(plane));
  if(!views.length)views=[makeView(0),makeView(1)];
  setEnabledROMKeys(d.romEnabledKeys);
- romPhonePage='gallery';projectType=['rom','joint'].includes(d.projectType)?d.projectType:'movement';movementTitle=String(d.movementTitle||(projectType==='movement'?d.exercise:'Untitled Exercise')||'Untitled Exercise');if(projectType==='rom')ensureROMDocuments();if(projectType==='joint')ensureJointDocuments();$('exercise').value=projectType==='rom'?'ROM Lab':projectType==='joint'?'Joint Actions':String(d.exercise||'Untitled Exercise');$('exercise').readOnly=projectType!=='movement';$('student').value=String(d.student||'');updateModeUI();refreshROMSelections();updateDocumentTitle();
+ romPhonePage='gallery';privacyMode=d.privacyMode===true;privacyPreview=false;projectType=['rom','joint'].includes(d.projectType)?d.projectType:'movement';movementTitle=String(d.movementTitle||(projectType==='movement'?d.exercise:'Untitled Exercise')||'Untitled Exercise');if(projectType==='rom')ensureROMDocuments();if(projectType==='joint')ensureJointDocuments();$('exercise').value=projectType==='rom'?'ROM Lab':projectType==='joint'?'Joint Actions':String(d.exercise||'Untitled Exercise');$('exercise').readOnly=projectType!=='movement';$('student').value=String(d.student||'');updateModeUI();refreshROMSelections();updateDocumentTitle();
  selected=-1;undo=[];redo=[];draft=null;drag=null;romDraft=null;
  const wanted=views.findIndex(v=>v.uid===d.activeId);const fallback=projectType==='rom'?firstEnabledROMIndex(true):projectType==='joint'?views.findIndex(v=>v.jointKey===jointExercises[0].key):views.findIndex(v=>!v.romKey&&!v.jointKey);const wantedAllowed=wanted>=0&&(projectType==='rom'?!!views[wanted].romKey&&isROMEnabled(views[wanted].romKey):projectType==='joint'?!!views[wanted].jointKey:!views[wanted].romKey&&!views[wanted].jointKey);switchDocument(wantedAllowed?wanted:fallback>=0?fallback:0);setTool(projectType==='rom'?'rom':projectType==='joint'?'joint':'select');
 }
 function openProject(file){if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!confirm('Open project and replace the current work? Your current project is autosaved locally, but please download a backup first if needed.'))return;hydrateProject(d);queueAutosave(true);toast('Project restored with '+views.filter(v=>v.frameSrc).length+' frame(s).')}catch(e){console.error(e);toast('Could not open project: '+e.message)}};r.onerror=()=>toast('File could not be read');r.readAsText(file)}
 
 
+// Kinetica v53 — offline PDF writer: JPEG-encoded canvas pages are embedded
+// in one standards-compliant PDF without a CDN, PDF service, or network call.
+// Each original rendered submission page retains its proportions.
+async function makeSubmissionPDF(jpegPages){
+ if(!jpegPages.length)throw Error('There are no pages to export.');
+ const enc=new TextEncoder(),parts=[],objectOffsets=[0];let position=0;
+ const push=value=>{const bytes=typeof value==='string'?enc.encode(value):value;parts.push(bytes);position+=bytes.byteLength};
+ push('%PDF-1.4\n%Kinetica\n');
+ const count=2+jpegPages.length*3;
+ function obj(id,body){objectOffsets[id]=position;push(id+' 0 obj\n');push(body);push('\nendobj\n')}
+ obj(1,'<< /Type /Catalog /Pages 2 0 R >>');
+ obj(2,'<< /Type /Pages /Kids ['+jpegPages.map((_,i)=>(3+i*3)+' 0 R').join(' ')+'] /Count '+jpegPages.length+' >>');
+ for(let i=0;i<jpegPages.length;i++){
+  const p=jpegPages[i],id=3+i*3;
+  const bytes=new Uint8Array(await p.blob.arrayBuffer());
+  const width=Math.max(1,p.width),height=Math.max(1,p.height);
+  const pdfW=792,pdfH=Math.round(pdfW*height/width*100)/100;
+  obj(id,'<< /Type /Page /Parent 2 0 R /MediaBox [0 0 '+pdfW+' '+pdfH+'] /Resources << /XObject << /Image0 '+(id+1)+' 0 R >> >> /Contents '+(id+2)+' 0 R >>');
+  objectOffsets[id+1]=position;
+  push((id+1)+' 0 obj\n<< /Type /XObject /Subtype /Image /Width '+width+' /Height '+height+' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length '+bytes.length+' >>\nstream\n');
+  push(bytes);push('\nendstream\nendobj\n');
+  const content='q\n'+pdfW+' 0 0 '+pdfH+' 0 0 cm\n/Image0 Do\nQ\n';
+  const len=enc.encode(content).length;
+  obj(id+2,'<< /Length '+len+' >>\nstream\n'+content+'endstream');
+ }
+ const xref=position;
+ push('xref\n0 '+(count+1)+'\n0000000000 65535 f \n');
+ for(let id=1;id<=count;id++)push(String(objectOffsets[id]).padStart(10,'0')+' 00000 n \n');
+ push('trailer\n<< /Size '+(count+1)+' /Root 1 0 R >>\nstartxref\n'+xref+'\n%%EOF\n');
+ return new Blob(parts,{type:'application/pdf'});
+}
 // KINETICA_V34_SAVE_CENTER — user-initiated saving, preview, clipboard, Files picker, share.
-let exportFiles=[], exportUrls=[], exportIndex=0, exportBusy=false, exportKind='image';
+let exportFiles=[], exportUrls=[], exportIndex=0, exportBusy=false, exportKind='image', exportCurrentOnly=false;
+let completeSubmissionFormat='image',romValuesOnly=false;
 let exportDownloadFile=null, exportDownloadUrl=null;
 const exportDialog=$('saveCenterDialog');
 const exportStatus=$('saveCenterState');
@@ -2953,27 +3486,36 @@ function setExportButtonsReady(ready){
 }
 function refreshExportDisplay(){
  const page=selectedExport(),downloadFile=currentDownload(),total=exportFiles.length;
- const previous=$('saveCenterPrevious'),next=$('saveCenterNext');
+ const pdfOnly=exportKind==='pdf',previous=$('saveCenterPrevious'),next=$('saveCenterNext');
  previous.disabled=!page||exportIndex===0;next.disabled=!page||exportIndex>=total-1;
  $('saveCenterPager').hidden=total<=1;
  $('saveCenterPageLabel').textContent=`Page ${exportIndex+1} of ${total}`;
- const link=$('saveCenterDownload'),open=$('saveCenterOpen');
+ const link=$('saveCenterDownload'),open=$('saveCenterOpen'),buttons=$('saveCenterSaveAs').parentElement;
+ buttons.classList.toggle('pdf-only',pdfOnly);
+ for(const id of ['saveCenterCopy','saveCenterOpen','saveCenterOneFile'])$(id).hidden=pdfOnly;
+ $('saveCenterDownload').hidden=false;
+ $('saveCenterShare').hidden=!pdfOnly&&typeof navigator.share!=='function';
+ $('saveCenterSaveAs').classList.toggle('primary',pdfOnly);
+ $('saveCenterDownload').classList.toggle('primary',false);
+ $('saveCenterShare').disabled=typeof navigator.share!=='function';
+ $('saveCenterShare').title=typeof navigator.share==='function'?'Open the system share sheet':'Sharing is not supported by this browser';
+ $('saveCenterSaveAs').textContent='Save to Files…';
  if(!page||!downloadFile){link.removeAttribute('href');open.removeAttribute('href');return;}
  const pageUrl=exportUrls[exportIndex],url=exportDownloadUrl||pageUrl;
  link.href=url;link.download=downloadFile.name;
- link.textContent=downloadFile.type==='application/zip'?'Download all '+total+' pages (one ZIP)':downloadFile.type==='image/png'?'Download PNG':'Download Project Backup';
- open.href=pageUrl;open.textContent=page.type==='image/png'?'Open this PNG in a tab':'Open Project Backup';
+ link.textContent=downloadFile.type==='application/zip'?'Download all '+total+' pages (one ZIP)':downloadFile.type==='image/png'?'Download PNG':downloadFile.type==='application/pdf'?'Download PDF':'Download Project Backup';
+ open.href=pageUrl;open.textContent=page.type.startsWith('image/')?'Open this image in a tab':'Open Project Backup';
  $('saveCenterCopy').textContent=page.type==='image/png'?'Copy this PNG':'Copy Backup Text';
- $('saveCenterOneFile').hidden=total<=1;
- $('saveCenterShare').hidden=!(typeof navigator.share==='function');
+ $('saveCenterOneFile').hidden=pdfOnly||total<=1;
+ $('saveCenterShare').hidden=!pdfOnly&&typeof navigator.share!=='function';
  $('saveCenterCopy').disabled=!navigator.clipboard||(page.type==='image/png'&&typeof ClipboardItem==='undefined');
  const preview=$('saveCenterPreview');preview.replaceChildren();
- if(page.type==='image/png'){
+ if(page.type.startsWith('image/')){
   const img=new Image();img.alt='Preview of '+page.name;img.src=pageUrl;preview.appendChild(img);
  }else{
-  const p=document.createElement('div');p.className='save-center-nonimage';p.textContent='Editable project backup · '+page.name+' · '+Math.ceil(page.blob.size/1024)+' KB. Keep this JSON file outside this browser so you can restore your annotations later.';preview.appendChild(p);
+  const p=document.createElement('div');p.className='save-center-nonimage';p.textContent='Editable project backup (includes original photos, even in Mannequin Mode) · '+page.name+' · '+Math.ceil(page.blob.size/1024)+' KB. Keep this JSON file outside this browser so you can restore your annotations later.';preview.appendChild(p);
  }
- exportMessage('Ready: '+downloadFile.name+' · '+Math.ceil(downloadFile.blob.size/1024)+' KB'+(total>1?' · all '+total+' PNG pages in one ZIP':''));
+ exportMessage('Ready: '+downloadFile.name+' · '+Math.ceil(downloadFile.blob.size/1024)+' KB'+(!pdfOnly&&total>1?' · all '+total+' PNG pages in one ZIP':pdfOnly?' · '+total+' PDF page'+(total===1?'':'s'):''));
 }
 async function cachePreparedExport(kind,files){
  if(!localDB||!localDB.objectStoreNames.contains('exports'))return false;
@@ -2986,35 +3528,36 @@ async function cachePreparedExport(kind,files){
   return true;
  }catch(e){console.warn('Kinetica export cache failed:',e);return false;}
 }
-async function setPreparedExport(files,kind,persist=true){
+async function setPreparedExport(files,kind,persist=true,completeFile=null){
  revokeExportUrls();exportFiles=files;exportIndex=0;exportKind=kind;
  exportUrls=files.map(f=>URL.createObjectURL(f.blob));
+ if(completeFile){exportDownloadFile=completeFile;exportDownloadUrl=URL.createObjectURL(completeFile.blob)}
  // Only one file can be downloaded for an entire submission.
  // Multiple PNG pages are prepared as a single ZIP before enabling Save/Download.
- if(files.length>1&&files.every(f=>f.type==='image/png')){
+ if(kind!=='pdf'&&files.length>1&&files.every(f=>f.type==='image/png')){
   exportMessage('Combining '+files.length+' PNG pages into one ZIP…');
   const blob=await makeZip(files);
-  exportDownloadFile={name:safeName()+'-complete-submission.zip',blob,type:'application/zip'};
+  exportDownloadFile={name:safeName()+(privacyMode?'-mannequin':'')+'-complete-submission.zip',blob,type:'application/zip'};
   exportDownloadUrl=URL.createObjectURL(blob);
  }
  setExportButtonsReady(true);refreshExportDisplay();
- if(persist){const ok=await cachePreparedExport(kind,files);
-  $('saveCenterNote').textContent=ok?'A copy of this export is kept in the browser cache. Confirm any download in your Chromebook Downloads/Files app, or copy a PNG into Google Docs. Browser cache alone is not a submission.':'The extra export cache could not be written. Save or copy the submission before closing. Your project autosave is separate.';
- }
+ if(persist)await cachePreparedExport(kind,files);
 }
 function beginSaveCenter(title){
  if(exportBusy)return false;
  exportBusy=true;revokeExportUrls();exportFiles=[];exportIndex=0;
  $('saveCenterTitle').textContent=title;
+ $('saveCenterSaveAs').parentElement.classList.remove('pdf-only');
+ for(const id of ['saveCenterDownload','saveCenterCopy','saveCenterOpen','saveCenterShare','saveCenterOneFile'])$(id).hidden=false;
  $('saveCenterPreview').innerHTML='<div class="save-center-nonimage">Preparing your files…</div>';
  $('saveCenterPager').hidden=true;
  $('saveCenterOneFile').hidden=true;
- $('saveCenterNote').textContent='Preparing your submission. After choosing Download or Save to Files, verify that the file appears in Files/Downloads. If your Chromebook blocks it, try Copy Image and paste into Google Docs.';
  setExportButtonsReady(false);exportMessage('Preparing…');
  if(!exportDialog.open)exportDialog.showModal();return true;
 }
 async function nextExportRender(){return new Promise(resolve=>setTimeout(resolve,15));}
 async function openSaveCenterForBackup(){
+ $('privacyExportRow').hidden=true;$('romValuesExportRow').hidden=true;
  if(!beginSaveCenter('Backup Project'))return;
  try{
   const blob=new Blob([JSON.stringify(serializeProject())],{type:'application/json'});
@@ -3022,50 +3565,109 @@ async function openSaveCenterForBackup(){
  }catch(e){console.error(e);exportMessage('Unable to prepare backup: '+e.message)}
  finally{exportBusy=false;}
 }
-async function openSaveCenterForImages(currentOnly){
- if(!beginSaveCenter(currentOnly?'Save current annotated image':'Save complete submission'))return;
+function syncExportOptions(){
+ const onlyValues=projectType==='rom'&&!exportCurrentOnly&&romValuesOnly;
+ $('romValuesExportRow').hidden=projectType!=='rom'||exportCurrentOnly;
+ $('romValuesExportCheck').checked=onlyValues;
+ $('privacyExportRow').hidden=false;
+ $('privacyExportRow').classList.toggle('is-disabled',onlyValues);
+ $('privacyExportCheck').disabled=onlyValues||exportBusy;
+ $('privacyExportCheck').checked=privacyMode&&!onlyValues;
+}
+async function openSaveCenterForImages(currentOnly,refresh=false,format='image'){
+ if(!refresh){
+  completeSubmissionFormat=currentOnly?'image':format;
+  if(!beginSaveCenter(currentOnly?'Save current annotated image':completeSubmissionFormat==='pdf'?'Save complete submission · PDF':'Save complete submission · Image'))return;
+ }else{
+  if(exportBusy)return;
+  exportBusy=true;revokeExportUrls();exportFiles=[];exportIndex=0;setExportButtonsReady(false);
+  exportMessage('Updating export preview…');$('saveCenterPreview').textContent='Preparing export…';
+ }
+ exportCurrentOnly=!!currentOnly;
+ syncExportOptions();
+ $('privacyExportCheck').disabled=true;$('romValuesExportCheck').disabled=true;
  try{
-  const files=[],plan=[];
+  const onlyValues=projectType==='rom'&&!currentOnly&&romValuesOnly;
+  const pdf=completeSubmissionFormat==='pdf'&&!currentOnly;
+  const files=[],pdfPages=[],plan=[];
   if(currentOnly){
    const v=current();if(!v.frameImg)throw Error('Capture a frame first.');
-   const fileName=safeName()+'-'+(projectType==='joint'?(v.name||'joint-action').replace(/[^a-z0-9]+/gi,'-'):projectType==='rom'?(v.name||'rom-measurement').replace(/[^a-z0-9]+/gi,'-'):viewNames[v.plane].toLowerCase()+'-'+(v.category||'frame').toLowerCase())+'-annotated.png';
+   const fileName=safeName()+'-'+(privacyMode?'mannequin-':'')+(projectType==='joint'?(v.name||'joint-action').replace(/[^a-z0-9]+/gi,'-'):projectType==='rom'?(v.name||'rom-measurement').replace(/[^a-z0-9]+/gi,'-'):viewNames[v.plane].toLowerCase()+'-'+(v.category||'frame').toLowerCase())+'-annotated.png';
    plan.push({name:fileName,render:()=>canvasPNG(v)});
+  }else if(onlyValues){
+   if(!romCompleteDocs().length)throw Error('Record at least one ROM measurement before exporting values.');
+   const count=romValuesPageCount();
+   for(let i=0;i<count;i++)plan.push({name:'ROM-Lab-values'+(count>1?'-page-'+(i+1):'')+'.png',render:()=>romValuesBoard(i)});
   }else if(projectType==='rom'){
    const count=romPageCount();if(!romCompleteDocs().length)throw Error('Complete a ROM measurement before exporting.');
-   for(let i=0;i<count;i++)plan.push({name:'ROM-Lab'+(count>1?'-page-'+(i+1):'')+'.png',render:()=>romBoard(i)});
+   for(let i=0;i<count;i++)plan.push({name:'ROM-Lab'+(privacyMode?'-mannequin':'')+(count>1?'-page-'+(i+1):'')+'.png',render:()=>romBoard(i)});
   }else if(projectType==='joint'){
    const count=jointPageCount();if(!jointCompletedDocs().length)throw Error('Capture at least one exercise frame before exporting.');
-   for(let i=0;i<count;i++)plan.push({name:'Joint-Actions'+(count>1?'-page-'+(i+1):'')+'.png',render:()=>jointBoard(i)});
+   for(let i=0;i<count;i++)plan.push({name:'Joint-Actions'+(privacyMode?'-mannequin':'')+(count>1?'-page-'+(i+1):'')+'.png',render:()=>jointBoard(i)});
   }else{
    const count=exportPageCount();if(!movementViews().some(v=>v.frameImg))throw Error('Capture a frame before exporting.');
-   for(let i=0;i<count;i++)plan.push({name:safeName()+'-exercise-evaluation'+(count>1?'-page-'+(i+1):'')+'.png',render:()=>board(i)});
+   for(let i=0;i<count;i++)plan.push({name:safeName()+'-exercise-evaluation'+(privacyMode?'-mannequin':'')+(count>1?'-page-'+(i+1):'')+'.png',render:()=>board(i)});
+  }
+  if(privacyMode&&!onlyValues){
+   const included=currentOnly?[current()]:projectType==='rom'?romCompleteDocs().map(d=>d.v):projectType==='joint'?jointCompletedDocs().map(d=>d.v):movementViews().filter(v=>v.frameImg);
+   const missing=included.filter(v=>!hasPrivacyPose(v));
+   if(missing.length)throw Error('Add a Mannequin or Wireframe Skeleton to '+missing.length+' included frame'+(missing.length===1?'':'s')+' before exporting with Mannequin Mode. No original photos were exported.');
   }
   for(let i=0;i<plan.length;i++){
    exportMessage('Rendering page '+(i+1)+' of '+plan.length+'…');await nextExportRender();
-   const canvas=plan[i].render();if(!canvas)throw Error('Could not render this frame');
-   const blob=await canvasBlob(canvas);
-   files.push({name:plan[i].name,blob,type:'image/png'});
+   const canvas=plan[i].render();if(!canvas)throw Error('Could not render this page.');
+   const blob=await canvasBlob(canvas,pdf?'image/jpeg':'image/png',.93);
+   files.push({name:plan[i].name.replace(/\.png$/,pdf?'.jpg':'.png'),blob,type:pdf?'image/jpeg':'image/png'});
+   if(pdf)pdfPages.push({blob,width:canvas.width,height:canvas.height});
+   canvas.width=0;canvas.height=0;
   }
-  await setPreparedExport(files,'image');
+  if(pdf){
+   exportMessage('Combining '+pdfPages.length+' page'+(pdfPages.length===1?'':'s')+' into one PDF…');
+   const blob=await makeSubmissionPDF(pdfPages);
+   const suffix=onlyValues?'-rom-values':privacyMode?'-mannequin':'';
+   await setPreparedExport(files,'pdf',false,{name:safeName()+suffix+'-complete-submission.pdf',blob,type:'application/pdf'});
+  }else await setPreparedExport(files,'image');
  }catch(e){console.error('Export preparation failed',e);exportMessage('Could not prepare export: '+e.message);$('saveCenterPreview').textContent='Your original project is unchanged.';}
- finally{exportBusy=false;}
+ finally{exportBusy=false;$('romValuesExportCheck').disabled=false;syncExportOptions();}
 }
+$('privacyExportCheck').addEventListener('change',()=>{
+ privacyMode=$('privacyExportCheck').checked;privacyPreview=false;syncPrivacyEye();draw();queueAutosave();
+ if(exportDialog.open)openSaveCenterForImages(exportCurrentOnly,true);
+});
+$('romValuesExportCheck').addEventListener('change',()=>{
+ romValuesOnly=$('romValuesExportCheck').checked;
+ syncExportOptions();
+ if(exportDialog.open)openSaveCenterForImages(false,true);
+});
 $('saveCenterPrevious').onclick=()=>{if(exportIndex>0){exportIndex--;refreshExportDisplay()}};
 $('saveCenterNext').onclick=()=>{if(exportIndex<exportFiles.length-1){exportIndex++;refreshExportDisplay()}};
 // Show the native save picker as the very first asynchronous step of the real click.
 // showSaveFilePicker requires transient user activation, so never call it after PNG conversion.
 $('saveCenterSaveAs').onclick=async()=>{
  const f=currentDownload();if(!f)return;
- if(typeof window.showSaveFilePicker!=='function'){
-  exportMessage('Native Files picker unavailable. Try Download, Copy Image, or Open Image.');return;
- }
+ const pdf=f.type==='application/pdf';
  try{
-  const type=f.type;
-  const ext=f.type==='image/png'?'.png':f.type==='application/zip'?'.zip':'.json';
-  const handle=await window.showSaveFilePicker({suggestedName:f.name,types:[{description:f.type==='image/png'?'PNG image':f.type==='application/zip'?'ZIP of PNG pages':'Project backup',accept:{[type]:[ext]}}]});
-  const writer=await handle.createWritable();await writer.write(f.blob);await writer.close();
-  exportMessage('Saved to the folder you selected: '+f.name);
- }catch(e){if(e.name==='AbortError')exportMessage('Save canceled. Your export is still available here.');else {console.warn(e);exportMessage('Saving to Files was blocked. Try Copy Image, Open Image, or the Download link.')}}
+  // Same save pipeline for PDF, PNG and ZIP: native file picker where supported.
+  // On Safari/iOS without a picker, use a browser download into Downloads/Files.
+  // Do not open the share sheet from this button; that belongs to Share to another app.
+  // Chromium desktop / supported browsers: native Save to Files picker.
+  if(typeof window.showSaveFilePicker==='function'){
+   const type=f.type;
+   const ext=pdf?'.pdf':type==='image/png'?'.png':type==='application/zip'?'.zip':'.json';
+   const description=pdf?'PDF document':type==='image/png'?'PNG image':type==='application/zip'?'ZIP of PNG pages':'Project backup';
+   const handle=await window.showSaveFilePicker({suggestedName:f.name,types:[{description,accept:{[type]:[ext]}}]});
+   const writer=await handle.createWritable();await writer.write(f.blob);await writer.close();
+   exportMessage('Saved to the folder you selected: '+f.name);return;
+  }
+  // Safari desktop/unsupported pickers: one explicit click starts a normal download.
+  const url=exportDownloadUrl||exportUrls[exportIndex];
+  const a=document.createElement('a');a.href=url;a.download=f.name;
+  document.body.appendChild(a);a.click();a.remove();
+  exportMessage('Save requested: '+f.name+'. Check your browser downloads or Files.');
+ }catch(e){
+  if(e.name==='AbortError')exportMessage('Save canceled. The export is still available here.');
+  else{console.warn(e);exportMessage('Unable to save this file. Check browser permissions and try again.');}
+ }
 };
 $('saveCenterCopy').onclick=async()=>{
  const f=selectedExport();if(!f)return;
@@ -3081,8 +3683,8 @@ $('saveCenterShare').onclick=async()=>{
   const file=new File([f.blob],f.name,{type:f.type});
   if(navigator.canShare&&!navigator.canShare({files:[file]}))throw new Error('File sharing is not available');
   await navigator.share({files:[file],title:'Kinetica Studio submission'});
-  exportMessage('Share sheet closed. Confirm the image is present in your destination.');
- }catch(e){if(e.name!=='AbortError'){console.warn(e);exportMessage('Sharing unavailable. Try Copy Image or Save to Files.')}}
+  exportMessage('Share sheet closed. Confirm the submission was received by your chosen app.');
+ }catch(e){if(e.name!=='AbortError'){console.warn(e);exportMessage('Sharing unavailable on this device. Try Download or Save to Files.')}}
 };
 // Build a single uncompressed ZIP for multi-page exports, to avoid multiple-download blocking.
 function crc32Bytes(bytes){let crc=0xffffffff;for(const b of bytes){crc^=b;for(let k=0;k<8;k++)crc=(crc>>>1)^((crc&1)?0xedb88320:0)}return(crc^0xffffffff)>>>0;}
@@ -3157,6 +3759,42 @@ projectSubmenu.addEventListener('keydown',e=>{
 window.addEventListener('resize',()=>{if(!projectSubmenu.hidden)positionProjectSubmenu()});
 window.addEventListener('scroll',()=>{if(!projectSubmenu.hidden)positionProjectSubmenu()},true);
 document.querySelectorAll('[data-project-type]').forEach(b=>b.addEventListener('click',()=>{setProjectType(b.dataset.projectType);closeMenus()}));
+
+// Complete Submission format submenu — detached from the scrolling File menu.
+const exportFormatSubmenu=$('exportFormatSubmenu'),exportFormatTrigger=$('menuExportPoster'),exportFormatWrap=$('exportFormatWrap');
+document.body.appendChild(exportFormatSubmenu);
+let exportFormatCloseTimer=null;
+function positionExportFormatSubmenu(){
+ if(exportFormatSubmenu.hidden)return;
+ const t=exportFormatTrigger.getBoundingClientRect(),w=exportFormatSubmenu.offsetWidth,h=exportFormatSubmenu.offsetHeight;
+ const margin=8,gap=6,vw=document.documentElement.clientWidth,vh=window.innerHeight;
+ let x=t.right+gap,y=t.top;
+ if(x+w>vw-margin)x=t.left-w-gap;
+ if(x<margin){x=Math.max(margin,Math.min(t.left,vw-w-margin));y=t.bottom+gap}
+ exportFormatSubmenu.style.left=Math.round(x)+'px';
+ exportFormatSubmenu.style.top=Math.round(Math.max(margin,Math.min(y,vh-h-margin)))+'px';
+}
+function showExportFormatSubmenu(show){
+ clearTimeout(exportFormatCloseTimer);
+ if(show&&(exportFormatTrigger.disabled||$('fileMenuButton').getAttribute('aria-expanded')!=='true'))return;
+ exportFormatTrigger.setAttribute('aria-expanded',String(show));
+ if(show){revealMenu(exportFormatSubmenu);positionExportFormatSubmenu()}
+ else dismissMenu(exportFormatSubmenu);
+}
+function scheduleExportFormatClose(){clearTimeout(exportFormatCloseTimer);exportFormatCloseTimer=setTimeout(()=>showExportFormatSubmenu(false),250)}
+exportFormatWrap.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'||e.pointerType==='pen')showExportFormatSubmenu(true)});
+exportFormatWrap.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'||e.pointerType==='pen')scheduleExportFormatClose()});
+exportFormatSubmenu.addEventListener('pointerenter',()=>clearTimeout(exportFormatCloseTimer));
+exportFormatSubmenu.addEventListener('pointerleave',scheduleExportFormatClose);
+exportFormatTrigger.addEventListener('click',e=>{e.stopPropagation();showExportFormatSubmenu(true)});
+exportFormatTrigger.addEventListener('keydown',e=>{if(['ArrowRight','Enter',' '].includes(e.key)){e.preventDefault();showExportFormatSubmenu(true);exportFormatSubmenu.querySelector('button')?.focus()}});
+exportFormatSubmenu.addEventListener('keydown',e=>{if(['Escape','ArrowLeft'].includes(e.key)){e.preventDefault();e.stopPropagation();showExportFormatSubmenu(false);exportFormatTrigger.focus()}});
+exportFormatSubmenu.querySelectorAll('[data-export-format]').forEach(b=>b.addEventListener('click',()=>{
+ if(exportFormatTrigger.disabled)return;
+ const format=b.dataset.exportFormat;closeMenus();openSaveCenterForImages(false,false,format);
+}));
+window.addEventListener('resize',()=>{if(!exportFormatSubmenu.hidden)positionExportFormatSubmenu()});
+window.addEventListener('scroll',e=>{if(!exportFormatSubmenu.hidden&&!exportFormatSubmenu.contains(e.target))positionExportFormatSubmenu()},true);
 
 // ROM Measurement selector: same detached, edge-aware nested popup strategy
 // as Project Type. 58 independent checkboxes, organized by worksheet group.
@@ -3307,7 +3945,7 @@ function dismissMenu(panel){
  },130));
 }
 function closeMenus(){
- showProjectSubmenu(false);showROMSubmenu(false);
+ showProjectSubmenu(false);showROMSubmenu(false);showExportFormatSubmenu(false);
  menuButtons.forEach(button=>{button.setAttribute('aria-expanded','false');dismissMenu($(button.getAttribute('aria-controls')))});
 }
 menuButtons.forEach(button=>button.addEventListener('click',()=>{
@@ -3325,7 +3963,7 @@ document.querySelectorAll('[data-plane-menu]').forEach(button=>button.addEventLi
   switchPlane(Number(button.dataset.planeMenu));
   closeMenus();
 }));
-document.addEventListener('pointerdown',event=>{if(!event.target.closest('.menu-bar')&&!projectSubmenu.contains(event.target)&&!romSelectSubmenu.contains(event.target))closeMenus()});
+document.addEventListener('pointerdown',event=>{if(!event.target.closest('.menu-bar')&&!projectSubmenu.contains(event.target)&&!romSelectSubmenu.contains(event.target)&&!exportFormatSubmenu.contains(event.target))closeMenus()});
 const shortcutsDialog=$('shortcutsDialog');
 $('menuKeyboardShortcuts').addEventListener('click',()=>{
   closeMenus();shortcutsDialog.showModal();
@@ -3350,7 +3988,7 @@ function syncMenuActions(){
 $('menuNew').addEventListener('click',()=>{
  closeMenus();const hasWork=views.some(v=>v.frameSrc||v.source||v.annotations.length)||$('exercise').value.trim()!=='Untitled Exercise'||$('student').value.trim();
  if(hasWork&&!confirm('Start a new project? The current project will be replaced in local autosave. Download a project backup first if you need to keep it.'))return;
- romPhonePage='gallery';if(history.state?.[ROM_HISTORY_KEY]==='editor'){try{history.replaceState({...history.state,[ROM_HISTORY_KEY]:'gallery'},'')}catch(e){}}views.forEach(disposeSource);views=[makeView(0),makeView(1)];setEnabledROMKeys();if(projectType==='rom')ensureROMDocuments();if(projectType==='joint')ensureJointDocuments();
+ privacyMode=false;privacyPreview=false;romPhonePage='gallery';if(history.state?.[ROM_HISTORY_KEY]==='editor'){try{history.replaceState({...history.state,[ROM_HISTORY_KEY]:'gallery'},'')}catch(e){}}views.forEach(disposeSource);views=[makeView(0),makeView(1)];setEnabledROMKeys();if(projectType==='rom')ensureROMDocuments();if(projectType==='joint')ensureJointDocuments();
  $('exercise').value=projectType==='rom'?'ROM Lab':projectType==='joint'?'Joint Actions':'Untitled Exercise';movementTitle='Untitled Exercise';$('student').value='';updateDocumentTitle();
  undo=[];redo=[];selected=-1;draft=null;drag=null;romDraft=null;romReposition=false;
  updateModeUI();refreshROMSelections();const first=projectType==='rom'?firstEnabledROMIndex(false):projectType==='joint'?views.findIndex(v=>v.jointKey===jointExercises[0].key):0;switchDocument(first);setTool(projectType==='rom'?'rom':projectType==='joint'?'joint':'select');queueAutosave(true);toast('New empty project created.');
@@ -3377,7 +4015,15 @@ document.querySelectorAll('[data-rom-mode]').forEach(b=>b.addEventListener('clic
 }));
 $('romNew').addEventListener('click',newROM);
 document.querySelectorAll('[data-plane]').forEach(b=>b.onclick=()=>switchPlane(Number(b.dataset.plane)));
-document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>setTool(b.dataset.tool));$('captureBtn').onclick=captureFrame;
+document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>b.dataset.tool==='mannequin'?toggleMannequinMenu():setTool(b.dataset.tool));
+$('mannequinMenu').querySelectorAll('[data-mannequin-action]').forEach(b=>b.addEventListener('click',()=>{
+ const act=b.dataset.mannequinAction;
+ if(act==='delete')deleteMannequin();else if(act==='lock')lockMannequin();else enterMannequinMode(act);
+}));
+document.addEventListener('pointerdown',e=>{if(!$('mannequinMenu').hidden&&!e.target.closest('#mannequinMenu')&&!e.target.closest('[data-tool="mannequin"]'))closeMannequinMenu()});
+window.addEventListener('scroll',positionMannequinMenu,true);
+window.addEventListener('resize',positionMannequinMenu);
+$('captureBtn').onclick=captureFrame;
 $('previous').onclick=()=>{const v=current();if(v.preview&&v.source)seekVideo(v,(v.source.video.currentTime||0)-(projectType==='joint'?1/(jointExercises.find(x=>x.key===v.jointKey)?.fps||25):1/120))};$('next').onclick=()=>{const v=current();if(v.preview&&v.source)seekVideo(v,(v.source.video.currentTime||0)+(projectType==='joint'?1/(jointExercises.find(x=>x.key===v.jointKey)?.fps||25):1/120))};$('timeline').oninput=e=>seekVideo(current(),Number(e.target.value));$('cancelFrameBtn').onclick=cancelFrameEdit;
 // Auto-apply inspector fields without an extra confirmation button.
 // Focus/drag groups let Undo restore the entire edit, not one typed character.
@@ -3432,7 +4078,7 @@ $('menuSaveLocal').onclick=()=>{closeMenus();saveNow()};
 $('menuSaveProject').onclick=()=>{closeMenus();saveProject()};
 $('projectInput').onchange=e=>{openProject(e.target.files?.[0]);e.target.value=''};
 $('menuExportPlane').onclick=()=>{closeMenus();openSaveCenterForImages(true)};
-$('menuExportPoster').onclick=()=>{closeMenus();openSaveCenterForImages(false)};
+// Complete submission opens from the PDF / Image format submenu above.
 
 const stage=$('stage');stage.addEventListener('dragover',e=>{e.preventDefault();stage.classList.add('dragover')});stage.addEventListener('dragleave',e=>{if(!stage.contains(e.relatedTarget))stage.classList.remove('dragover')});stage.addEventListener('drop',e=>{e.preventDefault();stage.classList.remove('dragover');loadMedia(e.dataTransfer?.files?.[0])});
 window.addEventListener('keydown',e=>{
@@ -3440,6 +4086,7 @@ window.addEventListener('keydown',e=>{
  if(command&&e.key.toLowerCase()==='s'){
    e.preventDefault();closeMenus();saveNow();return;
  }
+ if(e.key==='Escape'&&!$('mannequinMenu').hidden){closeMannequinMenu();return}
  if(e.key==='Escape'&&menuButtons.some(b=>b.getAttribute('aria-expanded')==='true')){closeMenus();return}
  if(annotationsDialog.open||$('shortcutsDialog').open||exportDialog.open)return;
  const tag=document.activeElement?.tagName||'';
@@ -3774,5 +4421,55 @@ renderPalette();setTool('select');switchDocument(0);restoreCached();})();
  window.addEventListener('online',()=>{if(dialog.open)send('KINETICA_OFFLINE_STATUS')});
 })();
 </script>
-<script src="./rom-guides-v30.js?v=41" defer></script>
+<script>
+/* Kinetica v55 preview: the v30 guide dialog is included in this standalone
+   preview. Its illustrations use the public project assets when online. */
+(()=>{'use strict';
+const guideGroups=[
+ ['Back Extension and Flexion','Move the trunk forward for flexion or backward for extension while the pelvis stays as steady as possible. The handout specifies a goniometer measurement, not the tape-measure method.','Regular Anatomy ROM Lab · page 1'],
+ ['Side Flexion','Bend the trunk toward the selected side without turning the body. Compare the side-bent position with the upright starting position.','Regular Anatomy ROM Lab · page 1'],
+ ['Neck Extension and Flexion','Tilt the head forward for flexion or backward for extension, limiting movement of the shoulders and upper trunk.','Regular Anatomy ROM Lab · page 1'],
+ ['Neck Lateral (Side) Bending','Tilt the head toward the selected shoulder without turning the face or lifting the shoulder.','Regular Anatomy ROM Lab · page 1'],
+ ['Neck Rotation','Turn the head toward the selected side while the shoulders and trunk remain facing forward.','Regular Anatomy ROM Lab · page 1'],
+ ['Hip Backward Extension','Move the selected thigh backward relative to the pelvis, with the torso supported as illustrated. Avoid compensating with the lower back.','Regular Anatomy ROM Lab · page 1'],
+ ['Elbow Extension and Flexion','Bend the elbow for flexion or straighten it for extension. Align the goniometer arms with the upper arm and forearm.','Regular Anatomy ROM Lab · page 2'],
+ ['Forearm Pronation and Supination','Rotate the forearm palm-down for pronation or palm-up for supination while keeping the upper arm stable.','Regular Anatomy ROM Lab · page 2'],
+ ['Ankle Inversion and Eversion','Tilt the sole inward for inversion or outward for eversion. Keep the lower leg steady during the movement.','Regular Anatomy ROM Lab · page 2'],
+ ['Ankle Plantarflexion and Dorsiflexion','Point the toes away from the shin for plantarflexion or bring the toes toward the shin for dorsiflexion.','Regular Anatomy ROM Lab · page 2'],
+ ['Wrist Radial and Ulnar Deviation','Move the hand sideways toward the thumb for radial deviation or toward the little finger for ulnar deviation, keeping the forearm still.','Advanced ROM Lab · page 3'],
+ ['Wrist Flexion and Extension','Bend the wrist palmward for flexion or toward the back of the hand for extension. Stabilize the forearm.','Advanced ROM Lab · page 3'],
+ ['Thumb MCP Joint Flexion','Bend the thumb at its metacarpophalangeal (MCP) joint—the thumb knuckle—while keeping the rest of the hand steady.','Advanced ROM Lab · page 3'],
+ ['Thumb IP Joint Flexion','Bend the thumb at its interphalangeal (IP) joint, nearer the tip, without bending the thumb knuckle more than necessary.','Advanced ROM Lab · page 3'],
+ ['Hip Flexion','Move the thigh toward the trunk. Capture the selected side with the knee either flexed or extended, as specified by the measurement.','Advanced ROM Lab · page 3'],
+ ['Hip Adduction','Bring the selected leg toward the body’s midline while keeping the pelvis steady.','Advanced ROM Lab · page 3'],
+ ['Hip Abduction','Move the selected leg outward away from the body’s midline while keeping the pelvis steady.','Advanced ROM Lab · page 4'],
+ ['Knee Flexion','Bend the selected knee to bring the heel toward the thigh. Place the goniometer fulcrum at the knee and align the arms along the thigh and lower leg.','Advanced ROM Lab · page 4'],
+ ['Shoulder Adduction and Abduction','Move the arm away from the side for abduction or toward the body for adduction. Keep the torso from leaning.','Advanced ROM Lab · page 4'],
+ ['Shoulder Flexion and Extension','Raise the arm forward for flexion or move it backward for extension, as seen from a side view. Keep the torso steady.','Advanced ROM Lab · page 4']
+];
+const dialog=document.createElement('dialog');dialog.id='romGuideDialog';dialog.className='rom-guide-dialog';dialog.setAttribute('aria-labelledby','romGuideTitle');
+dialog.innerHTML='<div class="rom-guide-header"><span class="rom-guide-overline">ROM REFERENCE</span><button type="button" class="rom-guide-close" aria-label="Close ROM guide">×</button></div><div class="rom-guide-content"><h2 id="romGuideTitle"></h2><div class="rom-guide-slot" id="romGuideSlot"></div><div class="rom-guide-figure"><img id="romGuideImage" alt="" loading="eager"><span class="rom-guide-image-fallback" id="romGuideImageFallback" hidden>Reference illustration is available when online or in the full Kinetica project folder.</span></div><p class="rom-guide-description" id="romGuideDescription"></p><p class="rom-guide-instruction">Use the illustration as a reference for positioning. Place the fulcrum at the joint axis and align the goniometer arms with moving and stationary segments. Follow your lab’s measurement convention.</p><div class="rom-guide-source" id="romGuideSource"></div></div>';
+document.body.appendChild(dialog);
+const byId=id=>document.getElementById(id);
+const guideImage=byId('romGuideImage'),imageFallback=byId('romGuideImageFallback');
+guideImage.onerror=()=>{guideImage.hidden=true;imageFallback.hidden=false;imageFallback.textContent='Reference illustration is available online or from the complete Kinetica project folder.'};
+guideImage.onload=()=>{guideImage.hidden=false;imageFallback.hidden=true};
+function close(){if(!dialog.open)return;dialog.classList.remove('rom-guide-visible');dialog.close()}
+dialog.querySelector('.rom-guide-close').addEventListener('click',close);
+dialog.addEventListener('click',e=>{if(e.target===dialog)close()});
+function slotNote(s){if(/^Left (?!Knee)/.test(s))return 'Measure the left side.';if(/^Right (?!Knee)/.test(s))return 'Measure the right side.';if(s.startsWith('Left Knee'))return 'Left hip; '+(s.includes('Flexed')?'keep the knee flexed.':'keep the knee extended.');if(s.startsWith('Right Knee'))return 'Right hip; '+(s.includes('Flexed')?'keep the knee flexed.':'keep the knee extended.');return ''}
+function open(key,label,slot){
+ const match=/^rom-(\d+)-(\d+)$/.exec(key);if(!match)return;
+ const group=+match[1],data=guideGroups[group];if(!data)return;
+ byId('romGuideTitle').textContent=data[0];byId('romGuideSlot').textContent=slot||label||'';
+ byId('romGuideDescription').textContent=data[1]+' '+slotNote(slot||'');
+ byId('romGuideSource').textContent='Illustration: '+data[2];
+ imageFallback.textContent='Loading reference illustration…';imageFallback.hidden=false;guideImage.hidden=true;
+ guideImage.src='./rom-guides/guide-'+String(group).padStart(2,'0')+'.png';
+ if(!dialog.open)dialog.showModal();
+ requestAnimationFrame(()=>dialog.classList.add('rom-guide-visible'));
+}
+window.KineticaROMGuide30=Object.freeze({open});
+})();
+</script>
 </body></html>
