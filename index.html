@@ -672,7 +672,7 @@ body.rom-mode #viewMenuWrap{display:none!important}
 
 /* KINETICA JOINT ACTIONS v31 — exercise gallery, paused animation previews */
 body.joint-mode .movement-only,body.joint-mode #romGallery,body.joint-mode #romSelectWrap,body.joint-mode #viewMenuWrap{display:none!important}
-body.joint-mode [data-tool]:not([data-tool="select"]):not([data-tool="joint"]):not([data-tool="rom"]):not([data-tool="blur"]):not([data-tool="mannequin"]){display:none!important}
+body.joint-mode [data-tool]:not([data-tool="select"]):not([data-tool="joint"]):not([data-tool="rom"]):not([data-tool="text"]):not([data-tool="arrow"]){display:none!important}
 body.joint-mode #frameProperties,body.joint-mode #frameCategory{display:none!important}
 body.joint-mode .joint-gallery{display:block!important}
 body.joint-mode .gallery-heading-title{font-size:14px}
@@ -841,7 +841,7 @@ body.joint-mode .frame-buttons button{min-width:0}
 .mannequin-menu-separator{border-top:1px solid #ffffff26;margin:6px 4px}
 .mannequin-menu .mannequin-delete{color:#ffc2bd}
 </style>
-<meta name="kinetica-release" content="v56-rom-guide-caption-alignment">
+<meta name="kinetica-release" content="v57-joint-actions-text-and-arrows">
 </head>
 <body>
 <div class="device">
@@ -3146,7 +3146,7 @@ function draw(){const v=current(),src=visibleSource(v),r=canvas.getBoundingClien
 function setTool(t){
  if(inlineLabel)finishInlineLabel(inlineLabelInput.value.trim()?'save':'cancel');
  if(projectType==='rom'&&!['select','text','rom','blur','mannequin'].includes(t))t='rom';
- if(projectType==='joint'&&!['select','joint','rom','blur','mannequin'].includes(t))t='joint';
+ if(projectType==='joint'&&!['select','joint','rom','text','arrow'].includes(t))t='joint';
  rememberCreationFields();
  mannequinMode='locked';closeMannequinMenu();
  skeletonMoveArmed=false;tool=t;selected=-1;draft=null;smartPending=null;romReposition=false;romDraft=null;romPointActive=0;
@@ -3262,7 +3262,7 @@ function inferredJointRegion(a){
  // Prior projects may have stored this classification explicitly.
  return a.region==='upper'||a.region==='lower'?a.region:null;
 }
-function updateUI(){const v=current(),s=v.source,canAnnotate=!!v.frameSrc&&!v.preview;const source=visibleSource(v);$('screenTitle').textContent=(projectType==='rom'||projectType==='joint')?(v.name||'MEASUREMENT')+' · '+(v.preview?'VIDEO PREVIEW':v.frameSrc?'CAPTURED':'NO FRAME'):viewNames[v.plane]+' PLANE · '+(v.preview?'VIDEO PREVIEW':v.frameLabel||'NO FRAME');$('screenTag').textContent=v.preview?'VIDEO':v.frameSrc?'CAPTURED':'STANDBY';$('sourceStatus').textContent=v.preview?'Scrub to the peak position and choose USE THIS FRAME.':v.frameSrc?(projectType==='joint'?'Label the relevant synovial joint(s), and add ROM measurements if needed.':'Frame captured. Add joint types, trace bones/muscles and draw movement arrows.'):(projectType==='joint'?'Choose an exercise from the gallery to scrub its animation.':'No '+viewNames[v.plane].toLowerCase()+' frame captured yet. Upload a screenshot or video.');
+function updateUI(){const v=current(),s=v.source,canAnnotate=!!v.frameSrc&&!v.preview;const source=visibleSource(v);$('screenTitle').textContent=(projectType==='rom'||projectType==='joint')?(v.name||'MEASUREMENT')+' · '+(v.preview?'VIDEO PREVIEW':v.frameSrc?'CAPTURED':'NO FRAME'):viewNames[v.plane]+' PLANE · '+(v.preview?'VIDEO PREVIEW':v.frameLabel||'NO FRAME');$('screenTag').textContent=v.preview?'VIDEO':v.frameSrc?'CAPTURED':'STANDBY';$('sourceStatus').textContent=v.preview?'Scrub to the peak position and choose USE THIS FRAME.':v.frameSrc?(projectType==='joint'?'Label synovial joints, add movement arrows or text labels, and measure ROM when needed.':'Frame captured. Add joint types, trace bones/muscles and draw movement arrows.'):(projectType==='joint'?'Choose an exercise from the gallery to scrub its animation.':'No '+viewNames[v.plane].toLowerCase()+' frame captured yet. Upload a screenshot or video.');
 $('captureBtn').disabled=!v.preview||!s||!s.ready||s.seeking||s.video.seeking;
 $('videoControls').classList.toggle('hidden',!(s&&v.preview));$('cancelFrameBtn').classList.toggle('hidden',!(v.preview&&v.frameSrc));if(s){$('timeline').max=String(s.duration||1);$('timeline').value=String(s.video.currentTime||0);$('timeNow').textContent=time(s.video.currentTime);$('timeEnd').textContent=time(s.duration)}
 $('overlayNotice').classList.toggle('hidden',!v.preview);$('overlayNotice').textContent=v.preview?'VIDEO PREVIEW · CAPTURE FRAME BEFORE ANNOTATING':'';
