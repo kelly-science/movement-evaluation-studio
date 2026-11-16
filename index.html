@@ -840,8 +840,20 @@ body.joint-mode .frame-buttons button{min-width:0}
 .mannequin-menu button small{display:block;margin-top:3px;color:#b5c8d7;font-size:10px;font-weight:450}
 .mannequin-menu-separator{border-top:1px solid #ffffff26;margin:6px 4px}
 .mannequin-menu .mannequin-delete{color:#ffc2bd}
+
+/* v58 — Joint Actions: small looping movement reference in Select inspector. */
+#jointAnimationInset[hidden]{display:none!important}
+#jointAnimationInset{max-width:320px;margin:0 0 17px;padding:10px;border:1px solid #667e91;border-radius:12px;background:#283542;box-shadow:inset 0 1px 0 #ffffff15,0 3px 10px #0003}
+.joint-animation-heading{font-size:10px;font-weight:750;letter-spacing:.055em;color:#d5e8f7;margin:0 0 4px}
+.joint-animation-name{font-size:12px;line-height:1.35;color:#f0f6fb;font-weight:650;margin:0 0 9px}
+#jointAnimationVideo{display:block;width:100%;aspect-ratio:16/10;max-height:170px;object-fit:contain;background:#e8eef1;border-radius:7px;border:1px solid #64768a;}
+.joint-animation-controls{display:flex;align-items:center;gap:8px;margin-top:8px}
+#jointAnimationToggle{min-height:32px;min-width:92px;padding:5px 9px;font-size:11px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:5px}
+.joint-animation-note{font-size:10px;line-height:1.35;color:#b8cddd}
+.joint-animation-error{font-size:10px;color:#ffd1c4;line-height:1.4;margin:7px 0 0}
+@media(max-width:750px){#jointAnimationInset{max-width:320px}}
 </style>
-<meta name="kinetica-release" content="v57-joint-actions-text-and-arrows">
+<meta name="kinetica-release" content="v58-joint-actions-reference-inset">
 </head>
 <body>
 <div class="device">
@@ -999,6 +1011,16 @@ body.joint-mode .frame-buttons button{min-width:0}
 <aside class="right" aria-label="Advanced annotation settings">
   <h2 id="inspectorTitle">SELECT TOOL</h2>
   <p class="hint" id="inspectorHelp"></p>
+  <section id="jointAnimationInset" aria-label="Looping exercise animation reference" hidden>
+    <div class="joint-animation-heading">MOVEMENT REFERENCE</div>
+    <div class="joint-animation-name" id="jointAnimationName"></div>
+    <video id="jointAnimationVideo" muted loop autoplay playsinline webkit-playsinline preload="metadata" aria-label="Looping exercise demonstration" disablepictureinpicture></video>
+    <div class="joint-animation-controls">
+      <button type="button" id="jointAnimationToggle" class="tactile" aria-label="Pause exercise animation" aria-pressed="true">Ⅱ Pause</button>
+      <span class="joint-animation-note">Looping reference</span>
+    </div>
+    <p class="joint-animation-error" id="jointAnimationError" role="status" hidden></p>
+  </section>
   <div class="tool-fields" id="toolFields">
     <div class="fieldgroup hidden" id="nameField"><label for="labelInput">ANNOTATION LABEL</label><input class="input-well" id="labelInput" placeholder="Enter an anatomical label" autocomplete="off"></div>
     <div class="fieldgroup hidden" id="romFields">
@@ -1324,6 +1346,7 @@ function renderROMPhonePage(next,{index=null,direction='forward'}={}){
   if(Number.isInteger(index)&&index>=0&&index<views.length)switchDocument(index);
   romPhonePage=next;
   syncROMPhonePage();
+  if(typeof syncJointAnimationInset==='function')syncJointAnimationInset();
   window.scrollTo({top:0,behavior:'instant'});
  };
  // An outgoing snapshot used to overlap the incoming page. Instead render only
@@ -3143,6 +3166,66 @@ function paintPhotoAnnotations(c,v,w,h,{privacy=false,source=null,scale=null,edi
  }
 }
 function draw(){const v=current(),src=visibleSource(v),r=canvas.getBoundingClientRect();syncPrivacyEye();if(!src||!r.width||!r.height)return;ctx.setTransform(canvas.width/r.width,0,0,canvas.height/r.height,0,0);ctx.clearRect(0,0,r.width,r.height);const privacy=privacyMode&&privacyPreview&&!v.preview;paintPhotoAnnotations(ctx,v,r.width,r.height,{privacy,source:src,editor:!privacy});if(v.preview)return;if(draft&&(!privacy||PRIVACY_RENDER_TYPES.has(draft.type)))drawOne(ctx,draft,r.width,r.height,{source:src,forPrivacy:privacy});if(romDraft)drawOne(ctx,romDraft,r.width,r.height)}
+
+// v58: The exercise gallery uses static JPG posters and local MP4 clips, not GIFs.
+// Preview the same clip in the Select inspector without changing the captured frame.
+const jointAnimationInset=$('jointAnimationInset');
+const jointAnimationVideo=$('jointAnimationVideo');
+const jointAnimationToggle=$('jointAnimationToggle');
+const jointAnimationError=$('jointAnimationError');
+function syncJointAnimationToggle(){
+ const isPlaying=!jointAnimationVideo.paused&&!jointAnimationVideo.ended;
+ jointAnimationToggle.textContent=isPlaying?'Ⅱ Pause':'▶ Play';
+ jointAnimationToggle.setAttribute('aria-label',isPlaying?'Pause exercise animation':'Play exercise animation');
+ jointAnimationToggle.setAttribute('aria-pressed',String(isPlaying));
+}
+function syncJointAnimationInset(){
+ const v=current();
+ const canShow=projectType==='joint'&&tool==='select'&&!!v?.jointKey&&!!v.frameSrc&&!v.preview&&(!isROMPhone()||romPhonePage==='editor');
+ const def=canShow?jointExercises.find(x=>x.key===v.jointKey):null;
+ if(!def){
+  jointAnimationInset.hidden=true;
+  if(jointAnimationVideo.getAttribute('src')){
+   jointAnimationVideo.pause();jointAnimationVideo.removeAttribute('src');
+   jointAnimationVideo.removeAttribute('poster');jointAnimationVideo.load();
+  }
+  jointAnimationInset.dataset.clip='';
+  jointAnimationError.hidden=true;
+  return;
+ }
+ jointAnimationInset.hidden=false;
+ if(jointAnimationInset.dataset.clip===def.key)return;
+ jointAnimationInset.dataset.clip=def.key;
+ $('jointAnimationName').textContent=def.name;
+ jointAnimationError.hidden=true;
+ jointAnimationError.textContent='';
+ jointAnimationVideo.pause();
+ jointAnimationVideo.poster=def.poster;
+ jointAnimationVideo.src=def.video;
+ jointAnimationVideo.load();
+ const promise=jointAnimationVideo.play();
+ if(promise&&typeof promise.catch==='function')promise.catch(()=>{syncJointAnimationToggle()});
+ syncJointAnimationToggle();
+}
+jointAnimationToggle.addEventListener('click',()=>{
+ if(jointAnimationVideo.paused){
+  const promise=jointAnimationVideo.play();
+  if(promise&&typeof promise.catch==='function')promise.catch(()=>{
+   jointAnimationError.textContent='Could not play this exercise clip. Check that its offline file is available.';
+   jointAnimationError.hidden=false;
+   syncJointAnimationToggle();
+  });
+ }else jointAnimationVideo.pause();
+});
+for(const ev of ['play','pause','ended'])jointAnimationVideo.addEventListener(ev,syncJointAnimationToggle);
+jointAnimationVideo.addEventListener('error',()=>{
+ if(jointAnimationInset.hidden)return;
+ jointAnimationError.textContent='Exercise video unavailable. Check the joint-actions files or download them for offline use.';
+ jointAnimationError.hidden=false;
+ syncJointAnimationToggle();
+});
+jointAnimationVideo.addEventListener('playing',()=>{jointAnimationError.hidden=true;syncJointAnimationToggle()});
+
 function setTool(t){
  if(inlineLabel)finishInlineLabel(inlineLabelInput.value.trim()?'save':'cancel');
  if(projectType==='rom'&&!['select','text','rom','blur','mannequin'].includes(t))t='rom';
@@ -3270,7 +3353,7 @@ updateGallery();
 $('clearBtn').disabled=!v.annotations.length;$('deleteBtn').disabled=selected<0;$('undoBtn').disabled=!undo.length;$('redoBtn').disabled=!redo.length;$('menuExportPlane').disabled=!v.frameSrc;$('menuExportPoster').disabled=projectType==='rom'?!views.some(z=>z.romKey&&romSlotComplete(z)):projectType==='joint'?!views.some(z=>z.jointKey&&z.frameSrc):!movementViews().some(z=>z.frameSrc);
 const list=$('annotationList');list.replaceChildren();if(v.annotations.length===0){const p=document.createElement('p');p.className='hint';p.textContent='No annotations yet.';list.appendChild(p)}v.annotations.forEach((a,i)=>{const b=document.createElement('button');b.className='annotation-chip'+(selected===i?' active':'');const dot=document.createElement('span');dot.className='led on';dot.style.color=a.color;const label=document.createElement('span');label.className='name';label.textContent=a.type==='blur'?'Blur':a.type==='skeleton'?'Manual skeleton':a.type==='mannequin'?'Mannequin':a.label+(a.type==='joint'?' · '+a.jointType:'');const typ=document.createElement('small');typ.textContent=a.type.toUpperCase();b.append(dot,label,typ);b.onclick=()=>{rememberCreationFields();if(annotationsDialog.open)closeAnnotations();if(a.type==='mannequin'){toggleMannequinMenu();return}chooseSelected(i)};list.appendChild(b)});
 syncMenuActions();
-syncMannequinToolbar();syncPrivacyEye();$('canvasHelp').textContent=canAnnotate?help[tool]:v.preview?'Select USE THIS FRAME to freeze the video before drawing.':'Choose a photo or video for the active plane.';updateROMInspector();queueAutosave()}
+syncMannequinToolbar();syncPrivacyEye();$('canvasHelp').textContent=canAnnotate?help[tool]:v.preview?'Select USE THIS FRAME to freeze the video before drawing.':'Choose a photo or video for the active plane.';updateROMInspector();syncJointAnimationInset();queueAutosave()}
 // Cache a privacy-safe gallery thumbnail when the photo has blur regions.
 // Raw captured frames remain in editable projects, but previews match the export.
 function privacyThumbnail(v){
